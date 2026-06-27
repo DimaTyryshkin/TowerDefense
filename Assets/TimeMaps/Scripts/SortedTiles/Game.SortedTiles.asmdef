@@ -1,0 +1,17 @@
+{
+    "name": "Game.SortedTiles",
+    "rootNamespace": "Game.SortedTiles",
+    "references": [
+        "GUID:776d03a35f1b52c4a9aed9f56d7b4229",
+        "GUID:8c36fc6f3329b7f4ab890cc17f11d7c1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

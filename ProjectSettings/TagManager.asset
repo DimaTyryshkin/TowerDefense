@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags: []
   layers:
   - Default
@@ -41,3 +41,24 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Base-TileMap
+    uniqueID: 2602723171
+    locked: 0
+  - name: Decor0-TileMap
+    uniqueID: 3704090165
+    locked: 0
+  - name: Decor1-TileMap
+    uniqueID: 3616221301
+    locked: 0
+  - name: Shadow-TileMap
+    uniqueID: 3780725381
+    locked: 0
+  - name: BaseSorted-TileMap
+    uniqueID: 3345898839
+    locked: 0
+  - name: InGameGui
+    uniqueID: 3525420287
+    locked: 0
+  m_RenderingLayers:
+  - Default
+  m_MigratedRenderPipelines: []
