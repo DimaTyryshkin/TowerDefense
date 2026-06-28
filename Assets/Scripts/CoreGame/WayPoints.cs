@@ -9,10 +9,6 @@ using UnityEditor;
 
 namespace Game.CoreGame
 {
-    //class WayPoint : MonoBehaviour
-    //{
-    //    void OnDrawGizmos() => GetComponentInParent<WayPoints>().OnDrawGizmos();
-    //}
 
     class WayPoints : MonoBehaviour
     {

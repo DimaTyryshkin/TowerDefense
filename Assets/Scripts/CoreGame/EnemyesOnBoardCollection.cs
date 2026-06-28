@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Game.CoreGame
@@ -16,12 +16,13 @@ namespace Game.CoreGame
         }
 
         [CanBeNull]
-        internal EnemyHealth FindTargetForTower(Vector3 towerPosition, float towerAttackRange)
+        internal EnemyHealth FindTargetForTower(Predicate<EnemyHealth> predicate)
         {
             foreach (EnemyHealth enemy in enemyList)
             {
-                float distance = Vector2.Distance(towerPosition, enemy.transform.position);
-                if (distance <= towerAttackRange)
+                //float distance = Vector2.Distance(towerPosition, enemy.transform.position);
+                //if (distance <= towerAttackRange)
+                if (predicate(enemy))
                     return enemy;
             }
 

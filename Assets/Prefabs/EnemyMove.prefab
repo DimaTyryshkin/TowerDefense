@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cd003e48c28ada49935cd0d197daf79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.EnemyMove
-  speed: 3
+  speed: 2
   animator: {fileID: 6016992923031956628}
   enemyHealth: {fileID: 3088800716895306178}
 --- !u!114 &3088800716895306178
