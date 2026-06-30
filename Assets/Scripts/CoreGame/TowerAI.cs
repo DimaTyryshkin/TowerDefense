@@ -24,6 +24,11 @@ namespace Game.CoreGame
         [SerializeField, IsntNull] Animator animator;
         [SerializeField, IsntNull] LazerParticleSystem lazerParticleSystemPrefab;
 
+
+        [Header("Shop")]
+        [SerializeField] int costInShop;
+        internal Currency CostInShop => new Currency(costInShop);
+
         EnemyesOnBoardCollection enemyesOnBoardCollection;
         EnemyHealth target;
         LazerParticleSystem lazerParticleSystem1;

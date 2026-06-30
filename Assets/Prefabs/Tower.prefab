@@ -43,13 +43,14 @@ GameObject:
   - component: {fileID: 4163791300004453830}
   - component: {fileID: 1463958212148020141}
   - component: {fileID: 8997981750918421629}
+  - component: {fileID: 6628261482527830807}
   m_Layer: 0
   m_Name: Tower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3083462257617355473
 Transform:
   m_ObjectHideFlags: 0
@@ -146,6 +147,7 @@ MonoBehaviour:
   attackClip: {fileID: 7400000, guid: 4e7243409c4b9da4a9d1e939e4fb8496, type: 2}
   animator: {fileID: 8997981750918421629}
   lazerParticleSystemPrefab: {fileID: 4596882931417786375, guid: 561aa65c550f15a4dba6b64a150d1f98, type: 3}
+  costInShop: 0
 --- !u!95 &8997981750918421629
 Animator:
   serializedVersion: 7
@@ -168,6 +170,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6628261482527830807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3801696642205190845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8168b56ad00d5448bade08d579ff9f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.Gui.ShopItem
+  sprite: {fileID: 788956660640950671, guid: b3157ac3ae1e3354e9fbfda833fae42b, type: 3}
+  tower: {fileID: 1463958212148020141}
+  cost: 2
 --- !u!1 &4701723510729864798
 GameObject:
   m_ObjectHideFlags: 0

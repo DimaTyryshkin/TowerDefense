@@ -1,8 +1,9 @@
 using GamePackages.Core;
 using GamePackages.Core.Validation;
 using NaughtyAttributes;
-using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.Events;
 
 namespace Game.CoreGame
 {
@@ -11,13 +12,16 @@ namespace Game.CoreGame
         [SerializeField, IsntNull] EnemyHealthView enemyHealthView;
         [SerializeField, IsntNull] EnemySpawnPoint[] spawnPoints;
         [SerializeField, IsntNull] EnemyWaveData[] waves;
+        [Inject] EnemyesOnBoardCollection enemyesOnBoardCollection;
+
+        internal event UnityAction WaveEnd;
 
         float timeNextSpawn;
         int enemyTotalCounter;
         int enemyInWaveCounter;
+        int enemyInWaveWasKilledOrRemoved;
         int waveIndex;
         bool isSpawning;
-        EnemyesOnBoardCollection enemyesOnBoardCollection;
 
         private void Update()
         {
@@ -35,6 +39,7 @@ namespace Game.CoreGame
             newEnemy.transform.position = spawnPoint.transform.position;
             newEnemy.name = $"{waveItem.enemy.gameObject.name} wave={waveIndex:00} inWaveIndex={enemyInWaveCounter:00}";
             newEnemy.SetWayPoints(spawnPoint.wayPoints);
+            newEnemy.FinishMove += NewEnemy_FinishMove;
             newEnemy.gameObject.SetActive(true);
 
             EnemyHealth enemyHealth = newEnemy.GetComponent<EnemyHealth>();
@@ -60,29 +65,36 @@ namespace Game.CoreGame
             }
             else
             {
-                OnWaveSpawnEndded();
+                isSpawning = false;
             }
+        }
+
+        private void NewEnemy_FinishMove(EnemyMove enemy)
+        {
+            EnemyHealth_Death(enemy.GetComponent<EnemyHealth>());
         }
 
         private void EnemyHealth_Death(EnemyHealth enemy)
         {
+            Assert.IsNotNull(enemy);
+
+            enemyInWaveWasKilledOrRemoved++;
             enemyesOnBoardCollection.RemoveEnemy(enemy);
+
+            if (enemyInWaveWasKilledOrRemoved == waves[waveIndex].items.Length)
+            {
+                waveIndex++;
+                WaveEnd.Invoke();
+            }
         }
 
-        internal void Init(EnemyesOnBoardCollection enemyesOnBoardCollection)
+        internal void Init()
         {
-            Assert.IsNotNull(enemyesOnBoardCollection);
-            this.enemyesOnBoardCollection = enemyesOnBoardCollection;
             isSpawning = false;
             waveIndex = 0;
             enemyTotalCounter = 0;
         }
 
-        void OnWaveSpawnEndded()
-        {
-            isSpawning = false;
-            waveIndex++;
-        }
 
         [Button]
         internal void StartWave()
@@ -91,6 +103,7 @@ namespace Game.CoreGame
             {
                 isSpawning = true;
                 enemyInWaveCounter = 0;
+                enemyInWaveWasKilledOrRemoved = 0;
                 timeNextSpawn = Time.time + waves[waveIndex].items[0].delayBeforeSpawn;
                 Debug.Log($"<b>Началась волна номер '{waveIndex}'</b>");
             }

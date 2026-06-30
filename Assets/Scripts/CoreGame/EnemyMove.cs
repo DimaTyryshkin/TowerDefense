@@ -1,6 +1,7 @@
 using GamePackages.Core.Validation;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Events;
 
 namespace Game.CoreGame
 {
@@ -9,6 +10,7 @@ namespace Game.CoreGame
         [SerializeField] float speed;
         [SerializeField, IsntNull] Animator animator;
         [SerializeField, IsntNull] EnemyHealth enemyHealth;
+        internal event UnityAction<EnemyMove> FinishMove;
 
         WayPoints wayPoints;
         int targetPointIndex;
@@ -41,6 +43,11 @@ namespace Game.CoreGame
                     targetPointIndex++;
                     Transform wayPoint = wayPoints.GetPoint(targetPointIndex);
                     target = wayPoint.transform.position;
+                }
+                else
+                {
+                    FinishMove.Invoke(this);
+                    gameObject.SetActive(false);
                 }
             }
             else

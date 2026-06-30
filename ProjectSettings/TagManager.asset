@@ -59,6 +59,9 @@ TagManager:
   - name: InGameGui
     uniqueID: 3525420287
     locked: 0
+  - name: GUI
+    uniqueID: 1913489077
+    locked: 0
   m_RenderingLayers:
   - Default
   m_MigratedRenderPipelines: []

@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4b36fd7438e06c43b76e4666fc6642c, type: 3}
+  m_Name: WaveData-4
+  m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.EnemyWaveData
+  items:
+  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
+    spawnPointIndex: 0
+    delayBeforeSpawn: 0
+  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
+    spawnPointIndex: 0
+    delayBeforeSpawn: 1
+  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
+    spawnPointIndex: 1
+    delayBeforeSpawn: 4
+  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
+    spawnPointIndex: 1
+    delayBeforeSpawn: 1
+  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
+    spawnPointIndex: 0
+    delayBeforeSpawn: 4
+  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
+    spawnPointIndex: 0
+    delayBeforeSpawn: 1
+  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
+    spawnPointIndex: 0
+    delayBeforeSpawn: 1
+  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
+    spawnPointIndex: 1
+    delayBeforeSpawn: 1
+  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
+    spawnPointIndex: 1
+    delayBeforeSpawn: 1
+  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
+    spawnPointIndex: 1
+    delayBeforeSpawn: 1
