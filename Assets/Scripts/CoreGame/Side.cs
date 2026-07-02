@@ -16,15 +16,12 @@ namespace Game.CoreGame
             this.side = side;
         }
 
-
-
         public static Side FromDir(Vector2 dir)
         {
             return FromSignedAngle(Vector2.SignedAngle(Vector2.up, dir));
         }
 
         /// <summary> Вернет 0-верх 1-влево 2-вниз 3-вправо </summary>
-        /// <exception cref="System.NotImplementedException"></exception>
         public static Side FromSignedAngle(float signedAngle)
         {
             if (signedAngle < 0)

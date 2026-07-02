@@ -16,14 +16,13 @@ namespace Game.CoreGame
 
         [Inject] Camera gameCamera;
         [Inject] SortedTilesSystem sortedTilesSystem;
-        [Inject] EnemyesOnBoardCollection enemyesOnBoardCollection;
+        [Inject] HealthComponentOnBoardCollection enemyesOnBoardCollection;
 
         Dictionary<Vector2Int, TowerAI> cellToTower;
         TowerAI towerPrefab;
 
         internal void Init()
         {
-            Assert.IsNotNull(enemyesOnBoardCollection);
             cellToTower = new();
             sortedTilesSystem.LinkTilesFromTileMaps();
         }

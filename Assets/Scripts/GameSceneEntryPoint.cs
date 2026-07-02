@@ -18,6 +18,8 @@ namespace Game
     class GameSceneEntryPoint : MonoBehaviour
     {
         [SerializeField, IsntNull] Camera gameCamera;
+        [SerializeField, IsntNull] TargetForEnemy targetForEnemy;
+        [SerializeField, IsntNull] GameObject gameOver;
         [SerializeField, IsntNull] GuiHit guihit;
         [SerializeField, IsntNull] EnemySpawner enemySpawner;
         [SerializeField, IsntNull] BuildTowerBrush buildTowerBrush;
@@ -38,17 +40,24 @@ namespace Game
 
         private void Start()
         {
+            gameOver.SetActive(false);
+
+            HealthComponentOnBoardCollection enemyes = new();
+            HealthComponentOnBoardCollection targetsForEnmey = new();
+
+            targetsForEnmey.Add(targetForEnemy.HealthComponent);
+            targetForEnemy.HealthComponent.Init();
+
+
             injector = new Injector();
-            injector.Add(gameCamera);
-            injector.Add(guihit);
+            injector.Register(gameCamera);
+            injector.Register(guihit);
+            injector.Register(sortedTilesSystem);
 
-            injector.Add(sortedTilesSystem);
-            injector.Add(new EnemyesOnBoardCollection());
-
-            injector.AddInject(towerShopView);
-            injector.AddInject(buildTowerBrush).Init();
-            injector.AddInject(buildPlayerInput).Init();
-            injector.Inject(enemySpawner).Init();
+            injector.Inject(towerShopView);
+            injector.Inject(buildTowerBrush, enemyes).Init();
+            injector.Inject(buildPlayerInput, buildTowerBrush).Init();
+            injector.Inject(enemySpawner, enemyes, targetsForEnmey).Init();
 
 
 
@@ -101,6 +110,11 @@ namespace Game
                 playerBank += new Currency(2);
                 towerShopView.Darw(playerBank, shopStates);
                 towerShopView.Show();
+            };
+
+            enemySpawner.GameOver += () =>
+            {
+                gameOver.SetActive(true);
             };
 
             //enemySpawner.StartWave();

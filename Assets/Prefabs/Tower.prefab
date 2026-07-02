@@ -50,7 +50,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3083462257617355473
 Transform:
   m_ObjectHideFlags: 0
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ebab0847a284c34f99c4cc0fb7d4e80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.TowerAI
-  attackRange: 3
+  attackRange: 3.5
   damageValue: 1
   lazerStartPoint1: {fileID: 7105560525450654635}
   lazerStartPoint2: {fileID: 5446114093596869211}

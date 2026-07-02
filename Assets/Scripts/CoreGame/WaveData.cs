@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Game.CoreGame
 {
     [CreateAssetMenu]
-    class EnemyWaveData : ScriptableObject
+    class WaveData : ScriptableObject
     {
         [SerializeField, IsntNull] internal WaveItem[] items;
 
@@ -13,7 +13,7 @@ namespace Game.CoreGame
         [Serializable]
         internal struct WaveItem
         {
-            [IsntNull] public EnemyMove enemy;
+            [IsntNull] public WayMoveComponent enemy;
             public int spawnPointIndex;
             public float delayBeforeSpawn;
         }

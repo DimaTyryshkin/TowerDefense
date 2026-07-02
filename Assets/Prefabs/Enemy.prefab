@@ -10,11 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 441885111006700746}
   - component: {fileID: 8512324756761404276}
+  - component: {fileID: 7870496176263527685}
   - component: {fileID: 1301351841868251877}
   - component: {fileID: 3088800716895306178}
   - component: {fileID: 6016992923031956628}
   m_Layer: 0
-  m_Name: EnemyMove
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,6 +96,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!114 &7870496176263527685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348463981880583577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30ad493258d8d3844834d0adc99ba795, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.EnemyAi
+  damage: 1
+  attackRange: 1
+  attackPeriod: 2
+  animator: {fileID: 6016992923031956628}
+  health: {fileID: 3088800716895306178}
+  moveComponent: {fileID: 1301351841868251877}
 --- !u!114 &1301351841868251877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,7 +128,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.EnemyMove
   speed: 2
   animator: {fileID: 6016992923031956628}
-  enemyHealth: {fileID: 3088800716895306178}
 --- !u!114 &3088800716895306178
 MonoBehaviour:
   m_ObjectHideFlags: 0

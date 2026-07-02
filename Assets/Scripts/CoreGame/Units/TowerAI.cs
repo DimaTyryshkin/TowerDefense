@@ -29,8 +29,8 @@ namespace Game.CoreGame
         [SerializeField] int costInShop;
         internal Currency CostInShop => new Currency(costInShop);
 
-        EnemyesOnBoardCollection enemyesOnBoardCollection;
-        EnemyHealth target;
+        HealthComponentOnBoardCollection enemyesOnBoardCollection;
+        HealthComponent target;
         LazerParticleSystem lazerParticleSystem1;
         LazerParticleSystem lazerParticleSystem2;
         float timeNextAttack;
@@ -75,25 +75,15 @@ namespace Game.CoreGame
 
 
         [CanBeNull]
-        EnemyHealth FindTarget()
+        HealthComponent FindTarget()
         {
-            bool canAttackTarget = CanAttackTargte(target);
+            bool canAttackTarget = enemyesOnBoardCollection.CanAttack(transform.position, attackRange, target);
             if (canAttackTarget)
                 return target;
 
-            return enemyesOnBoardCollection.FindTargetForTower(CanAttackTargte);
+            return enemyesOnBoardCollection
+                .Find(target => enemyesOnBoardCollection.CanAttack(transform.position, attackRange, target));
         }
-
-        bool CanAttackTargte(EnemyHealth enemyHealth)
-        {
-            bool isDeath = !enemyHealth || enemyHealth.IsDeath;
-            if (isDeath)
-                return false;
-
-            float distanceToTarget = Vector2.Distance(transform.position, enemyHealth.transform.position);
-            return distanceToTarget <= attackRange;
-        }
-
 
         private void OnDrawGizmosSelected()
         {
@@ -101,7 +91,7 @@ namespace Game.CoreGame
             Gizmos.DrawWireSphere(transform.position, attackRange);
         }
 
-        internal void Init(EnemyesOnBoardCollection enemyesOnBoardCollection)
+        internal void Init(HealthComponentOnBoardCollection enemyesOnBoardCollection)
         {
             Assert.IsNotNull(enemyesOnBoardCollection);
             this.enemyesOnBoardCollection = enemyesOnBoardCollection;
@@ -121,7 +111,7 @@ namespace Game.CoreGame
                 Attack(target);
         }
 
-        void Attack(EnemyHealth enemyHealth)
+        void Attack(HealthComponent enemyHealth)
         {
             lazerParticleSystem1.Play(lazerStartPoint1, enemyHealth.transform);
             lazerParticleSystem2.Play(lazerStartPoint2, enemyHealth.transform);

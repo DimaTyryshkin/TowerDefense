@@ -5,26 +5,28 @@ using UnityEngine.Assertions;
 
 namespace Game.CoreGame
 {
-    class EnemyHealthView : MonoBehaviour
+    class HealthComponentView : MonoBehaviour
     {
         [SerializeField, IsntNull] ProgressBarView redHealthProressBar;
         [SerializeField, IsntNull] ProgressBarView greenHealthProressBar;
         [SerializeField] float redToGreenLerpfactor;
+        [SerializeField] bool doNotMove;
 
-        EnemyHealth enemyHealth;
+        HealthComponent enemyHealth;
         Vector3 offset;
-
 
         private void LateUpdate()
         {
-            transform.position = enemyHealth.transform.position + offset;
+            if (!doNotMove)
+                transform.position = enemyHealth.transform.position + offset;
+
             redHealthProressBar.NormilizedValue = Mathf.Lerp(
                 redHealthProressBar.NormilizedValue,
                 greenHealthProressBar.NormilizedValue,
                 Time.deltaTime * redToGreenLerpfactor);
         }
 
-        internal void Init(EnemyHealth enemyHealth, Vector3 offset)
+        internal void Init(HealthComponent enemyHealth, Vector3 offset)
         {
             Assert.IsNotNull(enemyHealth);
             this.enemyHealth = enemyHealth;
@@ -36,7 +38,7 @@ namespace Game.CoreGame
             Draw(enemyHealth);
         }
 
-        void Draw(EnemyHealth enemyHealth)
+        void Draw(HealthComponent enemyHealth)
         {
             //redHealthProressBar.NormilizedValue = greenHealthProressBar.NormilizedValue;
             greenHealthProressBar.NormilizedValue = enemyHealth.Health / enemyHealth.MaxHealth;

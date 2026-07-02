@@ -1,17 +1,19 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
 
 namespace Game.CoreGame
 {
-    class EnemyHealth : MonoBehaviour
+    class HealthComponent : MonoBehaviour
     {
         [SerializeField] float maxHealth;
         float health;
 
-        internal event UnityAction<EnemyHealth> Death;
-        internal event UnityAction<EnemyHealth, float> HealthChanged;
+        internal event UnityAction<HealthComponent> Death;
+        internal event UnityAction<HealthComponent, float> HealthChanged;
 
         internal bool IsDeath => health <= 0;
+        internal bool IsLive => health > 0;
         internal float MaxHealth => maxHealth;
         internal float Health => health;
 
@@ -19,10 +21,13 @@ namespace Game.CoreGame
         internal void Init()
         {
             health = maxHealth;
+            HealthChanged?.Invoke(this, 0);
         }
 
         internal void SetDamage(Demage demage)
         {
+            Assert.IsTrue(IsLive);
+
             float resultDamage = Mathf.Min(demage.value, health);
             health -= resultDamage;
 

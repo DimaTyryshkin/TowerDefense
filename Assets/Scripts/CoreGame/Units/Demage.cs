@@ -1,6 +1,6 @@
 namespace Game.CoreGame
 {
-    class Demage
+    struct Demage
     {
         internal float value;
     }
