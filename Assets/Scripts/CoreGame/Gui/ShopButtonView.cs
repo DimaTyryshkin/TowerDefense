@@ -7,37 +7,32 @@ using UnityEngine.UI;
 
 namespace Game.CoreGame.Gui
 {
-    class TowerButtonView : MonoBehaviour
+    class ShopButtonView : MonoBehaviour
     {
         [SerializeField, IsntNull] CanvasGroup canvasGroup;
-        [SerializeField, IsntNull] Image towerImage;
+        [SerializeField, IsntNull] Image image;
         [SerializeField, IsntNull] Button button;
         [SerializeField, IsntNull] TMP_Text text;
         [SerializeField, IsntNull] Color notEnoughtTextColor;
         [SerializeField, IsntNull] Color notEnoughtImageColor;
 
-        internal ShopItemState ShopItemState => shopItemState;
-        internal event UnityAction<TowerButtonView> Click;
-        ShopItemState shopItemState;
+        internal ShopButtonState State => state;
+        internal event UnityAction<ShopButtonView> Click;
+        ShopButtonState state;
 
         private void Start()
         {
-            button.onClick.AddListener(OnClick);
+            button.onClick.AddListener(() => Click.Invoke(this));
         }
 
-        internal void Draw(ShopItemState shopItemState)
+        internal void Draw(ShopButtonState state)
         {
-            Assert.IsNotNull(shopItemState);
-            Assert.IsNotNull(shopItemState.shopItem);
-
-            ShopItem shopItem = shopItemState.shopItem;
-            Assert.IsNotNull(shopItem);
-            Assert.IsNotNull(shopItem.Tower);
-            Assert.IsNotNull(shopItem.Sprite);
-            this.shopItemState = shopItemState;
+            Assert.IsNotNull(state);
+            Assert.IsNotNull(state.Sprite);
+            this.state = state;
 
             DrawCost();
-            towerImage.sprite = shopItem.Sprite;
+            image.sprite = state.Sprite;
             button.interactable = true;
         }
 
@@ -52,24 +47,19 @@ namespace Game.CoreGame.Gui
             DrawCost();
             button.interactable = false;
             text.color = notEnoughtTextColor;
-            towerImage.color = notEnoughtImageColor;
+            image.color = notEnoughtImageColor;
         }
 
         void DrawCost()
         {
-            if (shopItemState.shopItem.Cost.money > 0)
+            if (state.Cost.money > 0)
             {
-                text.text = shopItemState.shopItem.Cost.money.ToString();
+                text.text = state.Cost.money.ToString();
             }
             else
             {
                 text.gameObject.SetActive(false);
             }
-        }
-
-        void OnClick()
-        {
-            Click.Invoke(this);
         }
     }
 }

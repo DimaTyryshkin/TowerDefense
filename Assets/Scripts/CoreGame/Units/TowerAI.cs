@@ -27,7 +27,9 @@ namespace Game.CoreGame
 
         [Header("Shop")]
         [SerializeField] int costInShop;
+
         internal Currency CostInShop => new Currency(costInShop);
+        internal float AttackRange => attackRange;
 
         HealthComponentOnBoardCollection enemyesOnBoardCollection;
         HealthComponent target;

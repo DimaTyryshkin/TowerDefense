@@ -13,10 +13,10 @@ namespace Game.CoreGame.Gui
         [SerializeField] int buttonMaxAmount;
         [SerializeField, IsntNull] TMP_Text bankText;
         [SerializeField, IsntNull] Button startWaveButton;
-        [SerializeField, IsntNull] TowerButtonView buttonTemplate;
+        [SerializeField, IsntNull] ShopButtonView buttonTemplate;
         [SerializeField, IsntNull] RectTransform buttonsRoot;
 
-        internal event UnityAction<TowerButtonView> SelectTower;
+        internal event UnityAction<ShopButtonView> ClickButon;
         internal event UnityAction ClickStartWave;
         internal int MaxButtonAmount => buttonMaxAmount;
 
@@ -26,7 +26,7 @@ namespace Game.CoreGame.Gui
             startWaveButton.onClick.AddListener(() => ClickStartWave.Invoke());
         }
 
-        internal void Darw(Currency playerBank, ShopItemState[] shopStates)
+        internal void Darw(Currency playerBank, ShopButtonState[] shopStates)
         {
             buttonsRoot.DestroyChildren();
 
@@ -34,23 +34,22 @@ namespace Game.CoreGame.Gui
             Assert.IsTrue(shopStates.Length <= MaxButtonAmount);
             for (var i = 0; i < shopStates.Length; i++)
             {
-                ShopItemState state = shopStates[i];
+                ShopButtonState buttonState = shopStates[i];
 
-                TowerButtonView button = buttonsRoot.InstantiateAsChild(buttonTemplate);
+                ShopButtonView button = buttonsRoot.InstantiateAsChild(buttonTemplate);
                 button.gameObject.SetActive(true);
 
-                if (state == null || state.wasBuilded)
+                if (buttonState == null || buttonState.wasBuilded)
                 {
                     button.DarwInvisible();
-                    button.gameObject.name = state == null ? "null" : "wasBuilded";
+                    button.gameObject.name = buttonState == null ? "null" : "wasBuilded";
                     continue;
                 }
 
-                Assert.IsNotNull(state.shopItem);
-                button.Draw(state);
+                button.Draw(buttonState);
                 button.Click += TowerButton_Click;
 
-                if (playerBank < state.shopItem.Cost)
+                if (playerBank < buttonState.Cost)
                     button.DrawNotEnoughtBank();
             }
         }
@@ -59,9 +58,9 @@ namespace Game.CoreGame.Gui
 
         internal void Hide() => gameObject.SetActive(false);
 
-        private void TowerButton_Click(TowerButtonView button)
+        private void TowerButton_Click(ShopButtonView button)
         {
-            SelectTower.Invoke(button);
+            ClickButon.Invoke(button);
         }
 
 
