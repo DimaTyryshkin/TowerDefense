@@ -56,7 +56,10 @@ TagManager:
   - name: BaseSorted-TileMap
     uniqueID: 3345898839
     locked: 0
-  - name: InGameGui
+  - name: Vfx-InGame
+    uniqueID: 1281659693
+    locked: 0
+  - name: Gui-InGame
     uniqueID: 3525420287
     locked: 0
   - name: GUI

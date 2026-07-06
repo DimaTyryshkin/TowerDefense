@@ -38,7 +38,7 @@ namespace Game.CoreGame
 
             EnemySpawnPoint spawnPoint = spawnPoints[waveItem.spawnPointIndex];
             var enemy = InstatiateEnemy(waveItem.enemy, spawnPoint.transform.position, spawnPoint.wayPoints);
-            enemy.move.FinishMove += NewEnemy_FinishMove;
+            enemy.move.FinishMove += Enemy_FinishMove;
             enemy.health.Death += EnemyHealth_Death;
             enemy.move.gameObject.name = $"{waveItem.enemy.gameObject.name} wave={waveIndex:00} inWaveIndex={enemyInWaveCounter:00}";
 
@@ -74,17 +74,17 @@ namespace Game.CoreGame
             EnemyAi enemyAi = enemyMove.GetComponent<EnemyAi>();
             HealthComponentView healthView = transform.InstantiateAsChild(enemyHealthView);
 
-            enemyMove.SetWayPoints(wayPoints);
             enemyHealth.Init();
-            enemyAi.Init(targetsForEnemyColelction);
+            enemyAi.Init(targetsForEnemyColelction, wayPoints);
             healthView.Init(enemyHealth, Vector3.up * 0.55f);
 
             enemyesOnBoardCollection.Add(enemyHealth);
             return (enemyMove, enemyHealth, enemyAi, healthView);
         }
 
-        private void NewEnemy_FinishMove(WayMoveComponent enemy)
+        private void Enemy_FinishMove(WayMoveComponent enemy)
         {
+            enemy.gameObject.SetActive(false);
             enemyesOnBoardCollection.Remove(enemy.GetComponent<HealthComponent>());
             GameOver.Invoke();
         }

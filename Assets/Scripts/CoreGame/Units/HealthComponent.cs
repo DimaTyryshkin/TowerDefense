@@ -24,7 +24,7 @@ namespace Game.CoreGame
             HealthChanged?.Invoke(this, 0);
         }
 
-        internal void SetDamage(Demage demage)
+        internal void SetDamage(Damage demage)
         {
             Assert.IsTrue(IsLive);
 

@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 namespace Game.CoreGame
 {
+
     class TowerWithAtackRangeBrush : BuildBrush
     {
         [Inject] RangeVisualizer rangeVfx;

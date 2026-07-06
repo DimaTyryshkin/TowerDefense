@@ -4,7 +4,9 @@ using Game.SortedTiles;
 using GamePackages.Core;
 using GamePackages.Core.Validation;
 using GamePackages.InputSystem;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Game
 {
@@ -23,7 +25,11 @@ namespace Game
         [SerializeField, IsntNull] SortedTilesSystem sortedTilesSystem;
 
         [Header("Buildings")]
-        [SerializeField, IsntNull] ShopItem tower01;
+        [SerializeField, IsntNull] ShopItem shopItem01;
+        [SerializeField, IsntNull] WeaponTowerAI tower01;
+
+        [SerializeField, IsntNull] ShopItem shopItem02;
+        [SerializeField, IsntNull] TowerCurrencyGenerator tower02;
 
         Injector injector;
         GridWrapper gridWrapper;
@@ -35,6 +41,7 @@ namespace Game
         [SerializeField] int starMoney;
         Currency playerBank;
         ShopButtonState lastSelectedState;
+        ShopButtonState[] shopButtonsStates;
 
 
         private void Start()
@@ -49,7 +56,12 @@ namespace Game
             gridWrapper = new GridWrapper(grid);
             playerBank = new Currency(starMoney);
             HealthComponentOnBoardCollection targetsForEnmey = new();
-            TowerWithAtackRangeBrush towerBrush = new TowerWithAtackRangeBrush(tower01.Tower.AttackRange, tower01.Sprite);
+
+            RangeWeaponComponent weapon01 = tower01.GetComponent<RangeWeaponComponent>();
+            Assert.IsNotNull(weapon01);
+            TowerWithAtackRangeBrush tower01Brush = new(weapon01.AttackRange, shopItem01.Sprite);
+
+            NoAttackTowerBrush tower02Brush = new(shopItem02.Sprite);
 
             targetsForEnmey.Add(targetForEnemy.HealthComponent);
             targetForEnemy.HealthComponent.Init();
@@ -65,15 +77,16 @@ namespace Game
             injector.Inject(towerShopView);
             injector.Inject(buildPlayerInput, towerPreview).Init();
             injector.Inject(enemySpawner, enemyOnBoard, targetsForEnmey).Init();
-            injector.Inject(towerBrush, towerPreview);
+            injector.Inject(tower01Brush, towerPreview);
+            injector.Inject(tower02Brush, towerPreview);
 
             // == Buildings ==
 
-            ShopButtonState[] shopButtonsStates = new ShopButtonState[towerShopView.MaxButtonAmount];
-            shopButtonsStates[0] = new ShopButtonState(cost: tower01.Cost, sprite: tower01.Sprite, onClick: () => buildPlayerInput.SetBrush(towerBrush));
-            shopButtonsStates[1] = new ShopButtonState(cost: tower01.Cost, sprite: tower01.Sprite, onClick: () => buildPlayerInput.SetBrush(towerBrush));
-            shopButtonsStates[2] = new ShopButtonState(cost: tower01.Cost, sprite: tower01.Sprite, onClick: () => buildPlayerInput.SetBrush(towerBrush));
-            shopButtonsStates[3] = new ShopButtonState(cost: tower01.Cost, sprite: tower01.Sprite, onClick: () => buildPlayerInput.SetBrush(towerBrush));
+            shopButtonsStates = new ShopButtonState[towerShopView.MaxButtonAmount];
+            shopButtonsStates[0] = new ShopButtonState(cost: shopItem01.Cost, sprite: shopItem01.Sprite, onClick: () => buildPlayerInput.SetBrush(tower01Brush));
+            shopButtonsStates[1] = new ShopButtonState(cost: shopItem02.Cost, sprite: shopItem02.Sprite, onClick: () => buildPlayerInput.SetBrush(tower02Brush));
+            shopButtonsStates[2] = new ShopButtonState(cost: shopItem01.Cost, sprite: shopItem01.Sprite, onClick: () => buildPlayerInput.SetBrush(tower01Brush));
+            shopButtonsStates[3] = new ShopButtonState(cost: shopItem01.Cost, sprite: shopItem01.Sprite, onClick: () => buildPlayerInput.SetBrush(tower01Brush));
 
             // == SetupFlow ==
 
@@ -101,9 +114,7 @@ namespace Game
 
             enemySpawner.WaveEnd += () =>
             {
-                playerBank += new Currency(2);
-                towerShopView.Darw(playerBank, shopButtonsStates);
-                towerShopView.Show();
+                StartCoroutine(OnWaveEnd());
             };
 
             enemySpawner.GameOver += () =>
@@ -111,7 +122,7 @@ namespace Game
                 gameOver.SetActive(true);
             };
 
-            towerBrush.ClickBuild += cell =>
+            tower01Brush.ClickBuild += cell =>
             {
                 if (playerBank >= lastSelectedState.Cost)
                 {
@@ -125,18 +136,56 @@ namespace Game
                 }
             };
 
+            tower02Brush.ClickBuild += cell =>
+            {
+                if (playerBank >= lastSelectedState.Cost)
+                {
+                    lastSelectedState.wasBuilded = true;
+                    playerBank -= lastSelectedState.Cost;
+                    InstantiateTower02(cell);
+
+                    buildPlayerInput.StopBuilding();
+                    towerShopView.Darw(playerBank, shopButtonsStates);
+                    towerShopView.Show();
+                }
+            };
+
             towerShopView.Darw(playerBank, shopButtonsStates);
         }
 
+        IEnumerator OnWaveEnd()
+        {
+            yield return new WaitForSeconds(0.3f);
+
+            playerBank += new Currency(2);
+            foreach (TowerCurrencyGenerator t in buildingsOnBoard.GetAllByType<TowerCurrencyGenerator>())
+            {
+                t.ShowEffect();
+                playerBank += t.MoneyAddPedWaveAmount;
+                yield return new WaitForSeconds(0.3f);
+            }
+
+            towerShopView.Darw(playerBank, shopButtonsStates);
+            towerShopView.Show();
+        }
 
         private void InstantiateTower01(Vector2Int cell)
         {
-            TowerAI newTower = gridWrapper.grid.transform.InstantiateAsChild(tower01.Tower);
+            WeaponTowerAI newTower = Instantiate(tower01);
             newTower.transform.position = gridWrapper.CellToWorld(cell);
             newTower.gameObject.SetActive(true);
             sortedTilesSystem.LinkGameObject(newTower.gameObject);
             buildingsOnBoard[cell] = newTower.gameObject;
             newTower.Init(enemyOnBoard);
+        }
+
+        private void InstantiateTower02(Vector2Int cell)
+        {
+            TowerCurrencyGenerator newTower = Instantiate(tower02);
+            newTower.transform.position = gridWrapper.CellToWorld(cell);
+            newTower.gameObject.SetActive(true);
+            sortedTilesSystem.LinkGameObject(newTower.gameObject);
+            buildingsOnBoard[cell] = newTower.gameObject;
         }
     }
 }

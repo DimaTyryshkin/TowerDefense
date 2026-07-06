@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Game.CoreGame
 {
-    class WayMoveComponent : MonoBehaviour
+    class WayMoveComponent : UnitStateComponent
     {
         [SerializeField] float speed;
         [SerializeField, IsntNull] Animator animator;
@@ -19,17 +19,8 @@ namespace Game.CoreGame
         int sideHash = Animator.StringToHash("side");
         int walkHash = Animator.StringToHash("walk");
 
-        void Start()
+        internal override void UpdateFrame()
         {
-            //debugText = GizmosDrawer.Inst.AddText(transform.position, "");
-            animator.SetBool(walkHash, true);
-        }
-
-        internal void UpdateFrame()
-        {
-            if (wayPoints == null)
-                return;
-
             Vector2 pos = transform.position;
 
             float distanceToPoint = Vector2.Distance(pos, nextPoint);
@@ -46,12 +37,12 @@ namespace Game.CoreGame
                 else
                 {
                     FinishMove.Invoke(this);
-                    gameObject.SetActive(false);
                 }
             }
             else
             {
                 transform.position = Vector3.MoveTowards(transform.position, nextPoint, GetSpeed() * Time.deltaTime);
+                animator.SetBool(walkHash, true);
 
                 Vector2 toTaret = nextPoint - pos;
                 int side = Side.FromDir(toTaret).side;
@@ -59,9 +50,10 @@ namespace Game.CoreGame
 
                 animator.SetInteger(sideHash, side);
             }
+
         }
 
-        internal void SetWayPoints(WayPoints wayPoints)
+        internal void Init(WayPoints wayPoints)
         {
             Assert.IsNotNull(wayPoints);
             this.wayPoints = wayPoints;

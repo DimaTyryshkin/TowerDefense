@@ -17,29 +17,5 @@ MonoBehaviour:
     spawnPointIndex: 0
     delayBeforeSpawn: 0
   - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
-    spawnPointIndex: 0
-    delayBeforeSpawn: 1
-  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
     spawnPointIndex: 1
-    delayBeforeSpawn: 4
-  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
-    spawnPointIndex: 1
-    delayBeforeSpawn: 1
-  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
-    spawnPointIndex: 0
-    delayBeforeSpawn: 4
-  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
-    spawnPointIndex: 0
-    delayBeforeSpawn: 1
-  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
-    spawnPointIndex: 0
-    delayBeforeSpawn: 1
-  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
-    spawnPointIndex: 1
-    delayBeforeSpawn: 1
-  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
-    spawnPointIndex: 1
-    delayBeforeSpawn: 1
-  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
-    spawnPointIndex: 1
-    delayBeforeSpawn: 1
+    delayBeforeSpawn: 2

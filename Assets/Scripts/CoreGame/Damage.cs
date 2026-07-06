@@ -1,6 +1,6 @@
 namespace Game.CoreGame
 {
-    struct Demage
+    struct Damage
     {
         internal float value;
     }

@@ -40,12 +40,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3083462257617355473}
-  - component: {fileID: 4163791300004453830}
+  - component: {fileID: -3244550134980114467}
   - component: {fileID: 1463958212148020141}
-  - component: {fileID: 8997981750918421629}
   - component: {fileID: 6628261482527830807}
+  - component: {fileID: 8809798557933105593}
+  - component: {fileID: 8997981750918421629}
+  - component: {fileID: 4163791300004453830}
   m_Layer: 0
-  m_Name: Tower
+  m_Name: Tower01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,6 +70,93 @@ Transform:
   - {fileID: 5446114093596869211}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-3244550134980114467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3801696642205190845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e939d9c22df60846be618c9f0157b5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.WeaponTowerAI
+  weaponComponent: {fileID: 1463958212148020141}
+--- !u!114 &1463958212148020141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3801696642205190845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ebab0847a284c34f99c4cc0fb7d4e80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.TowerAI
+  attackRange: 3.5
+  damageValue: 1
+  lazerStartPoint1: {fileID: 7105560525450654635}
+  lazerStartPoint2: {fileID: 5446114093596869211}
+  attackClip: {fileID: 7400000, guid: 4e7243409c4b9da4a9d1e939e4fb8496, type: 2}
+  animator: {fileID: 8997981750918421629}
+  lazerParticleSystemPrefab: {fileID: 4596882931417786375, guid: 561aa65c550f15a4dba6b64a150d1f98, type: 3}
+--- !u!114 &6628261482527830807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3801696642205190845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8168b56ad00d5448bade08d579ff9f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.Gui.ShopItem
+  sprite: {fileID: 788956660640950671, guid: b3157ac3ae1e3354e9fbfda833fae42b, type: 3}
+  cost: 2
+--- !u!114 &8809798557933105593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3801696642205190845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea9ee51e3bd943e9b5bff64c036425d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game.SortedTiles::Game.SortedTiles.SortedTile
+  groupName: 
+  yOffsetInPixelsFromBotBase: 5
+  height: 0
+  orderOffset: 0
+  isDynamic: 0
+  spriteRenderer: {fileID: 4163791300004453830}
+  debug: 0
+--- !u!95 &8997981750918421629
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3801696642205190845}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: eec3e4e3b17fd2e46aa42b9ffd39a311, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!212 &4163791300004453830
 SpriteRenderer:
   serializedVersion: 3
@@ -128,63 +217,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
---- !u!114 &1463958212148020141
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3801696642205190845}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ebab0847a284c34f99c4cc0fb7d4e80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.TowerAI
-  attackRange: 3.5
-  damageValue: 1
-  lazerStartPoint1: {fileID: 7105560525450654635}
-  lazerStartPoint2: {fileID: 5446114093596869211}
-  attackClip: {fileID: 7400000, guid: 4e7243409c4b9da4a9d1e939e4fb8496, type: 2}
-  animator: {fileID: 8997981750918421629}
-  lazerParticleSystemPrefab: {fileID: 4596882931417786375, guid: 561aa65c550f15a4dba6b64a150d1f98, type: 3}
-  costInShop: 0
---- !u!95 &8997981750918421629
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3801696642205190845}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: eec3e4e3b17fd2e46aa42b9ffd39a311, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6628261482527830807
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3801696642205190845}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8168b56ad00d5448bade08d579ff9f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.Gui.ShopItem
-  sprite: {fileID: 788956660640950671, guid: b3157ac3ae1e3354e9fbfda833fae42b, type: 3}
-  tower: {fileID: 1463958212148020141}
-  cost: 2
 --- !u!1 &4701723510729864798
 GameObject:
   m_ObjectHideFlags: 0

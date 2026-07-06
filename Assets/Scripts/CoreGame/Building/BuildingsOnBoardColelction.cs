@@ -27,6 +27,16 @@ namespace Game.CoreGame
             return null;
         }
 
+        internal IEnumerable<T> GetAllByType<T>() where T : MonoBehaviour
+        {
+            foreach (var pair in cellToBuilding)
+            {
+                T component = pair.Value.GetComponent<T>();
+                if (component)
+                    yield return component;
+            }
+        }
+
         internal void Set(Vector2Int cell, GameObject building)
         {
             Assert.IsNotNull(building);

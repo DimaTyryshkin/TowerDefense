@@ -35,7 +35,6 @@ namespace Game.CoreGame
             {
                 if (Mouse.current.rightButton.wasPressedThisFrame)
                 {
-                    Debug.Log("rightButton");
                     StopBuilding();
                     CancelBuilding.Invoke();
                     return;
@@ -47,12 +46,12 @@ namespace Game.CoreGame
             {
                 Vector3 worldPoint = gameCamera.ScreenPointToWorldPointOnPlane(mousePos, Plaine.XY);
                 Vector2Int cell = (Vector2Int)grid.WorldToCell(worldPoint);
-                TowerAI towerAI = buildingsOnBoard.Get<TowerAI>(cell);
-                if (towerAI)
+                RangeWeaponComponent towerWeapon = buildingsOnBoard.Get<RangeWeaponComponent>(cell);
+                if (towerWeapon)
                 {
                     //marker.Text($"{cell} {towerAI.name}");
-                    rangeVfx.Play(towerAI.AttackRange, Color.white);
-                    rangeVfx.Position = towerAI.transform.position;
+                    rangeVfx.Play(towerWeapon.AttackRange, Color.white);
+                    rangeVfx.Position = towerWeapon.transform.position;
                 }
                 else
                 {
