@@ -1,25 +1,20 @@
 using GamePackages.Core.Validation;
 using UnityEngine;
 
-
-
-
-#if UNITY_EDITOR
-#endif
-
 namespace Game.CoreGame
 {
-    class BulletWeaponComponent : RangeWeaponComponent
+    class BombWeaponComponent : ShootingRangeWeaponComponent
     {
         [SerializeField] float attackPeriod;
-        [SerializeField, IsntNull] Bullet bulletPrefab;
+        [SerializeField, IsntNull] Bomb bombPrefab;
+        [SerializeField, IsntNull] Transform startPoint;
 
         protected override void Attack(HealthComponent enemyHealth, Damage damage)
         {
-            Bullet bullet = Instantiate(bulletPrefab);
-            bullet.transform.position = transform.position;
-            bullet.gameObject.SetActive(true);
-            bullet.Init(enemyHealth, damage);
+            Bomb rocket = Instantiate(bombPrefab);
+            rocket.transform.position = startPoint.position;
+            rocket.gameObject.SetActive(true);
+            rocket.Init(damage, targets, enemyHealth.transform.position);
         }
 
         protected override void PlayAttackAnimation(ref float timeNextAttack, ref float timeNextAttackAnimationEvent)

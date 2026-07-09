@@ -4882,6 +4882,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.Bullet
   speed: 2
+  vfx: {fileID: 8757578938277980448}
 --- !u!1 &3600740984103639429
 GameObject:
   m_ObjectHideFlags: 0

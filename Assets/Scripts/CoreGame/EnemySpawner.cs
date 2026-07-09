@@ -84,8 +84,9 @@ namespace Game.CoreGame
 
         private void Enemy_FinishMove(WayMoveComponent enemy)
         {
-            enemy.gameObject.SetActive(false);
-            enemyesOnBoardCollection.Remove(enemy.GetComponent<HealthComponent>());
+            //TODO тут мы можем убивать уже удаленых, как-то не хорошо.
+            Destroy(enemy.gameObject);
+            //enemyesOnBoardCollection.Remove(enemy.GetComponent<HealthComponent>());
             GameOver.Invoke();
         }
 

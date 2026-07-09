@@ -127,7 +127,8 @@ MonoBehaviour:
   attackRange: 8
   damageValue: 1
   attackPeriod: 4
-  bulletPrefab: {fileID: 8109775530781139036, guid: 164ebdcca2459e14480ae64a44af9a71, type: 3}
+  homingRocketPrefab: {fileID: 8109775530781139036, guid: 164ebdcca2459e14480ae64a44af9a71, type: 3}
+  startPoint: {fileID: 441885111006700746}
 --- !u!114 &1301351841868251877
 MonoBehaviour:
   m_ObjectHideFlags: 0

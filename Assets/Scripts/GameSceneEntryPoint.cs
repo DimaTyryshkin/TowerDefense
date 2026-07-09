@@ -6,7 +6,7 @@ using GamePackages.Core.Validation;
 using GamePackages.InputSystem;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Assertions;
+using UnityEngine.Events;
 
 namespace Game
 {
@@ -30,6 +30,9 @@ namespace Game
 
         [SerializeField, IsntNull] ShopItem shopItem02;
         [SerializeField, IsntNull] TowerCurrencyGenerator tower02;
+
+        [SerializeField, IsntNull] ShopItem shopItem03;
+        [SerializeField, IsntNull] WeaponTowerAI tower03;
 
         Injector injector;
         GridWrapper gridWrapper;
@@ -57,12 +60,6 @@ namespace Game
             playerBank = new Currency(starMoney);
             HealthComponentOnBoardCollection targetsForEnmey = new();
 
-            RangeWeaponComponent weapon01 = tower01.GetComponent<RangeWeaponComponent>();
-            Assert.IsNotNull(weapon01);
-            TowerWithAtackRangeBrush tower01Brush = new(weapon01.AttackRange, shopItem01.Sprite);
-
-            NoAttackTowerBrush tower02Brush = new(shopItem02.Sprite);
-
             targetsForEnmey.Add(targetForEnemy.HealthComponent);
             targetForEnemy.HealthComponent.Init();
 
@@ -77,16 +74,13 @@ namespace Game
             injector.Inject(towerShopView);
             injector.Inject(buildPlayerInput, towerPreview).Init();
             injector.Inject(enemySpawner, enemyOnBoard, targetsForEnmey).Init();
-            injector.Inject(tower01Brush, towerPreview);
-            injector.Inject(tower02Brush, towerPreview);
+
 
             // == Buildings ==
-
             shopButtonsStates = new ShopButtonState[towerShopView.MaxButtonAmount];
-            shopButtonsStates[0] = new ShopButtonState(cost: shopItem01.Cost, sprite: shopItem01.Sprite, onClick: () => buildPlayerInput.SetBrush(tower01Brush));
-            shopButtonsStates[1] = new ShopButtonState(cost: shopItem02.Cost, sprite: shopItem02.Sprite, onClick: () => buildPlayerInput.SetBrush(tower02Brush));
-            shopButtonsStates[2] = new ShopButtonState(cost: shopItem01.Cost, sprite: shopItem01.Sprite, onClick: () => buildPlayerInput.SetBrush(tower01Brush));
-            shopButtonsStates[3] = new ShopButtonState(cost: shopItem01.Cost, sprite: shopItem01.Sprite, onClick: () => buildPlayerInput.SetBrush(tower01Brush));
+            SetupRangeWeaponTower(1, injector, tower01, shopItem01);
+            SetupRangeWeaponTower(3, injector, tower03, shopItem03);
+            SetupNoAttackTower(2, injector, tower02, shopItem02, newTower => { });
 
             // == SetupFlow ==
 
@@ -122,33 +116,7 @@ namespace Game
                 gameOver.SetActive(true);
             };
 
-            tower01Brush.ClickBuild += cell =>
-            {
-                if (playerBank >= lastSelectedState.Cost)
-                {
-                    lastSelectedState.wasBuilded = true;
-                    playerBank -= lastSelectedState.Cost;
-                    InstantiateTower01(cell);
 
-                    buildPlayerInput.StopBuilding();
-                    towerShopView.Darw(playerBank, shopButtonsStates);
-                    towerShopView.Show();
-                }
-            };
-
-            tower02Brush.ClickBuild += cell =>
-            {
-                if (playerBank >= lastSelectedState.Cost)
-                {
-                    lastSelectedState.wasBuilded = true;
-                    playerBank -= lastSelectedState.Cost;
-                    InstantiateTower02(cell);
-
-                    buildPlayerInput.StopBuilding();
-                    towerShopView.Darw(playerBank, shopButtonsStates);
-                    towerShopView.Show();
-                }
-            };
 
             towerShopView.Darw(playerBank, shopButtonsStates);
         }
@@ -169,23 +137,61 @@ namespace Game
             towerShopView.Show();
         }
 
-        private void InstantiateTower01(Vector2Int cell)
+        void SetupRangeWeaponTower(int numberInShop, Injector injector, WeaponTowerAI towerPrefab, ShopItem shopItem)
         {
-            WeaponTowerAI newTower = Instantiate(tower01);
-            newTower.transform.position = gridWrapper.CellToWorld(cell);
-            newTower.gameObject.SetActive(true);
-            sortedTilesSystem.LinkGameObject(newTower.gameObject);
-            buildingsOnBoard[cell] = newTower.gameObject;
-            newTower.Init(enemyOnBoard);
+            RangeWeaponComponent weaponComponent = towerPrefab.GetComponent<RangeWeaponComponent>();
+            TowerWithAtackRangeBrush towerBrush = new(weaponComponent.AttackRange, shopItem.Sprite);
+            injector.Inject(towerBrush, towerPreview);
+
+            shopButtonsStates[numberInShop - 1] = new ShopButtonState(cost: shopItem.Cost, sprite: shopItem.Sprite, onClick: () => buildPlayerInput.SetBrush(towerBrush));
+
+            towerBrush.ClickBuild += cell =>
+            {
+                if (playerBank >= lastSelectedState.Cost)
+                {
+                    lastSelectedState.wasBuilded = true;
+                    playerBank -= lastSelectedState.Cost;
+                    WeaponTowerAI newTower = InstantiateTower(towerPrefab, cell);
+                    newTower.Init(enemyOnBoard);
+
+                    buildPlayerInput.StopBuilding();
+                    towerShopView.Darw(playerBank, shopButtonsStates);
+                    towerShopView.Show();
+                }
+            };
         }
 
-        private void InstantiateTower02(Vector2Int cell)
+        void SetupNoAttackTower<T>(int numberInShop, Injector injector, T towerPrefab, ShopItem shopItem, UnityAction<T> initNewTower) where T : MonoBehaviour
         {
-            TowerCurrencyGenerator newTower = Instantiate(tower02);
+            NoAttackTowerBrush towerBrush = new(shopItem.Sprite);
+            injector.Inject(towerBrush, towerPreview);
+
+            shopButtonsStates[numberInShop - 1] = new ShopButtonState(cost: shopItem.Cost, sprite: shopItem.Sprite, onClick: () => buildPlayerInput.SetBrush(towerBrush));
+
+            towerBrush.ClickBuild += cell =>
+            {
+                if (playerBank >= lastSelectedState.Cost)
+                {
+                    lastSelectedState.wasBuilded = true;
+                    playerBank -= lastSelectedState.Cost;
+                    T newTower = InstantiateTower(towerPrefab, cell);
+                    initNewTower.Invoke(newTower);
+
+                    buildPlayerInput.StopBuilding();
+                    towerShopView.Darw(playerBank, shopButtonsStates);
+                    towerShopView.Show();
+                }
+            };
+        }
+
+        T InstantiateTower<T>(T towerPrefab, Vector2Int cell) where T : MonoBehaviour
+        {
+            T newTower = Instantiate(towerPrefab);
             newTower.transform.position = gridWrapper.CellToWorld(cell);
             newTower.gameObject.SetActive(true);
             sortedTilesSystem.LinkGameObject(newTower.gameObject);
             buildingsOnBoard[cell] = newTower.gameObject;
+            return newTower;
         }
     }
 }

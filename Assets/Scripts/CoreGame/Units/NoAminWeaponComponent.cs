@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Game.CoreGame
 {
-    class NoAminWeaponComponent : RangeWeaponComponent
+    class NoAninWeaponComponent : ShootingRangeWeaponComponent
     {
         [SerializeField] float attackPeriod;
 

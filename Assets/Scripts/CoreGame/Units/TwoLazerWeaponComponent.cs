@@ -2,16 +2,13 @@ using GamePackages.Core;
 using GamePackages.Core.Validation;
 using UnityEngine;
 
-
-
-
 #if UNITY_EDITOR
 using UnityEditor.Animations;
 #endif
 
 namespace Game.CoreGame
 {
-    class TwoLazerWeaponComponent : RangeWeaponComponent
+    class TwoLazerWeaponComponent : ShootingRangeWeaponComponent
 #if UNITY_EDITOR
         , IValidated
 #endif

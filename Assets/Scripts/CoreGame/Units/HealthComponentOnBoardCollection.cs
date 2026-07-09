@@ -9,6 +9,7 @@ namespace Game.CoreGame
     class HealthComponentOnBoardCollection
     {
         List<HealthComponent> healthList = new();
+        List<HealthComponent> tempList = new();
 
         internal bool CanAttack(Vector2 damageSourcePos, float attackRange, HealthComponent targetHealth)
         {
@@ -32,6 +33,22 @@ namespace Game.CoreGame
             }
 
             return null;
+        }
+
+
+        internal HealthComponent[] FindAll(Predicate<HealthComponent> predicate)
+        {
+            foreach (HealthComponent health in healthList)
+            {
+                //float distance = Vector2.Distance(towerPosition, enemy.transform.position);
+                //if (distance <= towerAttackRange)
+                if (predicate(health))
+                    tempList.Add(health);
+            }
+
+            HealthComponent[] result = tempList.ToArray();
+            tempList.Clear();
+            return result;
         }
 
         internal void Add(HealthComponent health)

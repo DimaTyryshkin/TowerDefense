@@ -1,24 +1,26 @@
+using GamePackages.Core.Validation;
+using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Assertions;
-
-
-
-
-#if UNITY_EDITOR
-#endif
 
 namespace Game.CoreGame
 {
-    class Bullet : MonoBehaviour
+    class HomingRocket : MonoBehaviour
     {
         [SerializeField] float speed;
-
+        [SerializeField, IsntNull] ParticleSystem vfx;
         HealthComponent target;
         Damage damage;
 
-        private void Update()
+        internal void Init(HealthComponent target, Damage damage)
         {
-            if (!target && target.IsDeath)
+            Assert.IsNotNull(target);
+            this.target = target;
+            this.damage = damage;
+        }
+
+        void Update()
+        {
+            if (!target || target.IsDeath)
             {
                 StopFly();
                 return;
@@ -35,18 +37,10 @@ namespace Game.CoreGame
             }
         }
 
-        internal void Init(HealthComponent target, Damage damage)
-        {
-            Assert.IsNotNull(target);
-            Assert.IsTrue(damage.value > 0);
-
-            this.target = target;
-            this.damage = damage;
-        }
-
         void StopFly()
         {
-            Destroy(gameObject, 0);
+            vfx.Stop(withChildren: true, ParticleSystemStopBehavior.StopEmitting);
+            Destroy(gameObject, 5);
             enabled = false;
         }
     }
