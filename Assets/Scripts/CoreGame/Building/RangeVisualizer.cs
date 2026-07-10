@@ -25,6 +25,9 @@ namespace Game.CoreGame
 
         internal void Play(float range, Color color)
         {
+            if (!isStoped)
+                return;
+
             var share = rangeVfx.shape;
             var main = rangeVfx.main;
 

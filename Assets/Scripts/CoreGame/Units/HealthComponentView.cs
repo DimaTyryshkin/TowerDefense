@@ -17,6 +17,12 @@ namespace Game.CoreGame
 
         private void LateUpdate()
         {
+            if (!enemyHealth)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             if (!doNotMove)
                 transform.position = enemyHealth.transform.position + offset;
 

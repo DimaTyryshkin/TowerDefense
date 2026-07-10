@@ -26,7 +26,7 @@ namespace Game.CoreGame.Gui
             startWaveButton.onClick.AddListener(() => ClickStartWave.Invoke());
         }
 
-        internal void Darw(Currency playerBank, ShopButtonState[] shopStates)
+        internal void Draw(Currency playerBank, ShopButtonState[] shopStates)
         {
             buttonsRoot.DestroyChildren();
 
@@ -52,6 +52,11 @@ namespace Game.CoreGame.Gui
                 if (playerBank < buttonState.Cost)
                     button.DrawNotEnoughtBank();
             }
+        }
+
+        internal void DrawPlayerBank(Currency playerBank)
+        {
+            bankText.text = playerBank.money.ToString();
         }
 
         internal void Show() => gameObject.SetActive(true);

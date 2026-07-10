@@ -8,10 +8,12 @@ namespace Game.CoreGame
 
         internal float AttackRange => attackRange;
 
+#if UNITY_EDITOR
         void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, AttackRange);
         }
+#endif
     }
 }

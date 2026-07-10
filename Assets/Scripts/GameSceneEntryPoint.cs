@@ -23,6 +23,7 @@ namespace Game
         [SerializeField, IsntNull] TargetForEnemy targetForEnemy;
         [SerializeField, IsntNull] BuildingPlayerInput buildPlayerInput;
         [SerializeField, IsntNull] SortedTilesSystem sortedTilesSystem;
+        [SerializeField, IsntNull] DebugPanel debugPanel;
 
         [Header("Buildings")]
         [SerializeField, IsntNull] ShopItem shopItem01;
@@ -33,6 +34,9 @@ namespace Game
 
         [SerializeField, IsntNull] ShopItem shopItem03;
         [SerializeField, IsntNull] WeaponTowerAI tower03;
+
+        [SerializeField, IsntNull] ShopItem shopItem04;
+        [SerializeField, IsntNull] WeaponTowerAI tower04;
 
         Injector injector;
         GridWrapper gridWrapper;
@@ -73,7 +77,8 @@ namespace Game
 
             injector.Inject(towerShopView);
             injector.Inject(buildPlayerInput, towerPreview).Init();
-            injector.Inject(enemySpawner, enemyOnBoard, targetsForEnmey).Init();
+            injector.RegisterAndInject(enemySpawner, enemyOnBoard, targetsForEnmey).Init();
+            injector.Inject(debugPanel);
 
 
             // == Buildings ==
@@ -81,6 +86,7 @@ namespace Game
             SetupRangeWeaponTower(1, injector, tower01, shopItem01);
             SetupRangeWeaponTower(3, injector, tower03, shopItem03);
             SetupNoAttackTower(2, injector, tower02, shopItem02, newTower => { });
+            SetupRangeWeaponTower(4, injector, tower04, shopItem04);
 
             // == SetupFlow ==
 
@@ -117,8 +123,14 @@ namespace Game
             };
 
 
+            debugPanel.ClickAddMoney += () =>
+            {
+                playerBank += new Currency(1);
+                towerShopView.Draw(playerBank, shopButtonsStates);
+            };
 
-            towerShopView.Darw(playerBank, shopButtonsStates);
+
+            towerShopView.Draw(playerBank, shopButtonsStates);
         }
 
         IEnumerator OnWaveEnd()
@@ -133,7 +145,7 @@ namespace Game
                 yield return new WaitForSeconds(0.3f);
             }
 
-            towerShopView.Darw(playerBank, shopButtonsStates);
+            towerShopView.Draw(playerBank, shopButtonsStates);
             towerShopView.Show();
         }
 
@@ -155,7 +167,7 @@ namespace Game
                     newTower.Init(enemyOnBoard);
 
                     buildPlayerInput.StopBuilding();
-                    towerShopView.Darw(playerBank, shopButtonsStates);
+                    towerShopView.Draw(playerBank, shopButtonsStates);
                     towerShopView.Show();
                 }
             };
@@ -178,7 +190,7 @@ namespace Game
                     initNewTower.Invoke(newTower);
 
                     buildPlayerInput.StopBuilding();
-                    towerShopView.Darw(playerBank, shopButtonsStates);
+                    towerShopView.Draw(playerBank, shopButtonsStates);
                     towerShopView.Show();
                 }
             };

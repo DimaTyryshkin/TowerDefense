@@ -32,5 +32,13 @@ namespace Game.CoreGame
             weapon.Init(targets);
             moveComponent.Init(wayPoints);
         }
+
+        internal Vector2 PredictPosition(float inFutureTimeOffset)
+        {
+            if (stateMashine.LastState == moveComponent)
+                return moveComponent.PredictPosition(inFutureTimeOffset);
+            else
+                return transform.position;
+        }
     }
 }

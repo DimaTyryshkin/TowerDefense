@@ -4,20 +4,24 @@ namespace Game.CoreGame
 {
     class UnitStateMashine
     {
-        UnitStateComponent oldState;
+        UnitStateComponent lastState;
+
+        internal UnitStateComponent LastState => lastState;
 
         internal void UpdateFrame(UnitStateComponent state)
         {
             Assert.IsNotNull(state);
 
-            if (oldState && oldState != state)
+            if (lastState != state)
             {
-                oldState.IsActive = false;
+                if (lastState)
+                    lastState.IsActive = false;
+
                 state.IsActive = true;
-                oldState = state;
+                lastState = state;
             }
 
-            state.UpdateFrame();
+            lastState.UpdateFrame();
         }
     }
 }

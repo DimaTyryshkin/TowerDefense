@@ -20,6 +20,9 @@ namespace Game.CoreGame
                 timeNextAttackAnimationEvent = 0;
                 if (IsTargetExist())
                 {
+                    //GizmosDrawer.Inst.AddMarker(transform.position).Text("Attack").Duration(1);
+                    //Debug.Log("Attack");
+
                     Attack(lastTarget, new Damage()
                     {
                         value = damageValue
@@ -49,6 +52,7 @@ namespace Game.CoreGame
 
         bool IsTargetExist()
         {
+
             lastTarget = FindTarget(lastTarget);
             return (bool)lastTarget;
         }

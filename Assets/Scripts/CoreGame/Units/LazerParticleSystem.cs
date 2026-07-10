@@ -6,7 +6,6 @@ namespace Game.CoreGame
 {
     class LazerParticleSystem : MonoBehaviour
     {
-        [SerializeField] float timeLife;
         [SerializeField, IsntNull] ParticleSystem[] particleSystems;
 
         Transform p1;

@@ -60,6 +60,36 @@ namespace Game.CoreGame
             nextPoint = wayPoints.GetPoint(0).position;
         }
 
+        internal Vector2 PredictPosition(float inFutureTimeOffset)
+        {
+            Vector2 pos = transform.position;
+            float distance = GetSpeed() * inFutureTimeOffset;
+
+            int pointIndex = targetPointIndex;
+
+            while (distance > 0)
+            {
+                Vector2 pointPos = wayPoints.GetPoint(pointIndex).transform.position;
+                float distanceToPoint = Vector2.Distance(pos, pointPos);
+                if (distanceToPoint >= distance)
+                {
+                    pos = pos + (pointPos - pos).normalized * distance;
+                    distance = 0;
+                }
+                else
+                {
+                    pos = pointPos;
+                    distance -= distanceToPoint;
+                    pointIndex++;
+
+                    if (pointIndex >= wayPoints.Count)
+                        return pos;
+                }
+            }
+
+            return pos;
+        }
+
         float GetSpeed()
         {
             return speed;
