@@ -6,14 +6,14 @@ namespace Game.CoreGame
     class TargetForEnemy : MonoBehaviour
     {
         [SerializeField, IsntNull] HealthComponentView healthComponentView;
-        [SerializeField, IsntNull] HealthComponent healthComponent;
+        [SerializeField, IsntNull] DamageReceiver damageReceiver;
 
-        internal HealthComponent HealthComponent => healthComponent;
+        internal DamageReceiver DamageReceiver => damageReceiver;
 
         internal void Start()
         {
-            healthComponentView.Init(healthComponent, Vector3.zero);
-            healthComponent.Death += HealthComponent_Death;
+            healthComponentView.Init(damageReceiver.Health, Vector3.zero);
+            damageReceiver.Health.Death += HealthComponent_Death;
         }
 
         private void HealthComponent_Death(HealthComponent arg0)

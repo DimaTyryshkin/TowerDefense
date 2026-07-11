@@ -8,61 +8,61 @@ namespace Game.CoreGame
 {
     class HealthComponentOnBoardCollection
     {
-        List<HealthComponent> healthList = new();
-        List<HealthComponent> tempList = new();
+        List<DamageReceiver> targetList = new();
+        List<DamageReceiver> tempList = new();
 
-        internal bool CanAttack(Vector2 damageSourcePos, float attackRange, HealthComponent targetHealth)
+        internal bool CanAttack(Vector2 damageSourcePos, float attackRange, DamageReceiver target)
         {
-            bool isDeath = !targetHealth || targetHealth.IsDeath;
+            bool isDeath = !target || target.Health.IsDeath;
             if (isDeath)
                 return false;
 
-            float distanceToTarget = Vector2.Distance(damageSourcePos, targetHealth.transform.position);
+            float distanceToTarget = Vector2.Distance(damageSourcePos, target.transform.position);
             return distanceToTarget <= attackRange;
         }
 
         [CanBeNull]
-        internal HealthComponent Find(Predicate<HealthComponent> predicate)
+        internal DamageReceiver Find(Predicate<DamageReceiver> predicate)
         {
-            foreach (HealthComponent health in healthList)
+            foreach (DamageReceiver target in targetList)
             {
                 //float distance = Vector2.Distance(towerPosition, enemy.transform.position);
                 //if (distance <= towerAttackRange)
-                if (predicate(health))
-                    return health;
+                if (predicate(target))
+                    return target;
             }
 
             return null;
         }
 
 
-        internal HealthComponent[] FindAll(Predicate<HealthComponent> predicate)
+        internal DamageReceiver[] FindAll(Predicate<DamageReceiver> predicate)
         {
-            foreach (HealthComponent health in healthList)
+            foreach (DamageReceiver target in targetList)
             {
                 //float distance = Vector2.Distance(towerPosition, enemy.transform.position);
                 //if (distance <= towerAttackRange)
-                if (predicate(health))
-                    tempList.Add(health);
+                if (predicate(target))
+                    tempList.Add(target);
             }
 
-            HealthComponent[] result = tempList.ToArray();
+            DamageReceiver[] result = tempList.ToArray();
             tempList.Clear();
             return result;
         }
 
-        internal void Add(HealthComponent health)
+        internal void Add(DamageReceiver target)
         {
-            Assert.IsNotNull(health);
-            Assert.IsFalse(healthList.Contains(health));
+            Assert.IsNotNull(target);
+            Assert.IsFalse(targetList.Contains(target));
 
-            healthList.Add(health);
+            targetList.Add(target);
         }
 
-        internal void Remove(HealthComponent health)
+        internal void Remove(DamageReceiver target)
         {
-            Assert.IsNotNull(health);
-            Assert.IsTrue(healthList.Remove(health));
+            Assert.IsNotNull(target);
+            Assert.IsTrue(targetList.Remove(target));
         }
     }
 }

@@ -38,18 +38,18 @@ namespace Game.CoreGame
             attackAnimationEventDelay = attackClip.events[0].time;
             attackAnimationPeriod = attackClip.length + 0.1f;
         }
-        protected override void Attack(HealthComponent enemyHealth, Damage damage)
+        protected override void Attack(DamageReceiver enemy, Damage damage)
         {
-            lazerParticleSystem1.Play(lazerStartPoint1, enemyHealth.transform);
-            lazerParticleSystem2.Play(lazerStartPoint2, enemyHealth.transform);
-            enemyHealth.SetDamage(damage);
+            lazerParticleSystem1.Play(lazerStartPoint1, enemy.transform);
+            lazerParticleSystem2.Play(lazerStartPoint2, enemy.transform);
+            enemy.ApplyDamage(damage);
         }
 
-        protected override void PlayAttackAnimation(ref float timeNextAttack, ref float timeNextAttackAnimationEvent)
+        protected override void PlayAttackAnimation(out float nextAttackDelay, out float animationEventDelay)
         {
             animator.SetTrigger(attackHash);
-            timeNextAttack = Time.time + attackAnimationPeriod;
-            timeNextAttackAnimationEvent = Time.time + attackAnimationEventDelay;
+            nextAttackDelay = attackAnimationPeriod;
+            animationEventDelay = attackAnimationEventDelay;
         }
 
 #if UNITY_EDITOR

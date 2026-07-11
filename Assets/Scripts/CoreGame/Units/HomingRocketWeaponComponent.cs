@@ -9,18 +9,18 @@ namespace Game.CoreGame
         [SerializeField, IsntNull] HomingRocket homingRocketPrefab;
         [SerializeField, IsntNull] Transform startPoint;
 
-        protected override void Attack(HealthComponent enemyHealth, Damage damage)
+        protected override void Attack(DamageReceiver enemy, Damage damage)
         {
             HomingRocket rocket = Instantiate(homingRocketPrefab);
             rocket.transform.position = startPoint.position;
             rocket.gameObject.SetActive(true);
-            rocket.Init(enemyHealth, damage);
+            rocket.Init(enemy, damage);
         }
 
-        protected override void PlayAttackAnimation(ref float timeNextAttack, ref float timeNextAttackAnimationEvent)
+        protected override void PlayAttackAnimation(out float nextAttackDelay, out float animationEventDelay)
         {
-            timeNextAttack = Time.time + attackPeriod;
-            timeNextAttackAnimationEvent = Time.time + attackPeriod * 0.2f;
+            nextAttackDelay = attackPeriod;
+            animationEventDelay = 0f;
         }
     }
 }

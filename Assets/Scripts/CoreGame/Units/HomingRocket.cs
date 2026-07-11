@@ -8,10 +8,10 @@ namespace Game.CoreGame
     {
         [SerializeField] float speed;
         [SerializeField, IsntNull] ParticleSystem vfx;
-        HealthComponent target;
+        DamageReceiver target;
         Damage damage;
 
-        internal void Init(HealthComponent target, Damage damage)
+        internal void Init(DamageReceiver target, Damage damage)
         {
             Assert.IsNotNull(target);
             this.target = target;
@@ -20,17 +20,16 @@ namespace Game.CoreGame
 
         void Update()
         {
-            if (!target || target.IsDeath)
+            if (!target || target.Health.IsDeath)
             {
                 StopFly();
                 return;
             }
 
-
             transform.position = Vector2.MoveTowards(transform.position, target.transform.position, Time.deltaTime * speed);
             if (Vector2.Distance(transform.position, target.transform.position) < 0.01f)
             {
-                target.SetDamage(damage);
+                target.ApplyDamage(damage);
                 StopFly();
             }
         }

@@ -53,9 +53,9 @@ namespace Game.CoreGame
 
             ShowEplosionVfx();
 
-            HealthComponent[] tarets = healthCollection.FindAll(x => healthCollection.CanAttack(endPos, explosionRange, x));
-            foreach (HealthComponent t in tarets)
-                t.SetDamage(damage);
+            DamageReceiver[] tarets = healthCollection.FindAll(x => healthCollection.CanAttack(endPos, explosionRange, x));
+            foreach (DamageReceiver t in tarets)
+                t.ApplyDamage(damage);
 
             Destroy(gameObject, 4);
         }

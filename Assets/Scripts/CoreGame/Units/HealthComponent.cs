@@ -11,12 +11,10 @@ namespace Game.CoreGame
 
         internal event UnityAction<HealthComponent> Death;
         internal event UnityAction<HealthComponent, float> HealthChanged;
-
         internal bool IsDeath => health <= 0;
         internal bool IsLive => health > 0;
         internal float MaxHealth => maxHealth;
         internal float Health => health;
-
 
         internal void Init()
         {
@@ -24,11 +22,11 @@ namespace Game.CoreGame
             HealthChanged?.Invoke(this, 0);
         }
 
-        internal void SetDamage(Damage demage)
+        internal void ApplyDamage(float damage)
         {
             Assert.IsTrue(IsLive);
 
-            float resultDamage = Mathf.Min(demage.value, health);
+            float resultDamage = Mathf.Min(damage, health);
             health -= resultDamage;
 
             if (health <= 0)

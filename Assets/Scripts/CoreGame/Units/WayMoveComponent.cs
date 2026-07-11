@@ -11,7 +11,7 @@ namespace Game.CoreGame
         [SerializeField, IsntNull] Animator animator;
 
         internal event UnityAction<WayMoveComponent> FinishMove;
-
+        internal float buffSpeedFactor;
         WayPoints wayPoints;
         int targetPointIndex;
         Vector2 nextPoint;
@@ -58,6 +58,7 @@ namespace Game.CoreGame
             Assert.IsNotNull(wayPoints);
             this.wayPoints = wayPoints;
             nextPoint = wayPoints.GetPoint(0).position;
+            buffSpeedFactor = 1;
         }
 
         internal Vector2 PredictPosition(float inFutureTimeOffset)
@@ -92,7 +93,7 @@ namespace Game.CoreGame
 
         float GetSpeed()
         {
-            return speed;
+            return speed * buffSpeedFactor;
         }
     }
 }

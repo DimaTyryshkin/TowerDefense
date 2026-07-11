@@ -1,38 +1,42 @@
 === ===
-InstantiateBombTower(cell)
-    // Надо внедрить:
-    // 
-    towerGo = Inst(prefab)
-    towerGo.Get<WeaponTowerAI>().Init()
+
 
 === Tower ===
-WeaponTowerAI
+class WeaponTowerAI
     WeaponComponent weaponComponent
     
-    Init(healthCollection)
+    void Init(healthCollection)
         weaponComponent.Init()
         
-    Update()
+    void Update()
         stateMashine.UpdateFrame(weaponComponent)
         
+class WeaponComponent
+    Buff attackSpeedBuff
+    
+    void Update()
+        if(Time.time > tineNextAttack)
+            PlayAttackAnimation(ref attackPeriod ...)
+            tineNextAttack = Time.time + attackPeriod * attackSpeedBuff.GetValue(Time.timme)
+            
         
 HomingRocketRangeWeaponComponent
-    Attack(HealthComponent enemyHealth, Damage damage)
-        homingRocket = Instantiate(homingRocketPrefab)
-        fireBall.Init(target, GetHealthDamageFabric)
+    void Attack(HealthComponent enemyHealth, Damage damage)
+        homingRocket = Instantiate(homingRocketPrefab, damage)
+        fireBall.Init(target)
         
 BobmRangeWeaponComponent
-    Attack(HealthComponent enemyHealth, Damage damage)
-        fireBall = Instantiate(fireBallPrefab)
-        fireBall.Init(target, GetHealthDamageFabric)        
+    void Attack(HealthComponent enemyHealth, Damage damage)
+        fireBall = Instantiate(fireBallPrefab, damage)
+        fireBall.Init(target)        
     
-=== ===
+=== Weapon ===
 
 Bobm
-	Init(point, GetPointDamageFabric)
+	void Init(point, GetPointDamageFabric)
 		bonbMove.Init(point1, point2)
 		
-	Update()
+	void Update()
 		Move()
 		
 		if(move.IsNear)
@@ -40,9 +44,9 @@ Bobm
 
 
 HomingRocket
-	Init(target, GetHealthDamageFabric)
+	void Init(target, GetHealthDamageFabric)
 		
-	Update()
+	void Update()
 		if(!target)
             Stop()
         
@@ -50,3 +54,104 @@ HomingRocket
         if(IsNear)
             damageDealer = GetDamage()
             damageDealer.Apply(target)
+
+===  ===
+
+class DamageComponent
+    HealthComponent health
+    Buff slowingBuff
+    Buff poisonBuff
+    
+    void Init()
+        health.Death += OnDeath
+        
+    void SetDamage(damage)
+        if damage.type == basic
+            health.SetDamage(damage.value)
+        
+        if damage.type == cold
+            GetSlowingComponent().Set(damage.value, damage.duration)
+           
+            
+    void OnDeath()        
+        slowingBuff?.Stop()
+        poisonBuff?.Stop()
+
+class DamageBuffComponent
+    float value
+    float endTime
+
+    void Set(duration, value)
+        ReplaceBuff(duration, damage)
+        if(!isActive)
+            isActive = true
+            vfx.Play()    
+    
+    void Update()
+            if(Time.time > endTime)
+                isActive = false
+                poisonVfx.Stop()
+            else if
+                health.SetDamage(poisonBuff.value * Time.deltaTime)
+
+class SlowingBuffComponent
+    float value
+    float endTime
+
+    void Set(duration, value)
+        ReplaceBuff(duration, damage)
+        moveComponent.slowingFactor = 1 - slowingBuff.GetValue()
+        if(!isActive)
+            isActive = true
+            slowingVfx.Play()    
+    
+    void Update()
+        if(Time.time > endTime)
+            isActive = false
+            slowingVfx.Stop()
+            move.slowingFactor = 1    
+    
+    
+
+class HealthComponent
+    poisonBuff
+    
+    void Update()
+        damageFromPoison = poisonBuff.GetValue(Time.time)
+        damageFromPoison = Min(hp, damageFromPoison)
+        hp-=damageFromPoison
+        poisonBuff.statistics.AddPoisonDamage(damageFromPoison)
+        
+    void SetDamage(damage)
+        if damage.type == basic
+            hp-=damage.value
+    
+        if damage.type == cold
+            coldBaff.Add(damage.duration, damage.value)
+            
+            
+            
+WayMoveComponent
+    float slowingFactor
+    
+    void Update()
+        Move(.... * GetSpeed())
+    
+    float GetSpeed()
+        speed * slowingFactor
+    
+
+Buff
+    float value
+    float timeEnd
+    DamageStatistics statistics
+    
+    flaot GetValue(time)
+        coldBuff.timeEnd < Time.Time
+    
+===  ===    
+    
+    
+    
+    
+    

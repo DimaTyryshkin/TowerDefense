@@ -64,8 +64,8 @@ namespace Game
             playerBank = new Currency(starMoney);
             HealthComponentOnBoardCollection targetsForEnmey = new();
 
-            targetsForEnmey.Add(targetForEnemy.HealthComponent);
-            targetForEnemy.HealthComponent.Init();
+            targetsForEnmey.Add(targetForEnemy.DamageReceiver);
+            targetForEnemy.DamageReceiver.Health.Init();
 
             injector = new Injector();
             injector.Register(guihit);

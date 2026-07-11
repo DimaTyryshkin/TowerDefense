@@ -101,20 +101,19 @@ namespace Game.CoreGame
             InstatiateEnemy(WayMoveComponent prefab, Vector2 pos, WayPoints wayPoints)
         {
             WayMoveComponent enemyMove = transform.InstantiateAsChild(prefab);
-            enemyMove.gameObject.SetActive(true);
-            enemyMove.transform.position = pos;
+            DamageReceiver enemy = enemyMove.GetComponent<DamageReceiver>();
             HealthComponent enemyHealth = enemyMove.GetComponent<HealthComponent>();
             EnemyAi enemyAi = enemyMove.GetComponent<EnemyAi>();
             HealthComponentView healthView = transform.InstantiateAsChild(enemyHealthView);
-
+            enemyMove.transform.position = pos;
+            enemyMove.gameObject.SetActive(true);
+            enemyMove.FinishMove += Enemy_FinishMove;
+            enemyHealth.Death += EnemyHealth_Death;
             enemyHealth.Init();
             enemyAi.Init(targetsForEnemyColelction, wayPoints);
             healthView.Init(enemyHealth, Vector3.up * 0.55f);
 
-            enemyesOnBoardCollection.Add(enemyHealth);
-            enemyMove.FinishMove += Enemy_FinishMove;
-            enemyHealth.Death += EnemyHealth_Death;
-
+            enemyesOnBoardCollection.Add(enemy);
             return (enemyMove, enemyHealth, enemyAi, healthView);
         }
 
@@ -129,9 +128,11 @@ namespace Game.CoreGame
         private void EnemyHealth_Death(HealthComponent enemy)
         {
             Assert.IsNotNull(enemy);
+            DamageReceiver damageReceiver = enemy.GetComponent<DamageReceiver>();
+            Assert.IsNotNull(damageReceiver);
 
             enemyWasKilledInWave++;
-            enemyesOnBoardCollection.Remove(enemy);
+            enemyesOnBoardCollection.Remove(damageReceiver);
 
             if (enemyWasKilledInWave == enmeyNeedKillToWin)
             {

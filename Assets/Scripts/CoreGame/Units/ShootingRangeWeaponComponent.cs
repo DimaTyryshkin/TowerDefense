@@ -8,7 +8,7 @@ namespace Game.CoreGame
 
         internal override bool IsTargetInRange => isAttacking || IsTargetExist();
 
-        HealthComponent lastTarget;
+        DamageReceiver lastTarget;
         float timeNextAttack;
         float timeNextAttackAnimationEvent;
         bool isAttacking;
@@ -36,7 +36,9 @@ namespace Game.CoreGame
             if (IsTargetExist())
             {
                 isAttacking = true;
-                PlayAttackAnimation(ref timeNextAttack, ref timeNextAttackAnimationEvent);
+                PlayAttackAnimation(out float nextAttackDelay, out float animationEventDelay);
+                timeNextAttackAnimationEvent = Time.time + animationEventDelay;
+                timeNextAttack = Time.time + Mathf.Max(nextAttackDelay, animationEventDelay + 0.01f);
             }
             else
             {
@@ -57,7 +59,7 @@ namespace Game.CoreGame
             return (bool)lastTarget;
         }
 
-        protected HealthComponent FindTarget(HealthComponent lastTarget)
+        protected DamageReceiver FindTarget(DamageReceiver lastTarget)
         {
             bool canAttackTarget = targets.CanAttack(transform.position, AttackRange, lastTarget);
             if (canAttackTarget)
@@ -67,8 +69,8 @@ namespace Game.CoreGame
                 .Find(target => targets.CanAttack(transform.position, AttackRange, target));
         }
 
-        protected abstract void PlayAttackAnimation(ref float timeNextAttack, ref float timeNextAttackAnimationEvent);
+        protected abstract void PlayAttackAnimation(out float nextAttackDelay, out float animationEventDelay);
 
-        protected abstract void Attack(HealthComponent enemyHealth, Damage damage);
+        protected abstract void Attack(DamageReceiver enemy, Damage damage);
     }
 }
