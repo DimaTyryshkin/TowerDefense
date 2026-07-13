@@ -8,6 +8,7 @@ namespace Game.CoreGame
 
         protected HealthComponentOnBoardCollection targets;
 
+
         internal void Init(HealthComponentOnBoardCollection targets)
         {
             Assert.IsNotNull(targets);

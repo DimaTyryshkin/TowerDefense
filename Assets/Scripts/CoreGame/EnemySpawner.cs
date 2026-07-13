@@ -19,8 +19,7 @@ namespace Game.CoreGame
         internal event UnityAction GameOver;
 
         float timeNextSpawn;
-        //int enemyTotal;
-        int enemyIndexInWave;
+        //int enemyTotal; 
         int enmeyNeedKillToWin;
         int enemyWasKilledInWave;
         int waveIndex;
@@ -35,21 +34,18 @@ namespace Game.CoreGame
                 return;
 
             WaveData wave = waves[waveIndex];
-            WaveData.WaveItem waveItem = wave.items[enemyIndexInWave];
+            WaveData.WaveItem waveItem = wave.GetNextEnemy(spawnPoints.Length);
 
             EnemySpawnPoint spawnPoint = spawnPoints[waveItem.spawnPointIndex];
-            var enemy = InstatiateEnemy(waveItem.enemy, spawnPoint.transform.position, spawnPoint.wayPoints);
-            enemy.move.gameObject.name = $"{waveItem.enemy.gameObject.name} wave={waveIndex:00} inWaveIndex={enemyIndexInWave:00}";
+            var enemy = InstatiateEnemy(waveItem.enemy, spawnPoint.wayPoints.GetPoint(0).position, spawnPoint.wayPoints);
+            enemy.move.gameObject.name = $"{waveItem.enemy.gameObject.name} wave={waveIndex:00} inWaveIndex={(wave.CurrentCount - 1):00}";
 
             //EnemySpawn?.Invoke(newEnemy);
 
-            //enemyTotal++;
-            enemyIndexInWave++;
-
-            bool nextEnemyExist = enemyIndexInWave < wave.items.Length;
+            bool nextEnemyExist = wave.CurrentCount < wave.TotalAmount;
             if (nextEnemyExist)
             {
-                timeNextSpawn = Time.time + wave.items[enemyIndexInWave].delayBeforeSpawn;
+                timeNextSpawn = Time.time + waveItem.delayAfterSpawn;
             }
             else
             {
@@ -71,11 +67,11 @@ namespace Game.CoreGame
             if (waveIndex < waves.Length)
             {
                 isSpawning = true;
-                enemyIndexInWave = 0;
                 enemyWasKilledInWave = 0;
-                enmeyNeedKillToWin = waves[waveIndex].items.Length;
-                timeNextSpawn = Time.time + waves[waveIndex].items[0].delayBeforeSpawn;
-                Debug.Log($"<b>Началась волна номер '{waveIndex}'</b>");
+                waves[waveIndex].Init();
+                enmeyNeedKillToWin = waves[waveIndex].TotalAmount;
+                timeNextSpawn = Time.time;
+                Debug.Log($"<b>Началась волна номер '{waveIndex + 1}'</b>");
             }
             else
             {
@@ -141,18 +137,16 @@ namespace Game.CoreGame
             }
         }
 
-
-
         void IValidated.Validate(ValidationContext context)
         {
-            foreach (WaveData wave in waves)
-            {
-                for (int i = 0; i < wave.items.Length; i++)
-                {
-                    if (wave.items[i].spawnPointIndex >= spawnPoints.Length)
-                        context.AddProblem("EnemySpawner", ValidationProblem.Type.Error, $"WaveItem[{i}] ссылается на спавнер которого нет", wave);
-                }
-            }
+            //foreach (WaveData wave in waves)
+            //{
+            //    for (int i = 0; i < wave.items.Length; i++)
+            //    {
+            //        if (wave.items[i].spawnPointIndex >= spawnPoints.Length)
+            //            context.AddProblem("EnemySpawner", ValidationProblem.Type.Error, $"WaveItem[{i}] ссылается на спавнер которого нет", wave);
+            //    }
+            //}
         }
     }
 }

@@ -49,6 +49,7 @@ namespace Game.CoreGame
                 PlayAttackAnimation(out float nextAttackDelay, out float animationEventDelay);
                 timeNextAttackAnimationEvent = Time.time + animationEventDelay;
                 timeNextAttack = Time.time + Mathf.Max(nextAttackDelay, animationEventDelay + 0.01f);
+                RizeTargetnInRange();
             }
             else
             {

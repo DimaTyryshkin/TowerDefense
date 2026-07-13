@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b26969885e6ba04884f83a1f29acd17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.TowerCurrencyGenerator
-  moneyAddPedWave: 1
+  moneyAddPedWave: 10
   effectVfx: {fileID: 4021536871316023610, guid: adb51d009c986fe40b840d3c5cb1560b, type: 3}
   animator: {fileID: 335039337707144942}
 --- !u!114 &7916400775632643289
@@ -161,6 +161,7 @@ MonoBehaviour:
   height: 0
   orderOffset: 0
   isDynamic: 0
+  applyToParticleSystems: 0
   spriteRenderer: {fileID: 7868596696063847182}
   debug: 0
 --- !u!114 &8648311413961316284
@@ -176,7 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.Gui.ShopItem
   sprite: {fileID: -1515917093, guid: f7f29ec62d926af4284eea2aa3d19d3f, type: 3}
-  cost: 2
+  cost: 10
 --- !u!212 &7868596696063847182
 SpriteRenderer:
   serializedVersion: 3

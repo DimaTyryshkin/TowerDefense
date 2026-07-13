@@ -95,7 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.Gui.ShopItem
   sprite: {fileID: -408226815, guid: 085d8bf32335b1e49ba894b6530b5c80, type: 3}
-  cost: 2
+  cost: 10
 --- !u!114 &6538570844771382169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c24baaf3729c93409dec7ebd6d0dc84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.HomingRocketWeaponComponent
-  attackRange: 5
+  attackRange: 4
   damageValue: 0.5
   damageType: 1
   damageDuration: 3
@@ -133,6 +133,7 @@ MonoBehaviour:
   height: 0
   orderOffset: 0
   isDynamic: 0
+  applyToParticleSystems: 0
   spriteRenderer: {fileID: 566424234170271141}
   debug: 0
 --- !u!212 &566424234170271141

@@ -12,13 +12,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4b36fd7438e06c43b76e4666fc6642c, type: 3}
   m_Name: WaveData-3
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.EnemyWaveData
-  items:
-  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
-    spawnPointIndex: 0
-    delayBeforeSpawn: 0
-  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
-    spawnPointIndex: 0
-    delayBeforeSpawn: 1
-  - enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
-    spawnPointIndex: 0
-    delayBeforeSpawn: 4
+  delayBetweenSpawn: 1
+  enemyInfo:
+  - count: 10
+    chanceOverTime:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
+    currentCount: 10
+  - count: 3
+    chanceOverTime:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    enemy: {fileID: 1301351841868251877, guid: e052d6e348bc9f04aae95bba6f251cfb, type: 3}
+    currentCount: 3

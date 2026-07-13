@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.Gui.ShopItem
   sprite: {fileID: -1913567357, guid: 085d8bf32335b1e49ba894b6530b5c80, type: 3}
-  cost: 2
+  cost: 15
 --- !u!114 &1206819329806691934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,6 +225,7 @@ MonoBehaviour:
   height: 0
   orderOffset: 0
   isDynamic: 0
+  applyToParticleSystems: 0
   spriteRenderer: {fileID: 2842615617563639899}
   debug: 0
 --- !u!212 &2842615617563639899

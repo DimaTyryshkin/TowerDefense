@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ebab0847a284c34f99c4cc0fb7d4e80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.TowerAI
-  attackRange: 3.5
+  attackRange: 2.5
   damageValue: 1
   damageType: 0
   damageDuration: 0
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.Gui.ShopItem
   sprite: {fileID: -934067613, guid: 085d8bf32335b1e49ba894b6530b5c80, type: 3}
-  cost: 2
+  cost: 10
 --- !u!114 &8809798557933105593
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,6 +138,7 @@ MonoBehaviour:
   height: 0
   orderOffset: 0
   isDynamic: 0
+  applyToParticleSystems: 0
   spriteRenderer: {fileID: 4163791300004453830}
   debug: 0
 --- !u!95 &8997981750918421629

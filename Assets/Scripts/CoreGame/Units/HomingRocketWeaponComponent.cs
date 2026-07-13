@@ -6,6 +6,8 @@ namespace Game.CoreGame
     class HomingRocketWeaponComponent : ShootingRangeWeaponComponent
     {
         [SerializeField] float attackPeriod;
+
+        [Space]
         [SerializeField, IsntNull] HomingRocket homingRocketPrefab;
         [SerializeField, IsntNull] Transform startPoint;
 

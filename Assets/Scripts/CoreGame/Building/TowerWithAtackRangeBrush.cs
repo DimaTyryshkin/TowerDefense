@@ -1,4 +1,5 @@
 using GamePackages.Core;
+using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -12,11 +13,11 @@ namespace Game.CoreGame
         [Inject] RangeVisualizer rangeVfx;
         [Inject] SpriteRenderer towerPreview;
         Sprite previewSprite;
-        float attackRange;
+        Func<float> attackRange;
 
         internal event UnityAction<Vector2Int> ClickBuild;
 
-        internal TowerWithAtackRangeBrush(float attackRange, Sprite previewSprite)
+        internal TowerWithAtackRangeBrush(Func<float> attackRange, Sprite previewSprite)
         {
             Assert.IsNotNull(previewSprite);
             this.attackRange = attackRange;
@@ -39,7 +40,7 @@ namespace Game.CoreGame
             Vector3 cellPos = grid.CellToWorld(cell);
             towerPreview.transform.position = cellPos;
             towerPreview.sprite = previewSprite;
-            rangeVfx.Play(attackRange, Color.white);
+            rangeVfx.Play(attackRange(), Color.white);
             rangeVfx.Position = cellPos;
 
             if (Mouse.current.leftButton.wasPressedThisFrame)
