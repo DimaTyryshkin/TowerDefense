@@ -38,6 +38,9 @@ namespace Game
         [SerializeField, IsntNull] ShopItem shopItem04;
         [SerializeField, IsntNull] WeaponTowerAI tower04;
 
+        [SerializeField, IsntNull] ShopItem shopItem05;
+        [SerializeField, IsntNull] WeaponTowerAI tower05;
+
         Injector injector;
         GridWrapper gridWrapper;
         BuildingsOnBoardColelction buildingsOnBoard;
@@ -87,6 +90,7 @@ namespace Game
             SetupRangeWeaponTower(3, injector, tower03, shopItem03);
             SetupNoAttackTower(2, injector, tower02, shopItem02, newTower => { });
             SetupRangeWeaponTower(4, injector, tower04, shopItem04);
+            SetupRangeWeaponTower(5, injector, tower05, shopItem05);
 
             // == SetupFlow ==
 

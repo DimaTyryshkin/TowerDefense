@@ -9,6 +9,7 @@ namespace Game.CoreGame
     {
         [SerializeField] int moneyAddPedWave;
         [SerializeField, IsntNull] ParticleSystem effectVfx;
+        [SerializeField, IsntNull] Animator animator;
 
         internal Currency MoneyAddPedWaveAmount => new Currency(moneyAddPedWave);
 
@@ -21,6 +22,7 @@ namespace Game.CoreGame
 
             //vfx.Play(withChildren: true);
             Destroy(vfx.gameObject, vfx.totalTime + 5);
+            animator.SetTrigger("play");
         }
     }
 }

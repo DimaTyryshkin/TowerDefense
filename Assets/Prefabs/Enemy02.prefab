@@ -71,6 +71,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.BulletWeaponComponent
   attackRange: 8
   damageValue: 1
+  damageType: 0
+  damageDuration: 0
+  findTargetMode: 0
   attackPeriod: 4
   homingRocketPrefab: {fileID: 8109775530781139036, guid: 164ebdcca2459e14480ae64a44af9a71, type: 3}
   startPoint: {fileID: 441885111006700746}
@@ -100,7 +103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08e28a6f358565541970b2178bf7be21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.EnemyHealth
-  maxHealth: 5
+  maxHealth: 3
 --- !u!114 &382010038040879221
 MonoBehaviour:
   m_ObjectHideFlags: 0

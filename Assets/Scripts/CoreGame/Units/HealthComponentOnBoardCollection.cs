@@ -1,3 +1,4 @@
+using GamePackages.Core;
 using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,27 @@ namespace Game.CoreGame
             DamageReceiver[] result = tempList.ToArray();
             tempList.Clear();
             return result;
+        }
+
+        internal DamageReceiver FindRandom(DamageReceiver oldTaret, Predicate<DamageReceiver> predicate)
+        {
+            foreach (DamageReceiver target in targetList)
+            {
+                if (target != oldTaret && predicate(target))
+                    tempList.Add(target);
+            }
+
+            if (tempList.Count > 0)
+            {
+                DamageReceiver randomTarget = tempList.Random();
+                tempList.Clear();
+                return randomTarget;
+            }
+
+            if (predicate(oldTaret))
+                return oldTaret;
+
+            return null;
         }
 
         internal void Add(DamageReceiver target)

@@ -7216,50 +7216,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tiles-church_339
-      rect:
-        serializedVersion: 2
-        x: 256
-        y: 32
-        width: 32
-        height: 48
-      alignment: 9
-      pivot: {x: 0.75, y: 0.16666667}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5bcb27d9a1aaf1646b2a36518ea5e06a
-      internalID: 51625133
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tiles-church_341
-      rect:
-        serializedVersion: 2
-        x: 288
-        y: 32
-        width: 32
-        height: 48
-      alignment: 9
-      pivot: {x: 0.75, y: 0.25}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ad07a001ab9f93e4fa5c91bf90aa9ad6
-      internalID: -630022030
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: tiles-church_342
       rect:
         serializedVersion: 2
@@ -7765,6 +7721,160 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: TowerCold
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 53
+        width: 16
+        height: 32
+      alignment: 9
+      pivot: {x: 0.5, y: 0.09375}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba61afe280f7a1247842176ddc228356
+      internalID: -408226815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TowerFire
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 53
+        width: 16
+        height: 35
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08571429}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea50705f9c0944849bd2af6068912246
+      internalID: -1066352860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoneyTower
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 48
+        width: 16
+        height: 48
+      alignment: 9
+      pivot: {x: 0.5, y: 0.16666667}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e31cad6a4267c7444a98b8f077a79078
+      internalID: 377204689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TowerMoney-shadow
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 64
+        width: 32
+        height: 16
+      alignment: 9
+      pivot: {x: 0.75, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd6fb0110d2dc7543be8b694967db086
+      internalID: 990303047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tower-Shadow
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 80
+        width: 32
+        height: 16
+      alignment: 9
+      pivot: {x: 0.75, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f6686cc6f3ab2584caa01481cda2943b
+      internalID: -2082784228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TowerBomb
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 53
+        width: 16
+        height: 33
+      alignment: 9
+      pivot: {x: 0.5, y: 0.09090909}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 37fd8784125ac744cbcefa2b9df9ac4a
+      internalID: -1913567357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tower01
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 37
+        width: 16
+        height: 31
+      alignment: 9
+      pivot: {x: 0.5, y: 0.09677419}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa25c14fd49953441bb3e0ff98a2c886
+      internalID: -934067613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -7779,6 +7889,13 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      MoneyTower: 377204689
+      Tower-Shadow: -2082784228
+      Tower01: -934067613
+      TowerBomb: -1913567357
+      TowerCold: -408226815
+      TowerFire: -1066352860
+      TowerMoney-shadow: -1045042771
       tiles-church_0: -412425695
       tiles-church_1: -70719090
       tiles-church_10: 263069603

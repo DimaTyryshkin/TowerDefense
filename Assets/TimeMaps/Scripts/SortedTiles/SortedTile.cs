@@ -1,5 +1,6 @@
 ﻿using GamePackages.Core.Validation;
 using NaughtyAttributes;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -7,6 +8,19 @@ namespace Game.SortedTiles
 {
     public class SortedTile : MonoBehaviour
     {
+        struct ParticleRendered
+        {
+            public ParticleSystemRenderer renderer;
+            public int originSortingOrder;
+
+            public ParticleRendered(ParticleSystemRenderer renderer, int originLayerOrder)
+            {
+                Assert.IsNotNull(renderer);
+                this.renderer = renderer;
+                this.originSortingOrder = originLayerOrder;
+            }
+        }
+
         [SerializeField] string groupName;
 
         [Tooltip("Сколько пикселей от низа кортинки до низа объекта")]
@@ -14,10 +28,12 @@ namespace Game.SortedTiles
         [SerializeField] int height;
         [SerializeField] int orderOffset;
         [SerializeField] bool isDynamic;
+        [SerializeField] bool applyToParticleSystems;
         [SerializeField, IsntNull] SpriteRenderer spriteRenderer;
 
         int order;
         SortedTilesSystem system;
+        ParticleRendered[] particles;
         public bool debug;
 
         public string GroupName => groupName;
@@ -37,6 +53,12 @@ namespace Game.SortedTiles
                 {
                     order = value;
                     spriteRenderer.sortingOrder = value;
+
+                    if (applyToParticleSystems)
+                    {
+                        for (int i = 0; i < particles.Length; i++)
+                            particles[i].renderer.sortingOrder = value + particles[i].originSortingOrder;
+                    }
                 }
             }
         }
@@ -65,6 +87,11 @@ namespace Game.SortedTiles
             Assert.IsNotNull(system);
             order = spriteRenderer.sortingOrder;
             this.system = system;
+
+            if (applyToParticleSystems)
+                particles = GetComponentsInChildren<ParticleSystemRenderer>()
+                .Select(r => new ParticleRendered(r, r.sortingOrder))
+                .ToArray();
         }
 
         public void SetGroupName(string groupName)

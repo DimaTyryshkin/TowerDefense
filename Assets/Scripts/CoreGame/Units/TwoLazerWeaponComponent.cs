@@ -13,6 +13,7 @@ namespace Game.CoreGame
         , IValidated
 #endif
     {
+        [SerializeField] float attackPeriod;
         [SerializeField, IsntNull] Transform lazerStartPoint1;
         [SerializeField, IsntNull] Transform lazerStartPoint2;
         [SerializeField, IsntNull] AnimationClip attackClip;
@@ -24,7 +25,6 @@ namespace Game.CoreGame
 
         int attackHash = Animator.StringToHash("attack");
         float attackAnimationEventDelay;
-        float attackAnimationPeriod;
 
         private void Start()
         {
@@ -36,7 +36,6 @@ namespace Game.CoreGame
             lazerParticleSystem2.gameObject.SetActive(true);
 
             attackAnimationEventDelay = attackClip.events[0].time;
-            attackAnimationPeriod = attackClip.length + 0.1f;
         }
         protected override void Attack(DamageReceiver enemy, Damage damage)
         {
@@ -48,7 +47,7 @@ namespace Game.CoreGame
         protected override void PlayAttackAnimation(out float nextAttackDelay, out float animationEventDelay)
         {
             animator.SetTrigger(attackHash);
-            nextAttackDelay = attackAnimationPeriod;
+            nextAttackDelay = attackPeriod;
             animationEventDelay = attackAnimationEventDelay;
         }
 
