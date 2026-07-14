@@ -3,7 +3,6 @@ using GamePackages.Core.Validation;
 using UnityEngine;
 
 #if UNITY_EDITOR
-using UnityEditor.Animations;
 #endif
 
 namespace Game.CoreGame
@@ -16,15 +15,15 @@ namespace Game.CoreGame
         [SerializeField] float attackPeriod;
         [SerializeField, IsntNull] Transform lazerStartPoint1;
         [SerializeField, IsntNull] Transform lazerStartPoint2;
-        [SerializeField, IsntNull] AnimationClip attackClip;
+        //[SerializeField, IsntNull] AnimationClip attackClip;
         [SerializeField, IsntNull] Animator animator;
         [SerializeField, IsntNull] LazerParticleSystem lazerParticleSystemPrefab;
 
         LazerParticleSystem lazerParticleSystem1;
         LazerParticleSystem lazerParticleSystem2;
 
-        int attackHash = Animator.StringToHash("attack");
-        float attackAnimationEventDelay;
+        //int attackHash = Animator.StringToHash("attack");
+        //float attackAnimationEventDelay;
 
         private void Start()
         {
@@ -35,7 +34,7 @@ namespace Game.CoreGame
             lazerParticleSystem1.gameObject.SetActive(true);
             lazerParticleSystem2.gameObject.SetActive(true);
 
-            attackAnimationEventDelay = attackClip.events[0].time;
+            //attackAnimationEventDelay = attackClip.events[0].time;
         }
         protected override void Attack(DamageReceiver enemy, Damage damage)
         {
@@ -46,39 +45,39 @@ namespace Game.CoreGame
 
         protected override void PlayAttackAnimation(out float nextAttackDelay, out float animationEventDelay)
         {
-            animator.SetTrigger(attackHash);
+            //animator.SetTrigger(attackHash);
             nextAttackDelay = attackPeriod;
-            animationEventDelay = attackAnimationEventDelay;
+            animationEventDelay = 0;
         }
 
 #if UNITY_EDITOR
         void IValidated.Validate(ValidationContext context)
         {
-            if (attackClip && attackClip.events.Length != 1)
-                context.AddProblem(nameof(WeaponTowerAI), ValidationProblem.Type.Error, "Анимация атаки должна содержать один ивент");
+            //if (attackClip && attackClip.events.Length != 1)
+            //    context.AddProblem(nameof(WeaponTowerAI), ValidationProblem.Type.Error, "Анимация атаки должна содержать один ивент");
 
-            if (attackClip && animator.runtimeAnimatorController)
-            {
-                AnimatorController controller = animator.runtimeAnimatorController as AnimatorController;
-                if (!AnimationExist(controller, attackClip))
-                    context.AddProblem(nameof(WeaponTowerAI), ValidationProblem.Type.Error, "Анимация атаки не найдена в аниматоре");
-            }
+            //if (attackClip && animator.runtimeAnimatorController)
+            //{
+            //    AnimatorController controller = animator.runtimeAnimatorController as AnimatorController;
+            //    if (!AnimationExist(controller, attackClip))
+            //        context.AddProblem(nameof(WeaponTowerAI), ValidationProblem.Type.Error, "Анимация атаки не найдена в аниматоре");
+            //}
         }
 
-        bool AnimationExist(AnimatorController animatorController, AnimationClip animationClip)
-        {
-            foreach (AnimatorControllerLayer layer in animatorController.layers)
-            {
-                foreach (ChildAnimatorState state in layer.stateMachine.states)
-                {
-                    AnimationClip clip = state.state.motion as AnimationClip;
-                    if (clip == attackClip)
-                        return true;
-                }
-            }
+        //bool AnimationExist(AnimatorController animatorController, AnimationClip animationClip)
+        //{
+        //    foreach (AnimatorControllerLayer layer in animatorController.layers)
+        //    {
+        //        foreach (ChildAnimatorState state in layer.stateMachine.states)
+        //        {
+        //            AnimationClip clip = state.state.motion as AnimationClip;
+        //            if (clip == attackClip)
+        //                return true;
+        //        }
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
 #endif
     }

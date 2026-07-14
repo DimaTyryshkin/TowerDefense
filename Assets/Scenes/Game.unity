@@ -30009,7 +30009,7 @@ Transform:
   m_GameObject: {fileID: 579292438}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.6, y: 17.54, z: 0}
+  m_LocalPosition: {x: -0.6, y: 16.502, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -30107,7 +30107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08e28a6f358565541970b2178bf7be21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.HealthComponent
-  maxHealth: 99999
+  maxHealth: 20
 --- !u!114 &579292443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35429,7 +35429,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3414686449739138671, guid: 9a8ec2d21fc22fb479c7271d4d7e5070, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 19.269
+      value: 17.594
       objectReference: {fileID: 0}
     - target: {fileID: 3414686449739138671, guid: 9a8ec2d21fc22fb479c7271d4d7e5070, type: 3}
       propertyPath: m_LocalPosition.z
@@ -44443,10 +44443,11 @@ MonoBehaviour:
   - {fileID: 503721630}
   - {fileID: 1843712584}
   waves:
-  - {fileID: 11400000, guid: 25293e9818d7a1049b9dc9fa34b4bc42, type: 2}
+  - {fileID: 11400000, guid: f9a378bdf0d7a954ea7c465f7b87c5ee, type: 2}
   - {fileID: 11400000, guid: cf715c50b39b3c74a8149df570101360, type: 2}
   - {fileID: 11400000, guid: c07c4c7fbbe214d4785b1a9cca824543, type: 2}
   - {fileID: 11400000, guid: 6d3118552c554a241b3ecfbf2e21d6dd, type: 2}
+  - {fileID: 11400000, guid: 4eca43794430be046913bbcfd2586d0e, type: 2}
 --- !u!114 &1498406439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44481,7 +44482,7 @@ MonoBehaviour:
   tower04: {fileID: 7635936800224820814, guid: ef895742074f1f149985010a06797adb, type: 3}
   shopItem05: {fileID: 5518734132821536921, guid: 5f6ce7555fcdc78458dad06572b4c216, type: 3}
   tower05: {fileID: 4356492771737162607, guid: 5f6ce7555fcdc78458dad06572b4c216, type: 3}
-  startTimeScele: 5
+  startTimeScele: 7
   starMoney: 20
   moneyPerWave: 10
 --- !u!4 &1498406440

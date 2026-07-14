@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4b36fd7438e06c43b76e4666fc6642c, type: 3}
   m_Name: WaveData-4
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.EnemyWaveData
-  delayBetweenSpawn: 1
+  delayBetweenSpawn: 0.5
   enemyInfo:
   - count: 15
     chanceOverTime:

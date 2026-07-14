@@ -12,8 +12,8 @@ namespace Game.CoreGame
     abstract class ShootingRangeWeaponComponent : RangeWeaponComponent
     {
         [SerializeField] float damageValue;
-        [SerializeField] DamageType damageType;
         [SerializeField] float damageDuration;
+        [SerializeField] DamageType damageType;
         [SerializeField] FindTargetMode findTargetMode;
 
         internal override bool IsTargetInRange => isAttacking || FindTarget();

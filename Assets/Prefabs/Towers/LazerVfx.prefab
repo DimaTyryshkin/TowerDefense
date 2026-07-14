@@ -48,7 +48,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b7e3d11bf6c8964d8cc45382d4aebe4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.LazerParticleSystem
-  timeLife: 0
   particleSystems:
   - {fileID: 8285208986703248574}
   - {fileID: 7098855026319937586}
@@ -9657,8 +9656,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayerID: 1281659693
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_RenderMode: 0
@@ -14493,8 +14492,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayerID: 1281659693
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_RenderMode: 0

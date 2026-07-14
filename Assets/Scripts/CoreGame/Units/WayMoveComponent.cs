@@ -8,6 +8,7 @@ namespace Game.CoreGame
     class WayMoveComponent : UnitStateComponent
     {
         [SerializeField] float speed;
+        [SerializeField] bool doNotUseAnimator;
         [SerializeField, IsntNull] Animator animator;
 
         internal event UnityAction<WayMoveComponent> FinishMove;
@@ -42,13 +43,13 @@ namespace Game.CoreGame
             else
             {
                 transform.position = Vector3.MoveTowards(transform.position, nextPoint, GetSpeed() * Time.deltaTime);
-                animator.SetBool(walkHash, true);
+                if (!doNotUseAnimator) animator.SetBool(walkHash, true);
 
                 Vector2 toTaret = nextPoint - pos;
                 int side = Side.FromDir(toTaret).side;
                 // GizmosDrawer.Inst.AddText(transform.position, side).SetDuration(-1);
 
-                animator.SetInteger(sideHash, side);
+                if (!doNotUseAnimator) animator.SetInteger(sideHash, side);
             }
 
         }
