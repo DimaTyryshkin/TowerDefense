@@ -25,6 +25,7 @@ namespace Game.SortedTiles
         Dictionary<Vector3Int, SortedTile> cellToTile;
         float maxY;
         float cellHeight;
+        internal static SortedTilesSystem inst;
 
         void OnDrawGizmos()
         {
@@ -34,6 +35,7 @@ namespace Game.SortedTiles
 
         public void LinkTilesFromTileMaps()
         {
+            inst = this;
             cellHeight = grid.cellSize.y;
             maxY = transform.position.y + 20;
             cellToTile = new Dictionary<Vector3Int, SortedTile>();
@@ -75,7 +77,7 @@ namespace Game.SortedTiles
         {
             Assert.IsFalse(tile.IsDynamic && tile.IsGroupingTile);
 
-            tile.Init(this);
+            tile.Init();
             if (tile.IsGroupingTile)
             {
                 Vector3Int cell = grid.WorldToCell(tile.transform.position);

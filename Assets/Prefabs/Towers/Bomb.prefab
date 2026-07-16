@@ -4802,7 +4802,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1281659693
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_RenderMode: 0
@@ -4883,7 +4883,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.Bomb
   duration: 1
   height: 10
-  explosionRange: 1.5
+  explosionRange: 2
   vfx: {fileID: 8757578938277980448}
   vfxExplosionPrefab: {fileID: 4010577882930940681, guid: 23152c9c1149d984389cd53adc23ceec, type: 3}
 --- !u!1 &2062428151034686866
@@ -9697,7 +9697,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1281659693
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_RenderMode: 0
@@ -14536,7 +14536,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1281659693
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_RenderMode: 0
@@ -19381,7 +19381,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1281659693
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_RenderMode: 0

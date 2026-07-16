@@ -53,6 +53,9 @@ TagManager:
   - name: Shadow-TileMap
     uniqueID: 3780725381
     locked: 0
+  - name: GroundSorted-TileMap
+    uniqueID: 3180100513
+    locked: 0
   - name: BaseSorted-TileMap
     uniqueID: 3345898839
     locked: 0

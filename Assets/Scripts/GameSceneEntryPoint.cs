@@ -5,6 +5,7 @@ using GamePackages.Core;
 using GamePackages.Core.Validation;
 using GamePackages.InputSystem;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -40,6 +41,9 @@ namespace Game
 
         [SerializeField, IsntNull] ShopItem shopItem05;
         [SerializeField, IsntNull] WeaponTowerAI tower05;
+
+        [Header("Gui")]
+        [SerializeField, IsntNull] TMP_Text waveNumber;
 
         Injector injector;
         GridWrapper gridWrapper;
@@ -78,7 +82,7 @@ namespace Game
             injector.Register(gameCamera);
             injector.Register(gridWrapper);
             injector.Register(buildingsOnBoard);
-            injector.Register(sortedTilesSystem).LinkTilesFromTileMaps();
+            injector.Register(sortedTilesSystem).LinkTilesFromTileMaps();// не регистрировать
 
             injector.Inject(towerShopView);
             injector.Inject(buildPlayerInput, towerPreview).Init();
@@ -108,9 +112,12 @@ namespace Game
 
             towerShopView.ClickStartWave += () =>
             {
-                Time.timeScale = startTimeScele;
-                towerShopView.Hide();
-                enemySpawner.StartWave();
+                if (enemySpawner.StartWave())
+                {
+                    DrawWaveNumber();
+                    Time.timeScale = startTimeScele;
+                    towerShopView.Hide();
+                }
             };
 
             buildPlayerInput.CancelBuilding += () =>
@@ -136,8 +143,21 @@ namespace Game
                 towerShopView.Draw(playerBank, shopButtonsStates);
             };
 
+            debugPanel.ClickWave += (int waveIndex) =>
+            {
+                playerBank += new Currency(moneyPerWave * (waveIndex - enemySpawner.WaveIndex));
+                enemySpawner.DebugSetwaveIndex(waveIndex);
+                DrawWaveNumber();
+                towerShopView.Draw(playerBank, shopButtonsStates);
+            };
+
 
             towerShopView.Draw(playerBank, shopButtonsStates);
+        }
+
+        void DrawWaveNumber()
+        {
+            waveNumber.text = (enemySpawner.WaveIndex + 1).ToString();
         }
 
         IEnumerator OnWaveEnd()

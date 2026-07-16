@@ -38,7 +38,7 @@ namespace Game.CoreGame
             this.enemyHealth = enemyHealth;
             this.offset = offset;
             enemyHealth.HealthChanged += (enemy, _) => Draw(enemy);
-            enemyHealth.Death += _ => gameObject.SetActive(false);
+            //enemyHealth.Death += _ => Destroy(gameObject);
 
             redHealthProressBar.NormilizedValue = 1;
             Draw(enemyHealth);

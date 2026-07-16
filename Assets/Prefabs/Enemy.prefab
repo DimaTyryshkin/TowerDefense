@@ -57,6 +57,7 @@ MonoBehaviour:
   health: {fileID: 3088800716895306178}
   moveComponent: {fileID: 1301351841868251877}
   weapon: {fileID: -6457514392763932362}
+  grave: {fileID: 3631696236144865933, guid: d7e5dc7089c2b8d41a27de2eb1630c7c, type: 3}
 --- !u!114 &-6457514392763932362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,8 +72,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.NoAminWeaponComponent
   attackRange: 2
   damageValue: 1
-  damageType: 0
   damageDuration: 0
+  damageType: 0
   findTargetMode: 0
   attackPeriod: 2
 --- !u!114 &1301351841868251877
@@ -88,6 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.EnemyMove
   speed: 4
+  doNotUseAnimator: 0
   animator: {fileID: 6016992923031956628}
 --- !u!114 &3088800716895306178
 MonoBehaviour:

@@ -1,11 +1,13 @@
 using GamePackages.Core;
 using GamePackages.Core.Validation;
+using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace Game.CoreGame
 {
+
     [CreateAssetMenu]
     class WaveData : ScriptableObject
     {
@@ -14,6 +16,18 @@ namespace Game.CoreGame
 
         internal int TotalAmount => totalAmount;
         internal int CurrentCount => currentCount;
+
+        [ShowNativeProperty]
+        public int TimeLenght
+        {
+            get
+            {
+                if (!AssertWrapper.IsAllNotNullBool(enemyInfo))
+                    return 0;
+
+                return (int)(enemyInfo.Max(w => w.Count) * delayBetweenSpawn);
+            }
+        }
 
         int totalAmount;
         int currentCount;
@@ -25,8 +39,10 @@ namespace Game.CoreGame
         [System.Serializable]
         internal class WaveItemInfo
         {
-            public int count;
-            public AnimationCurve chanceOverTime;
+            [SerializeField] int count;
+            public int Count => count;
+
+            [CurveRange(0, 0, 1, 1)] public AnimationCurve chanceOverTime;
             [IsntNull] public WayMoveComponent enemy;
             [HideInInspector] public int currentCount;
         }
@@ -46,7 +62,7 @@ namespace Game.CoreGame
             foreach (WaveItemInfo item in enemyInfoCopy)
                 item.currentCount = 0;
 
-            totalAmount = enemyInfoCopy.Sum(x => x.count);
+            totalAmount = enemyInfoCopy.Sum(x => x.Count);
             currentCount = 0;
             delayBetweenSpawnMin = delayBetweenSpawn - delayBetweenSpawn * 0.5f;
             delayBetweenSpawnMax = delayBetweenSpawn + delayBetweenSpawn * 0.5f;
@@ -55,7 +71,7 @@ namespace Game.CoreGame
         internal WaveItem GetNextEnemy(int spawnPointsAmount)
         {
             float t = currentCount / (float)totalAmount;
-            int index = enemyInfoCopy.RandomWithWeight(UnityEngine.Random.value, x => x.chanceOverTime.Evaluate(t));
+            int index = enemyInfoCopy.RandomWithWeight(UnityEngine.Random.value, x => x.chanceOverTime.Evaluate(t) * x.Count);
 
             var enemyInfo = enemyInfoCopy[index];
 
@@ -68,7 +84,7 @@ namespace Game.CoreGame
 
             enemyInfo.currentCount++;
             currentCount++;
-            if (enemyInfo.currentCount == enemyInfo.count)
+            if (enemyInfo.currentCount == enemyInfo.Count)
                 enemyInfoCopy.Remove(enemyInfo);
 
             return item;

@@ -19,11 +19,16 @@ namespace Game
 
 
         internal event UnityAction ClickAddMoney;
+        internal event UnityAction<int> ClickWave;
 
         void Start()
         {
             AddButton("AddMoney", () => ClickAddMoney.Invoke());
             AddButton("Enemy01", () => enemySpawner.DebugSpawnEnmey(enemy));
+            AddButton("Wave-10", () => ClickWave.Invoke(9));
+            AddButton("Wave-5", () => ClickWave.Invoke(4));
+            AddButton("Wave-2", () => ClickWave.Invoke(1));
+
 
             timeScaleSlider.onValueChanged.AddListener(TimeSlider_OnValueChanged);
         }

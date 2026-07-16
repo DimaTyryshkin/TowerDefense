@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -38,6 +39,19 @@ namespace Game.CoreGame
             {
                 HealthChanged?.Invoke(this, -resultDamage);
             }
+        }
+
+        [Button]
+        void AddHp()
+        {
+            health = Mathf.Min(maxHealth, health + 1);
+            HealthChanged?.Invoke(this, 1);
+        }
+
+        [Button]
+        void Kill()
+        {
+            ApplyDamage(health);
         }
     }
 }

@@ -11,12 +11,14 @@ namespace Game.CoreGame
     {
         [SerializeField, IsntNull] HealthComponentView enemyHealthView;
         [SerializeField, IsntNull] EnemySpawnPoint[] spawnPoints;
-        [SerializeField, IsntNull] WaveData[] waves;
+        [SerializeField, IsntNull] WavesCollection waves;
+        [SerializeField, IsntNull] Transform gravesRoot;
         [Inject] HealthComponentOnBoardCollection enemyesOnBoardCollection;
         [Inject] HealthComponentOnBoardCollection targetsForEnemyColelction;
 
         internal event UnityAction WaveEnd;
         internal event UnityAction GameOver;
+        internal int WaveIndex => waveIndex;
 
         float timeNextSpawn;
         //int enemyTotal; 
@@ -33,7 +35,7 @@ namespace Game.CoreGame
             if (Time.time < timeNextSpawn)
                 return;
 
-            WaveData wave = waves[waveIndex];
+            WaveData wave = waves.collection[waveIndex];
             WaveData.WaveItem waveItem = wave.GetNextEnemy(spawnPoints.Length);
 
             EnemySpawnPoint spawnPoint = spawnPoints[waveItem.spawnPointIndex];
@@ -62,22 +64,29 @@ namespace Game.CoreGame
 
 
         [Button]
-        internal void StartWave()
+        internal bool StartWave()
         {
-            if (waveIndex < waves.Length)
+            if (waveIndex < waves.collection.Length)
             {
                 isSpawning = true;
                 enemyWasKilledInWave = 0;
-                waves[waveIndex].Init();
-                enmeyNeedKillToWin = waves[waveIndex].TotalAmount;
+                waves.collection[waveIndex].Init();
+                enmeyNeedKillToWin = waves.collection[waveIndex].TotalAmount;
                 timeNextSpawn = Time.time;
                 Debug.Log($"<b>Началась волна номер '{waveIndex + 1}'</b>");
+                return true;
             }
             else
             {
                 Debug.Log("<b>Волны закончились</b>");
+                return false;
             }
 
+        }
+
+        internal void DebugSetwaveIndex(int index)
+        {
+            waveIndex = index;
         }
 
         internal void DebugSpawnEnmey(WayMoveComponent prefab)
@@ -96,7 +105,7 @@ namespace Game.CoreGame
         )
             InstatiateEnemy(WayMoveComponent prefab, Vector2 pos, WayPoints wayPoints)
         {
-            WayMoveComponent enemyMove = transform.InstantiateAsChild(prefab);
+            WayMoveComponent enemyMove = Instantiate(prefab);
             DamageReceiver enemy = enemyMove.GetComponent<DamageReceiver>();
             HealthComponent enemyHealth = enemyMove.GetComponent<HealthComponent>();
             EnemyAi enemyAi = enemyMove.GetComponent<EnemyAi>();
@@ -106,7 +115,7 @@ namespace Game.CoreGame
             enemyMove.FinishMove += Enemy_FinishMove;
             enemyHealth.Death += EnemyHealth_Death;
             enemyHealth.Init();
-            enemyAi.Init(targetsForEnemyColelction, wayPoints);
+            enemyAi.Init(targetsForEnemyColelction, wayPoints, gravesRoot);
             healthView.Init(enemyHealth, Vector3.up * 0.55f);
 
             enemyesOnBoardCollection.Add(enemy);

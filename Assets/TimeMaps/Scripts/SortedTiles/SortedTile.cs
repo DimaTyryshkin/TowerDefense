@@ -23,8 +23,10 @@ namespace Game.SortedTiles
 
         [SerializeField] string groupName;
 
-        [Tooltip("Сколько пикселей от низа кортинки до низа объекта")]
+
+        [InfoBox("Сколько пикселей от низа кортинки до низа объекта", EInfoBoxType.Normal)]
         [SerializeField] float yOffsetInPixelsFromBotBase;
+        [InfoBox("Высота как бы по оси Z. Например, верхушка кактуса", EInfoBoxType.Normal)]
         [SerializeField] int height;
         [SerializeField] int orderOffset;
         [SerializeField] bool isDynamic;
@@ -65,8 +67,14 @@ namespace Game.SortedTiles
 
         public void Start()
         {
+            if (!system)
+                Init();
+
             if (!isDynamic && Application.isPlaying)
+            {
+                Order = system.GetOrder(this);
                 enabled = false;
+            }
         }
 
         void LateUpdate()
@@ -82,11 +90,15 @@ namespace Game.SortedTiles
         }
 #endif
 
-        internal void Init(SortedTilesSystem system)
+        internal void Init()
         {
+            if (system)
+                return;
+
+            system = SortedTilesSystem.inst;
             Assert.IsNotNull(system);
+
             order = spriteRenderer.sortingOrder;
-            this.system = system;
 
             if (applyToParticleSystems)
                 particles = GetComponentsInChildren<ParticleSystemRenderer>()
