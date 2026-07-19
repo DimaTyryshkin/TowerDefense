@@ -41,7 +41,7 @@ MonoBehaviour:
       m_RotationOrder: 0
     enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
     currentCount: 40
-  - count: 25
+  - count: 23
     chanceOverTime:
       serializedVersion: 2
       m_Curve:
@@ -68,15 +68,15 @@ MonoBehaviour:
       m_RotationOrder: 0
     enemy: {fileID: 1301351841868251877, guid: e052d6e348bc9f04aae95bba6f251cfb, type: 3}
     currentCount: 25
-  - count: 6
+  - count: 5
     chanceOverTime:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
@@ -84,8 +84,8 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 1
         value: 1
-        inSlope: 0
-        outSlope: 0
+        inSlope: 1
+        outSlope: 1
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
@@ -94,4 +94,4 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 0
     enemy: {fileID: 1301351841868251877, guid: 6bcc3294aeb293140b004a61b12fe42b, type: 3}
-    currentCount: 5
+    currentCount: 6

@@ -45,7 +45,7 @@ SortingGroup:
   m_GameObject: {fileID: 3058232169404721095}
   m_Enabled: 1
   m_SortingLayerID: -769547009
-  m_SortingLayer: 6
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_SortAtRoot: 0
   m_Sort3DAs2D: 0
@@ -63,7 +63,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.EnemyHealthView
   redHealthProressBar: {fileID: 9032790510054357963}
   greenHealthProressBar: {fileID: 4891512820102469649}
-  redToGreenLerpfactor: 4
+  redToGreenSpeed: 0.2
+  doNotMove: 0
 --- !u!1 &4046745474719546421
 GameObject:
   m_ObjectHideFlags: 0

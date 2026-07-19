@@ -41,6 +41,13 @@ namespace Game.CoreGame
             }
         }
 
+        internal void Restart()
+        {
+            float add = maxHealth - health;
+            health = maxHealth;
+            HealthChanged?.Invoke(this, add);
+        }
+
         [Button]
         void AddHp()
         {

@@ -53,7 +53,7 @@ namespace Game.CoreGame
 
             ShowEplosionVfx();
 
-            DamageReceiver[] tarets = healthCollection.FindAll(x => healthCollection.CanAttack(endPos, explosionRange, x));
+            DamageReceiver[] tarets = healthCollection.FindAll(x => healthCollection.CanAttackWithRange(endPos, explosionRange, x));
             foreach (DamageReceiver t in tarets)
                 t.ApplyDamage(damage);
 

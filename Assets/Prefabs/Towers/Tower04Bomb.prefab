@@ -202,8 +202,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.BombWeaponComponent
   attackRange: 4
   damageValue: 1
-  damageType: 0
   damageDuration: 0
+  damageType: 0
   findTargetMode: 0
   attackPeriod: 2
   bombPrefab: {fileID: -349548147536515895, guid: 369364809c1ebe248ba3375f568c7781, type: 3}
@@ -274,7 +274,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -1913567357, guid: 085d8bf32335b1e49ba894b6530b5c80, type: 3}

@@ -8,6 +8,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace Game
 {
@@ -17,6 +18,7 @@ namespace Game
         [SerializeField, IsntNull] GuiHit guihit;
         [SerializeField, IsntNull] Camera gameCamera;
         [SerializeField, IsntNull] GameObject gameOver;
+        [SerializeField, IsntNull] Button restart;
         [SerializeField, IsntNull] RangeVisualizer rangeVfx;
         [SerializeField, IsntNull] EnemySpawner enemySpawner;
         [SerializeField, IsntNull] SpriteRenderer towerPreview;
@@ -153,6 +155,15 @@ namespace Game
 
 
             towerShopView.Draw(playerBank, shopButtonsStates);
+
+            // === ===
+            restart.onClick.AddListener(() =>
+            {
+                targetForEnemy.Debug_RestertGame();
+                gameOver.SetActive(false);
+                towerShopView.Show();
+
+            });
         }
 
         void DrawWaveNumber()

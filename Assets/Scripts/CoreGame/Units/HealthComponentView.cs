@@ -9,7 +9,7 @@ namespace Game.CoreGame
     {
         [SerializeField, IsntNull] ProgressBarView redHealthProressBar;
         [SerializeField, IsntNull] ProgressBarView greenHealthProressBar;
-        [SerializeField] float redToGreenLerpfactor;
+        [SerializeField] float redToGreenSpeed;
         [SerializeField] bool doNotMove;
 
         HealthComponent enemyHealth;
@@ -26,10 +26,10 @@ namespace Game.CoreGame
             if (!doNotMove)
                 transform.position = enemyHealth.transform.position + offset;
 
-            redHealthProressBar.NormilizedValue = Mathf.Lerp(
+            redHealthProressBar.NormilizedValue = Mathf.MoveTowards(
                 redHealthProressBar.NormilizedValue,
                 greenHealthProressBar.NormilizedValue,
-                Time.deltaTime * redToGreenLerpfactor);
+                Time.deltaTime * redToGreenSpeed);
         }
 
         internal void Init(HealthComponent enemyHealth, Vector3 offset)

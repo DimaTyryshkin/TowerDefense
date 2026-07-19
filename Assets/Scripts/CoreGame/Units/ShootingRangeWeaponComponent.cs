@@ -7,6 +7,8 @@ namespace Game.CoreGame
     {
         Basic = 0,
         Random = 1,
+        MaxHp = 2,
+        BasicAndRandom = 3,
     }
 
     abstract class ShootingRangeWeaponComponent : RangeWeaponComponent
@@ -22,14 +24,38 @@ namespace Game.CoreGame
         float timeNextAttack;
         float timeNextAttackAnimationEvent;
         bool isAttacking;
+        int findTaretCounter;
+
+        private void Start()
+        {
+            findTaretCounter = UnityEngine.Random.Range(0, 100);
+        }
 
         internal sealed override void UpdateFrame()
         {
-            if (timeNextAttackAnimationEvent > 0 && Time.time > timeNextAttackAnimationEvent)
+            if (Time.time >= timeNextAttack)
+            {
+                if (FindTarget())
+                {
+                    isAttacking = true;
+                    PlayAttackAnimation(out float nextAttackDelay, out float animationEventDelay);
+                    timeNextAttackAnimationEvent = Time.time + animationEventDelay;
+                    timeNextAttack = Time.time + Mathf.Max(nextAttackDelay, animationEventDelay);
+                    RizeTargetnInRange();
+                }
+                else
+                {
+
+                    isAttacking = false;
+                }
+            }
+
+            if (timeNextAttackAnimationEvent > 0 && Time.time >= timeNextAttackAnimationEvent)
             {
                 timeNextAttackAnimationEvent = 0;
                 if (LastTargetExistOrFindNewTaret())
                 {
+                    findTaretCounter++;
                     Attack(lastTarget, new Damage()
                     {
                         value = damageValue,
@@ -38,22 +64,6 @@ namespace Game.CoreGame
 
                     });
                 }
-            }
-
-            if (Time.time < timeNextAttack)
-                return;
-
-            if (FindTarget())
-            {
-                isAttacking = true;
-                PlayAttackAnimation(out float nextAttackDelay, out float animationEventDelay);
-                timeNextAttackAnimationEvent = Time.time + animationEventDelay;
-                timeNextAttack = Time.time + Mathf.Max(nextAttackDelay, animationEventDelay + 0.01f);
-                RizeTargetnInRange();
-            }
-            else
-            {
-                isAttacking = false;
             }
         }
 
@@ -65,7 +75,7 @@ namespace Game.CoreGame
 
         bool LastTargetExistOrFindNewTaret()
         {
-            bool canAttackTarget = targets.CanAttack(transform.position, AttackRange, lastTarget);
+            bool canAttackTarget = targets.CanAttackWithRange(transform.position, AttackRange, lastTarget);
             if (canAttackTarget)
                 return true;
             else
@@ -78,22 +88,30 @@ namespace Game.CoreGame
             return (bool)lastTarget;
         }
 
-        protected DamageReceiver FindTarget(DamageReceiver lastTarget)
+        DamageReceiver FindTarget(DamageReceiver lastTarget)
         {
-            if (findTargetMode == FindTargetMode.Basic)
+            if (findTargetMode == FindTargetMode.Basic ||
+               (findTargetMode == FindTargetMode.BasicAndRandom && (findTaretCounter % 2 == 0)))
             {
-                bool canAttackTarget = targets.CanAttack(transform.position, AttackRange, lastTarget);
+                bool canAttackTarget = targets.CanAttackWithRange(transform.position, AttackRange, lastTarget);
                 if (canAttackTarget)
                     return lastTarget;
 
                 return targets
-                    .Find(target => targets.CanAttack(transform.position, AttackRange, target));
+                    .Find(target => targets.CanAttackWithRange(transform.position, AttackRange, target));
             }
 
-            if (findTargetMode == FindTargetMode.Random)
+            if (findTargetMode == FindTargetMode.Random ||
+               (findTargetMode == FindTargetMode.BasicAndRandom && (findTaretCounter % 2 == 1)))
             {
                 return targets
-                    .FindRandom(lastTarget, target => targets.CanAttack(transform.position, AttackRange, target));
+                    .FindRandom(lastTarget, target => targets.CanAttackWithRange(transform.position, AttackRange, target));
+            }
+
+            if (findTargetMode == FindTargetMode.MaxHp)
+            {
+                return targets
+                    .FindMaxHp(target => targets.CanAttackWithRange(transform.position, AttackRange, target));
             }
 
             throw new NotSupportedException("FindTarget");

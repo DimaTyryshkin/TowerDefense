@@ -16,6 +16,12 @@ namespace Game.CoreGame
             damageReceiver.Health.Death += HealthComponent_Death;
         }
 
+        internal void Debug_RestertGame()
+        {
+            gameObject.SetActive(true);
+            damageReceiver.Health.Restart();
+        }
+
         private void HealthComponent_Death(HealthComponent arg0)
         {
             gameObject.SetActive(false);

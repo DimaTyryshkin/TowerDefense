@@ -12,7 +12,7 @@ namespace Game.CoreGame
         List<DamageReceiver> targetList = new();
         List<DamageReceiver> tempList = new();
 
-        internal bool CanAttack(Vector2 damageSourcePos, float attackRange, DamageReceiver target)
+        internal bool CanAttackWithRange(Vector2 damageSourcePos, float attackRange, DamageReceiver target)
         {
             bool isDeath = !target || target.Health.IsDeath;
             if (isDeath)
@@ -69,6 +69,24 @@ namespace Game.CoreGame
 
             if (predicate(oldTaret))
                 return oldTaret;
+
+            return null;
+        }
+
+        internal DamageReceiver FindMaxHp(Predicate<DamageReceiver> predicate)
+        {
+            foreach (DamageReceiver target in targetList)
+            {
+                if (predicate(target))
+                    tempList.Add(target);
+            }
+
+            if (tempList.Count > 0)
+            {
+                DamageReceiver target = tempList.MaxItem(t => t.Health.Health);
+                tempList.Clear();
+                return target;
+            }
 
             return null;
         }
