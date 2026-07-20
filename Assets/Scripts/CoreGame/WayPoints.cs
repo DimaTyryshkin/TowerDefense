@@ -12,6 +12,8 @@ namespace Game.CoreGame
 
     class WayPoints : MonoBehaviour
     {
+        [SerializeField] bool drawGizmos;
+
         [SerializeField, IsntNull]
         Transform[] wayPoints;
 
@@ -26,13 +28,16 @@ namespace Game.CoreGame
         }
 
 
+#if UNITY_EDITOR
         internal void OnDrawGizmos()
         {
+            if (!drawGizmos)
+                return;
+
             Gizmos.color = Color.yellow;
             GizmosExtension.DrawLines(wayPoints);
         }
 
-#if UNITY_EDITOR
         [Button]
         void LoadPoints()
         {

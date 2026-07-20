@@ -1,7 +1,5 @@
 ﻿namespace Game
 {
-
-
     /*
     public class AppEntryPoint : MonoBehaviour
     {

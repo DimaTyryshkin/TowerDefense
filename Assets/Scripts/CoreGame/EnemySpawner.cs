@@ -73,7 +73,7 @@ namespace Game.CoreGame
                 waves.collection[waveIndex].Init();
                 enmeyNeedKillToWin = waves.collection[waveIndex].TotalAmount;
                 timeNextSpawn = Time.time;
-                Debug.Log($"<b>Началась волна номер '{waveIndex + 1}'</b>");
+                Debug.Log($"<b>Волна номер '{waveIndex + 1}'</b>");
                 return true;
             }
             else

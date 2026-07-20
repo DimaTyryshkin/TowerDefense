@@ -68,6 +68,9 @@ TagManager:
   - name: GUI
     uniqueID: 1913489077
     locked: 0
+  - name: GUI-particles
+    uniqueID: 58081841
+    locked: 0
   m_RenderingLayers:
   - Default
   m_MigratedRenderPipelines: []

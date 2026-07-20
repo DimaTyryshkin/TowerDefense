@@ -4835,7 +4835,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_RenderMode: 0
@@ -9671,7 +9671,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_RenderMode: 0
@@ -14507,7 +14507,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: -1
   m_MaskInteraction: 0
   m_RenderMode: 0
@@ -19435,7 +19435,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: -1
   m_MaskInteraction: 0
   m_RenderMode: 0
@@ -24273,7 +24273,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: -1
   m_MaskInteraction: 0
   m_RenderMode: 0
@@ -24373,7 +24373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.Gui.ShopItem
   sprite: {fileID: 2315099711232129893, guid: 95d78fd07c742f443ab0bcd65f661ca1, type: 3}
-  cost: 20
+  cost: 30
 --- !u!114 &8927277558392712185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24386,12 +24386,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c24baaf3729c93409dec7ebd6d0dc84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.HomingRocketWeaponComponent
-  attackRange: 4
-  damageValue: 0.5
-  damageType: 2
+  attackRange: 3
+  damageValue: 2
   damageDuration: 2
-  findTargetMode: 1
-  attackPeriod: 1
+  damageType: 0
+  findTargetMode: 0
+  attackPeriod: 0.5
   homingRocketPrefab: {fileID: 8109775530781139036, guid: 164ebdcca2459e14480ae64a44af9a71, type: 3}
   startPoint: {fileID: 8134407766219021551}
 --- !u!114 &1497265432724564523
@@ -24460,7 +24460,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -1066352860, guid: 085d8bf32335b1e49ba894b6530b5c80, type: 3}
@@ -29276,7 +29276,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_RenderMode: 0

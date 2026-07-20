@@ -41,7 +41,7 @@ MonoBehaviour:
       m_RotationOrder: 0
     enemy: {fileID: 1301351841868251877, guid: 3b0ae3d52e35d9a42828eeb13e11d9d0, type: 3}
     currentCount: 20
-  - count: 8
+  - count: 10
     chanceOverTime:
       serializedVersion: 2
       m_Curve:
@@ -67,7 +67,7 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 0
     enemy: {fileID: 1301351841868251877, guid: e052d6e348bc9f04aae95bba6f251cfb, type: 3}
-    currentCount: 8
+    currentCount: 10
   - count: 1
     chanceOverTime:
       serializedVersion: 2

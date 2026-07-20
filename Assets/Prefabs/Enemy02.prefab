@@ -76,6 +76,7 @@ MonoBehaviour:
   damageType: 0
   findTargetMode: 0
   attackPeriod: 4
+  animationEventDelay: 0.5
   homingRocketPrefab: {fileID: 8109775530781139036, guid: 164ebdcca2459e14480ae64a44af9a71, type: 3}
   startPoint: {fileID: 441885111006700746}
 --- !u!114 &1301351841868251877
@@ -195,7 +196,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 6673112253249187979, guid: 002360c0ca2c8db41a2a455355bb9c06, type: 3}
@@ -309,7 +310,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
@@ -401,7 +402,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}

@@ -6,6 +6,7 @@ namespace Game.CoreGame
     class HomingRocketWeaponComponent : ShootingRangeWeaponComponent
     {
         [SerializeField] float attackPeriod;
+        [SerializeField] float animationEventDelay;
 
         [Space]
         [SerializeField, IsntNull] HomingRocket homingRocketPrefab;
@@ -22,7 +23,7 @@ namespace Game.CoreGame
         protected override void PlayAttackAnimation(out float nextAttackDelay, out float animationEventDelay)
         {
             nextAttackDelay = attackPeriod;
-            animationEventDelay = 0f;
+            animationEventDelay = this.animationEventDelay;
         }
     }
 }
