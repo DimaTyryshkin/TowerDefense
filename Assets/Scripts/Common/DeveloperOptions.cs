@@ -40,7 +40,7 @@ namespace Game.Common
 #if UNITY_EDITOR
             Undo.RecordObject(this, "SetDebugLevel");
             debugLevelNumber = level;
-            GameFactory.Data.LevelNumber = debugLevelNumber;
+            //GameFactory.Data.LevelNumber = debugLevelNumber;
             GameFactory.Data.Save();
             EditorUtility.SetDirty(this);
 #endif
@@ -56,7 +56,7 @@ namespace Game.Common
         [Button]
         void SetSouls()
         {
-            GameFactory.Data.SoulsAmount = debugSoulsAmount;
+            //GameFactory.Data.SoulsAmount = debugSoulsAmount;
             GameFactory.Storage.Save();
         }
 

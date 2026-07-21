@@ -1,3 +1,5 @@
+using Game.Upgrades;
+using GamePackages.Core.Validation;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -5,12 +7,11 @@ namespace Game.CoreGame
 {
     abstract class RangeWeaponComponent : WeaponComponent
     {
-        [SerializeField] float attackRange;
-
+        [SerializeField, IsntNull] UpgradeData attackRange;
 
         internal event UnityAction TargetnInRange;
+        internal float AttackRange => attackRange.Value;
 
-        internal float AttackRange => attackRange;
 
 #if UNITY_EDITOR
         void OnDrawGizmosSelected()

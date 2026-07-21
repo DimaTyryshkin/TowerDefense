@@ -1,3 +1,5 @@
+using Game.Common;
+using GamePackages.Core;
 using UnityEngine;
 
 namespace Game.Upgrades
@@ -5,11 +7,16 @@ namespace Game.Upgrades
     [CreateAssetMenu]
     class UpgradeData : ScriptableObject
     {
-        //public bool IsOpen { get; set; }
+        [SerializeField] float startValue;
+        [SerializeField] float incrementPerLevel;
+        public float IncrementPerLevel => incrementPerLevel;
+        public int Level => GameFactory.Data.upgrades.GetOrDefault(name, 0);
+        public float Value => startValue + Level * incrementPerLevel;
+        public int IntValue => Mathf.FloorToInt(Value);
 
-        internal void Open()
+        internal void AddLevel()
         {
-            //IsOpen = true;
+            GameFactory.Data.upgrades[name] = Level + 1;
         }
     }
 }

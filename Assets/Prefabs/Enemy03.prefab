@@ -71,9 +71,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6afda0b9937647c48acfb663b77a0561, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.NoAminWeaponComponent
-  attackRange: 2
-  damageValue: 1
+  attackRange: {fileID: 11400000, guid: 4be7d85561104ac43837ee3d6d6fdef2, type: 2}
   damageDuration: 0
+  damageValue: {fileID: 11400000, guid: 269275c31cc86354e9dd85fff794fcba, type: 2}
   damageType: 0
   findTargetMode: 0
   attackPeriod: 2

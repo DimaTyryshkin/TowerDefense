@@ -1,3 +1,4 @@
+using Game.Upgrades;
 using GamePackages.Core.Validation;
 using NUnit.Framework;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace Game.CoreGame
     {
         [SerializeField] float duration;
         [SerializeField] float height;
-        [SerializeField] float explosionRange;
+        [SerializeField] UpgradeData explosionRange;
         [SerializeField, IsntNull] ParticleSystem vfx;
         [SerializeField, IsntNull] ParticleSystem vfxExplosionPrefab;
 
@@ -20,6 +21,8 @@ namespace Game.CoreGame
         Vector2 startPos;
         Vector2 endPos;
         float time;
+
+        float ExplosionRange => explosionRange.Value;
 
         internal void Init(Damage damage, HealthComponentOnBoardCollection healthCollection, Vector2 targetPos)
         {
@@ -53,7 +56,7 @@ namespace Game.CoreGame
 
             ShowEplosionVfx();
 
-            DamageReceiver[] tarets = healthCollection.FindAll(x => healthCollection.CanAttackWithRange(endPos, explosionRange, x));
+            DamageReceiver[] tarets = healthCollection.FindAll(x => healthCollection.CanAttackWithRange(endPos, ExplosionRange, x));
             foreach (DamageReceiver t in tarets)
                 t.ApplyDamage(damage);
 
@@ -64,7 +67,7 @@ namespace Game.CoreGame
         {
             ParticleSystem vfx = Instantiate(vfxExplosionPrefab, endPos, Quaternion.identity);
             ParticleSystem.ShapeModule shape = vfx.shape;
-            shape.radius = explosionRange;
+            shape.radius = ExplosionRange;
             Destroy(vfx.gameObject, 4);
         }
 
@@ -73,7 +76,7 @@ namespace Game.CoreGame
         void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, explosionRange);
+            Gizmos.DrawWireSphere(transform.position, ExplosionRange);
         }
 #endif
     }

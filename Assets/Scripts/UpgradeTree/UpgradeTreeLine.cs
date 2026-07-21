@@ -1,18 +1,22 @@
-using System;
+using GamePackages.Core.Validation;
 using UnityEngine;
 
 namespace Game.Upgrades
 {
     class UpgradeTreeLine : MonoBehaviour
     {
+        [SerializeField, IsntNull] GameObject opened;
+        [SerializeField, IsntNull] GameObject particles;
+
         internal void DrawOpenWithAnimation()
         {
-            throw new NotImplementedException();
+            particles.SetActive(true);
+            Draw(true);
         }
 
-        internal void Draw(bool v)
+        internal void Draw(bool isOpened)
         {
-            throw new NotImplementedException();
+            opened.SetActive(isOpened);
         }
     }
 }

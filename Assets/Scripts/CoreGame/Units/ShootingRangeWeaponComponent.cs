@@ -1,3 +1,5 @@
+using Game.Upgrades;
+using GamePackages.Core.Validation;
 using System;
 using UnityEngine;
 
@@ -13,8 +15,8 @@ namespace Game.CoreGame
 
     abstract class ShootingRangeWeaponComponent : RangeWeaponComponent
     {
-        [SerializeField] float damageValue;
         [SerializeField] float damageDuration;
+        [SerializeField, IsntNull] UpgradeData damageValue;
         [SerializeField] DamageType damageType;
         [SerializeField] FindTargetMode findTargetMode;
 
@@ -25,6 +27,8 @@ namespace Game.CoreGame
         float timeNextAttackAnimationEvent;
         bool isAttacking;
         int findTaretCounter;
+
+        float DamageValue => damageValue.Value;
 
         private void Start()
         {
@@ -58,7 +62,7 @@ namespace Game.CoreGame
                     findTaretCounter++;
                     Attack(lastTarget, new Damage()
                     {
-                        value = damageValue,
+                        value = DamageValue,
                         type = damageType,
                         duration = damageDuration,
 
@@ -66,6 +70,7 @@ namespace Game.CoreGame
                 }
             }
         }
+
 
         protected override void OnDiactivateState()
         {

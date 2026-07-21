@@ -70,9 +70,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c24baaf3729c93409dec7ebd6d0dc84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.BulletWeaponComponent
-  attackRange: 8
-  damageValue: 1
+  attackRange: {fileID: 11400000, guid: 4d90dea06b4eb774cb6c13dfab896403, type: 2}
   damageDuration: 0
+  damageValue: {fileID: 11400000, guid: 269275c31cc86354e9dd85fff794fcba, type: 2}
   damageType: 0
   findTargetMode: 0
   attackPeriod: 4

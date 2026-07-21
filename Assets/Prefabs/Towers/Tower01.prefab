@@ -96,15 +96,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ebab0847a284c34f99c4cc0fb7d4e80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.TowerAI
-  attackRange: 2.5
-  damageValue: 1
-  damageType: 0
+  attackRange: {fileID: 11400000, guid: ea123831900ee6140b55f426ac1cbdbf, type: 2}
   damageDuration: 0
+  damageValue: {fileID: 11400000, guid: e79a2819ca30c2345aa209216cc0e241, type: 2}
+  damageType: 0
   findTargetMode: 0
   attackPeriod: 1
   lazerStartPoint1: {fileID: 7105560525450654635}
   lazerStartPoint2: {fileID: 5446114093596869211}
-  attackClip: {fileID: 7400000, guid: 4e7243409c4b9da4a9d1e939e4fb8496, type: 2}
   animator: {fileID: 8997981750918421629}
   lazerParticleSystemPrefab: {fileID: 4596882931417786375, guid: 561aa65c550f15a4dba6b64a150d1f98, type: 3}
 --- !u!114 &6628261482527830807
@@ -209,7 +208,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -949068457
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 788956660640950671, guid: b3157ac3ae1e3354e9fbfda833fae42b, type: 3}

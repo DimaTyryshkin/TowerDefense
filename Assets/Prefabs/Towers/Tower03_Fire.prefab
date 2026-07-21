@@ -24322,7 +24322,7 @@ GameObject:
   - component: {fileID: 1497265432724564523}
   - component: {fileID: 7281001989584300931}
   m_Layer: 0
-  m_Name: Tower03Fire
+  m_Name: Tower03_Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24386,12 +24386,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c24baaf3729c93409dec7ebd6d0dc84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.HomingRocketWeaponComponent
-  attackRange: 3
-  damageValue: 2
+  attackRange: {fileID: 11400000, guid: 6a3be3ca2461f1d43832a96e626264f9, type: 2}
   damageDuration: 2
+  damageValue: {fileID: 11400000, guid: 3878732dcc4207045a7f72c8c0b35170, type: 2}
   damageType: 0
   findTargetMode: 0
   attackPeriod: 0.5
+  animationEventDelay: 0
   homingRocketPrefab: {fileID: 8109775530781139036, guid: 164ebdcca2459e14480ae64a44af9a71, type: 3}
   startPoint: {fileID: 8134407766219021551}
 --- !u!114 &1497265432724564523

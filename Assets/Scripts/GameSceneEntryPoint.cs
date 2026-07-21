@@ -1,6 +1,7 @@
 using Game.CoreGame;
 using Game.CoreGame.Gui;
 using Game.SortedTiles;
+using Game.Upgrades;
 using GamePackages.Core;
 using GamePackages.Core.Validation;
 using GamePackages.InputSystem;
@@ -55,15 +56,18 @@ namespace Game
 
         [SerializeField] float startTimeScele = 5;
         [Space]
-        [SerializeField] int starMoney;
-        [SerializeField] int moneyPerWave;
+        [SerializeField, IsntNull] UpgradeData startMoney;
+        [SerializeField, IsntNull] UpgradeData waveReward;
         Currency playerBank;
         ShopButtonState lastSelectedState;
         ShopButtonState[] shopButtonsStates;
 
+        int StartMoney => startMoney.IntValue;
+        int WeveReward => waveReward.IntValue;
 
         private void Start()
         {
+
             towerPreview.gameObject.SetActive(false);
             gameOver.SetActive(false);
 
@@ -72,7 +76,7 @@ namespace Game
             enemyOnBoard = new();
             buildingsOnBoard = new();
             gridWrapper = new GridWrapper(grid);
-            playerBank = new Currency(starMoney);
+            playerBank = new Currency(StartMoney);
             HealthComponentOnBoardCollection targetsForEnmey = new();
 
             targetsForEnmey.Add(targetForEnemy.DamageReceiver);
@@ -147,7 +151,7 @@ namespace Game
 
             debugPanel.ClickWave += (int waveIndex) =>
             {
-                playerBank += new Currency(moneyPerWave * (waveIndex - enemySpawner.WaveIndex));
+                playerBank += new Currency(WeveReward * (waveIndex - enemySpawner.WaveIndex));
                 enemySpawner.DebugSetwaveIndex(waveIndex);
                 DrawWaveNumber();
                 towerShopView.Draw(playerBank, shopButtonsStates);
@@ -175,7 +179,7 @@ namespace Game
         {
             yield return new WaitForSeconds(0.3f);
 
-            playerBank += new Currency(moneyPerWave);
+            playerBank += new Currency(WeveReward);
             foreach (TowerCurrencyGenerator t in buildingsOnBoard.GetAllByType<TowerCurrencyGenerator>())
             {
                 t.ShowEffect();
