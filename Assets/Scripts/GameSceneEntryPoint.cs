@@ -1,3 +1,4 @@
+using Game.Common;
 using Game.CoreGame;
 using Game.CoreGame.Gui;
 using Game.SortedTiles;
@@ -13,13 +14,33 @@ using UnityEngine.UI;
 
 namespace Game
 {
+    class GameOverPanel : MonoBehaviour
+    {
+        [SerializeField, IsntNull] Button nextButton;
+
+        internal event UnityAction Click;
+
+        private void Start()
+        {
+            nextButton.onClick.AddListener(() => Click.Invoke());
+        }
+
+        internal void Show() => gameObject.SetActive(true);
+
+        internal void Hide() => gameObject.SetActive(false);
+    }
+
+
     class GameSceneEntryPoint : MonoBehaviour
     {
+
+
         [SerializeField, IsntNull] Grid grid;
         [SerializeField, IsntNull] GuiHit guihit;
         [SerializeField, IsntNull] Camera gameCamera;
-        [SerializeField, IsntNull] GameObject gameOver;
+        [SerializeField, IsntNull] GameOverPanel gameOver;
         [SerializeField, IsntNull] Button restart;
+        [SerializeField, IsntNull] UpgradeTree upgradeTree;
         [SerializeField, IsntNull] RangeVisualizer rangeVfx;
         [SerializeField, IsntNull] EnemySpawner enemySpawner;
         [SerializeField, IsntNull] SpriteRenderer towerPreview;
@@ -69,7 +90,7 @@ namespace Game
         {
 
             towerPreview.gameObject.SetActive(false);
-            gameOver.SetActive(false);
+            gameOver.Hide();
 
             rangeVfx.StopAndCelar();
 
@@ -139,9 +160,21 @@ namespace Game
 
             enemySpawner.GameOver += () =>
             {
-                gameOver.SetActive(true);
+                gameOver.Show();
             };
 
+            gameOver.Click += () =>
+            {
+                gameOver.Hide();
+                upgradeTree.Show();
+            };
+
+            upgradeTree.Close += () =>
+            {
+
+            };
+
+            // === Debug ===
 
             debugPanel.ClickAddMoney += () =>
             {
@@ -158,21 +191,25 @@ namespace Game
             };
 
 
-            towerShopView.Draw(playerBank, shopButtonsStates);
-
-            // === ===
             restart.onClick.AddListener(() =>
             {
                 targetForEnemy.Debug_RestertGame();
-                gameOver.SetActive(false);
+                gameOver.Hide();
                 towerShopView.Show();
-
             });
+
+            // === Start Game === 
+            towerShopView.Draw(playerBank, shopButtonsStates);
         }
 
         void DrawWaveNumber()
         {
             waveNumber.text = (enemySpawner.WaveIndex + 1).ToString();
+        }
+
+        void RestartGame()
+        {
+
         }
 
         IEnumerator OnWaveEnd()
@@ -207,13 +244,25 @@ namespace Game
                     playerBank -= lastSelectedState.Cost;
                     WeaponTowerAI newTower = InstantiateTower(towerPrefab, cell);
                     newTower.Init(enemyOnBoard);
-                    newTower.GetComponent<RangeWeaponComponent>().TargetnInRange += () => { if (Time.timeScale > 1) Time.timeScale = 1; };
+                    newTower.GetComponent<RangeWeaponComponent>().TargetnInRange += Tower_TargetInRange;
 
                     buildPlayerInput.StopBuilding();
                     towerShopView.Draw(playerBank, shopButtonsStates);
                     towerShopView.Show();
+                    OnBuildAnyTower();
                 }
             };
+        }
+
+        void Tower_TargetInRange()
+        {
+            if (Time.timeScale > 1)
+                Time.timeScale = 1;
+        }
+
+        void OnBuildAnyTower()
+        {
+            GameFactory.Data.upgradePoints++;
         }
 
         void SetupNoAttackTower<T>(int numberInShop, Injector injector, T towerPrefab, ShopItem shopItem, UnityAction<T> initNewTower)
@@ -236,6 +285,7 @@ namespace Game
                     buildPlayerInput.StopBuilding();
                     towerShopView.Draw(playerBank, shopButtonsStates);
                     towerShopView.Show();
+                    OnBuildAnyTower();
                 }
             };
         }

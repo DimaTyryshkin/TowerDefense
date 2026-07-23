@@ -5,6 +5,10 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using GamePackages.Core;
 using TMPro;
+using Game.Common;
+using UnityEngine.Events;
+using UnityEngine.UI;
+
 
 
 
@@ -16,11 +20,19 @@ namespace Game.Upgrades
 {
     class UpgradeTree : MonoBehaviour
     {
-        [SerializeField] int playerBank;
         [SerializeField, IsntNull] TMP_Text playerBankText;
         [SerializeField, IsntNull] RectTransform linesRoot;
         [SerializeField, IsntNull] UpgradeTreeLine lineTemplate;
+        [SerializeField, IsntNull] Button closeButton;
         [SerializeField, IsntNull] UpgradeTreeNode[] allNodes;
+
+        internal event UnityAction Close;
+
+        int PlyerBank
+        {
+            get => GameFactory.Data.upgradePoints;
+            set => GameFactory.Data.upgradePoints = value;
+        }
 
         void Start()
         {
@@ -37,7 +49,7 @@ namespace Game.Upgrades
 
             foreach (var node in allNodes)
             {
-                NodeState state = node.CalculateState(playerBank);
+                NodeState state = node.CalculateState(PlyerBank);
                 node.State = state;
                 node.DrawState(state);
 
@@ -47,10 +59,18 @@ namespace Game.Upgrades
                 node.Click += Node_Click;
             }
 
-
+            closeButton.onClick.AddListener(() => Close.Invoke());
         }
 
-        void DrawBank() => playerBankText.text = playerBank.ToString();
+        internal void Show()
+        {
+            DrawBank();
+            gameObject.SetActive(true);
+        }
+
+        internal void Hide() => gameObject.SetActive(false);
+
+        void DrawBank() => playerBankText.text = PlyerBank.ToString();
 
         void Node_Click(UpgradeTreeNode node)
         {
@@ -61,8 +81,8 @@ namespace Game.Upgrades
             }
 
             node.OpenUpgrade();
-            node.State = node.CalculateState(playerBank);
-            playerBank -= node.Cost;
+            node.State = node.CalculateState(PlyerBank);
+            PlyerBank -= node.Cost;
             DrawBank();
 
             foreach (UpgradeTreeNode n in allNodes.Except(node.nextNodes))
@@ -70,7 +90,7 @@ namespace Game.Upgrades
                 if (n == node)
                     continue;
 
-                NodeState newState = n.CalculateState(playerBank);
+                NodeState newState = n.CalculateState(PlyerBank);
                 if (newState != n.State)
                 {
                     Assert.IsTrue(newState == NodeState.NotEnought, $"state={n.State} newState={newState} name={n.gameObject.name}");
@@ -95,7 +115,7 @@ namespace Game.Upgrades
 
             foreach (var n in node.nextNodes)
             {
-                NodeState newState = n.CalculateState(playerBank);
+                NodeState newState = n.CalculateState(PlyerBank);
                 if (n.State != newState)
                 {
                     n.State = newState;
