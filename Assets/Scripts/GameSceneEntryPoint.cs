@@ -9,32 +9,15 @@ using GamePackages.InputSystem;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Game
 {
-    class GameOverPanel : MonoBehaviour
-    {
-        [SerializeField, IsntNull] Button nextButton;
-
-        internal event UnityAction Click;
-
-        private void Start()
-        {
-            nextButton.onClick.AddListener(() => Click.Invoke());
-        }
-
-        internal void Show() => gameObject.SetActive(true);
-
-        internal void Hide() => gameObject.SetActive(false);
-    }
-
-
     class GameSceneEntryPoint : MonoBehaviour
     {
-
-
         [SerializeField, IsntNull] Grid grid;
         [SerializeField, IsntNull] GuiHit guihit;
         [SerializeField, IsntNull] Camera gameCamera;
@@ -45,26 +28,14 @@ namespace Game
         [SerializeField, IsntNull] EnemySpawner enemySpawner;
         [SerializeField, IsntNull] SpriteRenderer towerPreview;
         [SerializeField, IsntNull] TowerShopView towerShopView;
-        [SerializeField, IsntNull] TargetForEnemy targetForEnemy;
+        //[SerializeField, IsntNull] TargetForEnemy targetForEnemy;
         [SerializeField, IsntNull] BuildingPlayerInput buildPlayerInput;
         [SerializeField, IsntNull] SortedTilesSystem sortedTilesSystem;
         [SerializeField, IsntNull] DebugPanel debugPanel;
+        [SerializeField, IsntNull] BombTimer bombTimer;
 
         [Header("Buildings")]
-        [SerializeField, IsntNull] ShopItem shopItem01;
-        [SerializeField, IsntNull] WeaponTowerAI tower01;
-
-        [SerializeField, IsntNull] ShopItem shopItem02;
-        [SerializeField, IsntNull] TowerCurrencyGenerator tower02;
-
-        [SerializeField, IsntNull] ShopItem shopItem03;
-        [SerializeField, IsntNull] WeaponTowerAI tower03;
-
-        [SerializeField, IsntNull] ShopItem shopItem04;
-        [SerializeField, IsntNull] WeaponTowerAI tower04;
-
-        [SerializeField, IsntNull] ShopItem shopItem05;
-        [SerializeField, IsntNull] WeaponTowerAI tower05;
+        [SerializeField, IsntNull] BuildingsCollection buildingsCollection;
 
         [Header("Gui")]
         [SerializeField, IsntNull] TMP_Text waveNumber;
@@ -79,6 +50,8 @@ namespace Game
         [Space]
         [SerializeField, IsntNull] UpgradeData startMoney;
         [SerializeField, IsntNull] UpgradeData waveReward;
+        [SerializeField, IsntNull] UpgradeData startUpgrade;
+
         Currency playerBank;
         ShopButtonState lastSelectedState;
         ShopButtonState[] shopButtonsStates;
@@ -86,9 +59,11 @@ namespace Game
         int StartMoney => startMoney.IntValue;
         int WeveReward => waveReward.IntValue;
 
+        int bombCounter;
+
         private void Start()
         {
-
+            startUpgrade.SetOne();
             towerPreview.gameObject.SetActive(false);
             gameOver.Hide();
 
@@ -100,8 +75,8 @@ namespace Game
             playerBank = new Currency(StartMoney);
             HealthComponentOnBoardCollection targetsForEnmey = new();
 
-            targetsForEnmey.Add(targetForEnemy.DamageReceiver);
-            targetForEnemy.DamageReceiver.Health.Init();
+            //targetsForEnmey.Add(targetForEnemy.DamageReceiver);
+            //targetForEnemy.DamageReceiver.Health.Init();
 
             injector = new Injector();
             injector.Register(guihit);
@@ -113,17 +88,35 @@ namespace Game
 
             injector.Inject(towerShopView);
             injector.Inject(buildPlayerInput, towerPreview).Init();
-            injector.RegisterAndInject(enemySpawner, enemyOnBoard, targetsForEnmey).Init();
+            injector.RegisterAndInject(enemySpawner, enemyOnBoard, targetsForEnmey).ResetWaves();
             injector.Inject(debugPanel);
 
 
             // == Buildings ==
             shopButtonsStates = new ShopButtonState[towerShopView.MaxButtonAmount];
-            SetupRangeWeaponTower(1, injector, tower01, shopItem01);
-            SetupRangeWeaponTower(3, injector, tower03, shopItem03);
-            SetupNoAttackTower(2, injector, tower02, shopItem02, newTower => { });
-            SetupRangeWeaponTower(4, injector, tower04, shopItem04);
-            SetupRangeWeaponTower(5, injector, tower05, shopItem05);
+
+            int n = 1;
+            foreach (var buildingInfo in buildingsCollection.buildigs)
+            {
+                bool isOpeend = buildingInfo.upgradeData.Value > 0;
+                var shopItem = buildingInfo.shopItem;
+                var towerAi = shopItem.GetComponent<WeaponTowerAI>();
+                var rangeWeapon = shopItem.GetComponent<RangeWeaponComponent>();
+                if (rangeWeapon)
+                {
+                    SetupRangeWeaponTower(n, isOpeend, injector, towerAi, shopItem);
+                }
+                else
+                {
+                    SetupNoAttackTower(n, isOpeend, injector, shopItem, shopItem, newTower =>
+                    {
+                        // newTower.GetCompnent<T>().Init()
+                    });
+                }
+
+                if (isOpeend)
+                    n++;
+            }
 
             // == SetupFlow ==
 
@@ -155,12 +148,26 @@ namespace Game
 
             enemySpawner.WaveEnd += () =>
             {
+                if (bombCounter == 0)
+                    return;
+
+                ResetTimeScale();
                 StartCoroutine(OnWaveEnd());
             };
 
-            enemySpawner.GameOver += () =>
+            enemySpawner.EnemyFinishMove += () =>
             {
-                gameOver.Show();
+                if (bombCounter == 0)
+                    return;
+
+                bombCounter--;
+                bombTimer.SetCount(bombCounter);
+
+                if (bombCounter == 0)
+                {
+                    ResetTimeScale();
+                    gameOver.Show();
+                }
             };
 
             gameOver.Click += () =>
@@ -171,34 +178,46 @@ namespace Game
 
             upgradeTree.Close += () =>
             {
-
+                GameFactory.Data.Save();
+                RestartGame();
             };
 
             // === Debug ===
 
-            debugPanel.ClickAddMoney += () =>
-            {
-                playerBank += new Currency(10);
-                towerShopView.Draw(playerBank, shopButtonsStates);
-            };
 
-            debugPanel.ClickWave += (int waveIndex) =>
+            debugPanel.AddButton("Restart", () =>
             {
-                playerBank += new Currency(WeveReward * (waveIndex - enemySpawner.WaveIndex));
-                enemySpawner.DebugSetwaveIndex(waveIndex);
-                DrawWaveNumber();
-                towerShopView.Draw(playerBank, shopButtonsStates);
-            };
+                GameFactory.Storage.Clear();
+                RestartGame();
+            });
+
+
+            //debugPanel.AddButton("Wave-10", () =>
+            //{
+            //    playerBank += new Currency(WeveReward * (10 - enemySpawner.WaveIndex));
+            //    enemySpawner.DebugSetwaveIndex(10);
+            //    DrawWaveNumber();
+            //    towerShopView.Draw(playerBank, shopButtonsStates);
+            //});
+
+            //debugPanel.ClickAddMoney += () =>
+            //{
+            //    playerBank += new Currency(10);
+            //    towerShopView.Draw(playerBank, shopButtonsStates);
+            //}; 
 
 
             restart.onClick.AddListener(() =>
             {
-                targetForEnemy.Debug_RestertGame();
+                //targetForEnemy.Debug_RestertGame();
                 gameOver.Hide();
                 towerShopView.Show();
             });
 
             // === Start Game === 
+            bombCounter = 10;
+            bombTimer.SetCount(bombCounter);
+            enemySpawner.ResetWaves();
             towerShopView.Draw(playerBank, shopButtonsStates);
         }
 
@@ -209,7 +228,8 @@ namespace Game
 
         void RestartGame()
         {
-
+            int activeSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            SceneManager.LoadScene(activeSceneIndex);
         }
 
         IEnumerator OnWaveEnd()
@@ -228,13 +248,17 @@ namespace Game
             towerShopView.Show();
         }
 
-        void SetupRangeWeaponTower(int numberInShop, Injector injector, WeaponTowerAI towerPrefab, ShopItem shopItem)
+        void SetupRangeWeaponTower(int numberInShop, bool isAvailableInShop, Injector injector, WeaponTowerAI towerPrefab, ShopItem shopItem)
         {
+            Assert.IsNotNull(towerPrefab);
+            Assert.IsNotNull(shopItem);
+
             RangeWeaponComponent weaponComponent = towerPrefab.GetComponent<RangeWeaponComponent>();
             TowerWithAtackRangeBrush towerBrush = new(() => weaponComponent.AttackRange, shopItem.Sprite);
             injector.Inject(towerBrush, towerPreview);
 
-            shopButtonsStates[numberInShop - 1] = new ShopButtonState(cost: shopItem.Cost, sprite: shopItem.Sprite, onClick: () => buildPlayerInput.SetBrush(towerBrush));
+            if (isAvailableInShop)
+                shopButtonsStates[numberInShop - 1] = new ShopButtonState(cost: shopItem.Cost, sprite: shopItem.Sprite, onClick: () => buildPlayerInput.SetBrush(towerBrush));
 
             towerBrush.ClickBuild += cell =>
             {
@@ -244,7 +268,7 @@ namespace Game
                     playerBank -= lastSelectedState.Cost;
                     WeaponTowerAI newTower = InstantiateTower(towerPrefab, cell);
                     newTower.Init(enemyOnBoard);
-                    newTower.GetComponent<RangeWeaponComponent>().TargetnInRange += Tower_TargetInRange;
+                    newTower.GetComponent<RangeWeaponComponent>().TargetnInRange += ResetTimeScale;
 
                     buildPlayerInput.StopBuilding();
                     towerShopView.Draw(playerBank, shopButtonsStates);
@@ -254,7 +278,7 @@ namespace Game
             };
         }
 
-        void Tower_TargetInRange()
+        void ResetTimeScale()
         {
             if (Time.timeScale > 1)
                 Time.timeScale = 1;
@@ -265,7 +289,7 @@ namespace Game
             GameFactory.Data.upgradePoints++;
         }
 
-        void SetupNoAttackTower<T>(int numberInShop, Injector injector, T towerPrefab, ShopItem shopItem, UnityAction<T> initNewTower)
+        void SetupNoAttackTower<T>(int numberInShop, bool isAvailableInShop, Injector injector, T towerPrefab, ShopItem shopItem, UnityAction<T> initNewTower)
             where T : MonoBehaviour
         {
             NoAttackTowerBrush towerBrush = new(shopItem.Sprite);

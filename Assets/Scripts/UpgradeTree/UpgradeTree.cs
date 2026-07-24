@@ -23,12 +23,13 @@ namespace Game.Upgrades
         [SerializeField, IsntNull] TMP_Text playerBankText;
         [SerializeField, IsntNull] RectTransform linesRoot;
         [SerializeField, IsntNull] UpgradeTreeLine lineTemplate;
+        [SerializeField, IsntNull] UpgradeData startUpgrade;
         [SerializeField, IsntNull] Button closeButton;
         [SerializeField, IsntNull] UpgradeTreeNode[] allNodes;
 
         internal event UnityAction Close;
 
-        int PlyerBank
+        int UpgradePoints
         {
             get => GameFactory.Data.upgradePoints;
             set => GameFactory.Data.upgradePoints = value;
@@ -36,6 +37,7 @@ namespace Game.Upgrades
 
         void Start()
         {
+            startUpgrade.SetOne();
             lineTemplate.gameObject.SetActive(false);
             DrawBank();
 
@@ -49,11 +51,11 @@ namespace Game.Upgrades
 
             foreach (var node in allNodes)
             {
-                NodeState state = node.CalculateState(PlyerBank);
+                NodeState state = node.CalculateState(UpgradePoints);
                 node.State = state;
                 node.DrawState(state);
 
-                foreach (UpgradeTreeLine line in node.nextLines)
+                foreach (UpgradeTreeLine line in node.NextLines)
                     line.Draw(state == NodeState.Opened);
 
                 node.Click += Node_Click;
@@ -70,7 +72,7 @@ namespace Game.Upgrades
 
         internal void Hide() => gameObject.SetActive(false);
 
-        void DrawBank() => playerBankText.text = PlyerBank.ToString();
+        void DrawBank() => playerBankText.text = UpgradePoints.ToString();
 
         void Node_Click(UpgradeTreeNode node)
         {
@@ -81,8 +83,8 @@ namespace Game.Upgrades
             }
 
             node.OpenUpgrade();
-            node.State = node.CalculateState(PlyerBank);
-            PlyerBank -= node.Cost;
+            node.State = node.CalculateState(UpgradePoints);
+            UpgradePoints -= node.upgradeData.Cost;
             DrawBank();
 
             foreach (UpgradeTreeNode n in allNodes.Except(node.nextNodes))
@@ -90,7 +92,7 @@ namespace Game.Upgrades
                 if (n == node)
                     continue;
 
-                NodeState newState = n.CalculateState(PlyerBank);
+                NodeState newState = n.CalculateState(UpgradePoints);
                 if (newState != n.State)
                 {
                     Assert.IsTrue(newState == NodeState.NotEnought, $"state={n.State} newState={newState} name={n.gameObject.name}");
@@ -108,14 +110,14 @@ namespace Game.Upgrades
             if (node.nextNodes.Length == 0)
                 return;
 
-            foreach (UpgradeTreeLine line in node.nextLines)
+            foreach (UpgradeTreeLine line in node.NextLines)
                 line.DrawOpenWithAnimation();
 
             //await node.Lines[0].AnimationLength
 
             foreach (var n in node.nextNodes)
             {
-                NodeState newState = n.CalculateState(PlyerBank);
+                NodeState newState = n.CalculateState(UpgradePoints);
                 if (n.State != newState)
                 {
                     n.State = newState;
@@ -128,7 +130,6 @@ namespace Game.Upgrades
 
         }
 
-        [Button]
         void BuildLines()
         {
             linesRoot.DestroyChildren();
@@ -153,7 +154,7 @@ namespace Game.Upgrades
                     float width = (anchP2 - anchP1).magnitude * 1f;
                     newLine.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
 
-                    node.nextLines.Add(newLine);
+                    node.AddNextLine(newLine);
                 }
             }
         }
@@ -164,6 +165,17 @@ namespace Game.Upgrades
         {
             Undo.RegisterCompleteObjectUndo(this, nameof(LoadNodes));
             allNodes = transform.GetComponentsInChildren<UpgradeTreeNode>();
+        }
+
+        [Button]
+        void DebugAddUpgradePoints()
+        {
+            UpgradePoints++;
+            GameFactory.Data.Save();
+            Debug.Log($"UpgradePoints={UpgradePoints}");
+
+            if (Application.isPlaying)
+                Start();
         }
 #endif
     }

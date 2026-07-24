@@ -1,5 +1,6 @@
 using GamePackages.Core;
 using GamePackages.Core.Validation;
+using NaughtyAttributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,24 +15,27 @@ namespace Game.Upgrades
 {
     class UpgradeTreeNode : MonoBehaviour, IValidated
     {
-        [SerializeField] int cost;
         [SerializeField] int level;
+        [SerializeField] Sprite towerSprite;
         [IsntNull] public UpgradeData upgradeData;
         [SerializeField, IsntNull] Button button;
         [SerializeField, IsntNull] TMP_Text infoText;
+        [SerializeField, IsntNull] TMP_Text costText1;
+        [SerializeField, IsntNull] TMP_Text costText2;
         [SerializeField, IsntNull] GameObject previousNotOpen;
         [SerializeField, IsntNull] GameObject notEnought;
         [SerializeField, IsntNull] GameObject canOpen;
         [SerializeField, IsntNull] GameObject opened;
         [IsntNull] public UpgradeTreeNode[] nextNodes;
-        [IsntNull] public List<UpgradeTreeLine> nextLines;
+        [SerializeField, IsntNull] Image[] towerImages;
 
+        [NonSerialized] List<UpgradeTreeLine> nextLines;
         [NonSerialized] List<UpgradeTreeNode> previousNodes;
 
-        internal bool IsOpened => upgradeData.Level >= level;
+        internal IReadOnlyList<UpgradeTreeLine> NextLines => nextLines;
+        internal bool IsOpened => upgradeData.Level.level >= level;
         internal bool IsPreviusOpened => previousNodes.All(n => n.IsOpened);
         internal NodeState State { get; set; }
-        public int Cost => cost;
 
         internal event UnityAction<UpgradeTreeNode> Click;
 
@@ -39,6 +43,8 @@ namespace Game.Upgrades
         {
             button.onClick.AddListener(OnClick);
 
+            costText1.text = upgradeData.Cost.ToString();
+            costText2.text = upgradeData.Cost.ToString();
             string text = infoText.text;
             if (text.Contains("{0}"))
             {
@@ -52,6 +58,8 @@ namespace Game.Upgrades
 
                 text = string.Format(text, parameter);
             }
+
+            infoText.text = text;
         }
 
 #if UNITY_EDITOR
@@ -70,13 +78,27 @@ namespace Game.Upgrades
             }
 
             Handles.color = Color.white;
-            Handles.Label(transform.position + Vector3.up * 1.2f, $"Lvl-{level}");
-            Handles.Label(transform.position + Vector3.up * 1.5f, $"{upgradeData?.name}");
+            Handles.Label(transform.position + Vector3.left * 2 + Vector3.up * 1.5f, $"{upgradeData?.name} {level}");
+            //Handles.Label(transform.position + Vector3.up * 1.4f, $"{upgradeData?.name}");
+            Handles.Label(transform.position + Vector3.left * 2 + Vector3.up * 1.2f, $"+{upgradeData.IncrementPerLevel} cost={upgradeData.Cost}");
+        }
+
+        private void OnValidate()
+        {
+            foreach (var towerImage in towerImages)
+                towerImage.sprite = towerSprite;
+        }
+
+        [Button]
+        void DebugLog()
+        {
+            Debug.Log($"IsOpened={IsOpened}");
         }
 #endif
         internal void Init()
         {
             previousNodes = new();
+            nextLines = new();
         }
 
         internal void BuildTree()
@@ -91,15 +113,14 @@ namespace Game.Upgrades
                 return NodeState.Opened;
             if (!IsPreviusOpened)
                 return NodeState.PreviousNotOpened;
-            if (cost > playerBank)
+            if (upgradeData.Cost > playerBank)
                 return NodeState.NotEnought;
             return NodeState.CanOpen;
         }
+        internal void AddNextLine(UpgradeTreeLine line) => nextLines.Add(line);
 
-        void AddPreviousNode(UpgradeTreeNode node)
-        {
-            previousNodes.Add(node);
-        }
+        void AddPreviousNode(UpgradeTreeNode node) => previousNodes.Add(node);
+
 
         void OnClick()
         {
@@ -121,7 +142,7 @@ namespace Game.Upgrades
 
         internal void OpenUpgrade()
         {
-            Assert.IsTrue(level == upgradeData.Level + 1);
+            Assert.IsTrue(level == upgradeData.Level.level + 1);
             upgradeData.AddLevel();
         }
 

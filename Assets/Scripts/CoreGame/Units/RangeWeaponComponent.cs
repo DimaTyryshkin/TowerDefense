@@ -16,6 +16,9 @@ namespace Game.CoreGame
 #if UNITY_EDITOR
         void OnDrawGizmosSelected()
         {
+            if (!attackRange)
+                return;
+
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, AttackRange);
         }

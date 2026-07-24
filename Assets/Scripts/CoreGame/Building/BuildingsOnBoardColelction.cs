@@ -43,6 +43,5 @@ namespace Game.CoreGame
             Assert.IsFalse(cellToBuilding.ContainsKey(cell));
             cellToBuilding[cell] = building;
         }
-
     }
 }

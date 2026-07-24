@@ -1,4 +1,3 @@
-using GamePackages.Core.Validation;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -8,8 +7,8 @@ namespace Game.CoreGame
     class WayMoveComponent : UnitStateComponent
     {
         [SerializeField] float speed;
-        [SerializeField] bool doNotUseAnimator;
-        [SerializeField, IsntNull] Animator animator;
+        //[SerializeField] bool doNotUseAnimator;
+        //[SerializeField, IsntNull] Animator animator;
 
         internal event UnityAction<WayMoveComponent> FinishMove;
         internal float buffSpeedFactor;
@@ -43,13 +42,13 @@ namespace Game.CoreGame
             else
             {
                 transform.position = Vector3.MoveTowards(transform.position, nextPoint, GetSpeed() * Time.deltaTime);
-                if (!doNotUseAnimator) animator.SetBool(walkHash, true);
+                //if (!doNotUseAnimator) animator.SetBool(walkHash, true);
 
                 Vector2 toTaret = nextPoint - pos;
                 int side = Side.FromDir(toTaret).side;
                 // GizmosDrawer.Inst.AddText(transform.position, side).SetDuration(-1);
 
-                if (!doNotUseAnimator) animator.SetInteger(sideHash, side);
+                //if (!doNotUseAnimator) animator.SetInteger(sideHash, side);
             }
 
         }

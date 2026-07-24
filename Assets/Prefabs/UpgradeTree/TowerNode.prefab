@@ -32,11 +32,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 5460016630865714042}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -33.1, y: 29.7}
-  m_SizeDelta: {x: 48, y: 98.41}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 4}
+  m_SizeDelta: {x: 32.2, y: 77.554}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &7439558505293390912
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -65,9 +65,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -934067613, guid: 085d8bf32335b1e49ba894b6530b5c80, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -92,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4721434466805762137
 RectTransform:
   m_ObjectHideFlags: 0
@@ -184,11 +184,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4150882618125498180}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -33.1, y: 29.7}
-  m_SizeDelta: {x: 48, y: 98.41}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 4}
+  m_SizeDelta: {x: 32.2, y: 77.554}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &7735488505439296035
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -217,9 +217,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -934067613, guid: 085d8bf32335b1e49ba894b6530b5c80, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -259,11 +259,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3834514493384916285}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -33.1, y: 29.7}
-  m_SizeDelta: {x: 48, y: 98.41}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 4}
+  m_SizeDelta: {x: 32.2, y: 77.554}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &1251979526070574444
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -292,9 +292,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -934067613, guid: 085d8bf32335b1e49ba894b6530b5c80, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -334,11 +334,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4721434466805762137}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -33.1, y: 29.7}
-  m_SizeDelta: {x: 48, y: 98.41}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 4}
+  m_SizeDelta: {x: 32.2, y: 77.554}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &67360605188208138
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -367,9 +367,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -934067613, guid: 085d8bf32335b1e49ba894b6530b5c80, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -10622,7 +10622,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: +1 DAMAGE
+  m_text: DAMAGE +{0}
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -10706,7 +10706,7 @@ GameObject:
   - component: {fileID: 4022706991207463566}
   - component: {fileID: 1546675565283617774}
   m_Layer: 5
-  m_Name: canOpenCostText
+  m_Name: costText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10848,7 +10848,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5460016630865714042
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10974,16 +10974,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Upgrades.UpgradeTreeNode
   cost: 1
   level: 1
+  towerSprite: {fileID: 0}
   upgradeData: {fileID: 0}
   button: {fileID: 7859128634361666883}
   infoText: {fileID: 3041760017547510381}
+  costText1: {fileID: 1546675565283617774}
+  costText2: {fileID: 2350388597132793055}
   previousNotOpen: {fileID: 1826905349070635167}
   notEnought: {fileID: 6581302652041646309}
   canOpen: {fileID: 6966479367440133248}
   opened: {fileID: 121946631470674800}
   nextNodes:
   - {fileID: 0}
-  nextLines: []
+  towerImages:
+  - {fileID: 6185879824635500815}
+  - {fileID: 2387102243284176017}
+  - {fileID: 1950422182195876181}
+  - {fileID: 3070391899255010159}
 --- !u!114 &7859128634361666883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11118,7 +11125,7 @@ GameObject:
   - component: {fileID: 8851842299895953966}
   - component: {fileID: 2350388597132793055}
   m_Layer: 5
-  m_Name: canOpenCostText
+  m_Name: costText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

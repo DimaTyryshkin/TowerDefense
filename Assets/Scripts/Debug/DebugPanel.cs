@@ -1,4 +1,3 @@
-using Game.CoreGame;
 using GamePackages.Core;
 using GamePackages.Core.Validation;
 using TMPro;
@@ -13,23 +12,9 @@ namespace Game
         [SerializeField, IsntNull] RectTransform root;
         [SerializeField, IsntNull] Button button;
         [SerializeField, IsntNull] Slider timeScaleSlider;
-        [SerializeField, IsntNull] WayMoveComponent enemy;
-
-        [Inject] EnemySpawner enemySpawner;
-
-
-        internal event UnityAction ClickAddMoney;
-        internal event UnityAction<int> ClickWave;
 
         void Start()
         {
-            AddButton("AddMoney", () => ClickAddMoney.Invoke());
-            AddButton("Enemy01", () => enemySpawner.DebugSpawnEnmey(enemy));
-            AddButton("Wave-10", () => ClickWave.Invoke(9));
-            AddButton("Wave-5", () => ClickWave.Invoke(4));
-            AddButton("Wave-2", () => ClickWave.Invoke(1));
-
-
             timeScaleSlider.onValueChanged.AddListener(TimeSlider_OnValueChanged);
         }
 
@@ -38,7 +23,7 @@ namespace Game
             Time.timeScale = arg0;
         }
 
-        void AddButton(string label, UnityAction onClick)
+        internal void AddButton(string label, UnityAction onClick)
         {
             Button newButton = root.InstantiateAsChild(button);
             newButton.gameObject.SetActive(true);

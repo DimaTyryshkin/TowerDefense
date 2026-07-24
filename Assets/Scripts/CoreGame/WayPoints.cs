@@ -13,6 +13,7 @@ namespace Game.CoreGame
     class WayPoints : MonoBehaviour
     {
         [SerializeField] bool drawGizmos;
+        [SerializeField, IsntNull] Grid snapGrid;
 
         [SerializeField, IsntNull]
         Transform[] wayPoints;
@@ -43,6 +44,17 @@ namespace Game.CoreGame
         {
             wayPoints = transform.GetComponentsInFirstChild<Transform>().ToArray();
             Undo.RecordObject(this, "LoadPoints");
+        }
+
+        [Button]
+        void SnapPoints()
+        {
+            Undo.RecordObjects(wayPoints, "snap");
+            foreach (Transform point in wayPoints)
+            {
+                Vector3Int cell = snapGrid.WorldToCell(point.position);
+                point.position = (Vector2)(snapGrid.CellToWorld(cell) + snapGrid.cellSize * 0.5f);
+            }
         }
 #endif
     }

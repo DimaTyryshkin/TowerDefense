@@ -2,9 +2,6 @@ using GamePackages.Core;
 using GamePackages.Core.Validation;
 using UnityEngine;
 
-#if UNITY_EDITOR
-#endif
-
 namespace Game.CoreGame
 {
     class TwoLazerWeaponComponent : ShootingRangeWeaponComponent

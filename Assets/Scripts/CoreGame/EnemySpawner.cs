@@ -17,7 +17,7 @@ namespace Game.CoreGame
         [Inject] HealthComponentOnBoardCollection targetsForEnemyColelction;
 
         internal event UnityAction WaveEnd;
-        internal event UnityAction GameOver;
+        internal event UnityAction EnemyFinishMove;
         internal int WaveIndex => waveIndex;
 
         float timeNextSpawn;
@@ -55,7 +55,7 @@ namespace Game.CoreGame
             }
         }
 
-        internal void Init()
+        internal void ResetWaves()
         {
             isSpawning = false;
             waveIndex = 0;
@@ -124,20 +124,28 @@ namespace Game.CoreGame
 
         private void Enemy_FinishMove(WayMoveComponent enemy)
         {
+            Assert.IsNotNull(enemy);
+
             //TODO тут мы можем убивать уже удаленых, как-то не хорошо.
             Destroy(enemy.gameObject);
-            //enemyesOnBoardCollection.Remove(enemy.GetComponent<HealthComponent>());
-            GameOver.Invoke();
+
+            // Обязательно в таком порядке:
+            // Если последний моб забежал в здание, мы должны сначала проиграть. а потом волну закончить
+            EnemyFinishMove.Invoke();
+            RemoveEnemy(enemy.GetComponent<HealthComponent>());
         }
 
         private void EnemyHealth_Death(HealthComponent enemy)
         {
+            RemoveEnemy(enemy);
+        }
+
+        void RemoveEnemy(HealthComponent enemy)
+        {
             Assert.IsNotNull(enemy);
-            DamageReceiver damageReceiver = enemy.GetComponent<DamageReceiver>();
-            Assert.IsNotNull(damageReceiver);
 
             enemyWasKilledInWave++;
-            enemyesOnBoardCollection.Remove(damageReceiver);
+            enemyesOnBoardCollection.Remove(enemy.GetComponent<DamageReceiver>());
 
             if (enemyWasKilledInWave == enmeyNeedKillToWin)
             {
