@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: WaveRewardUpgrade
   m_EditorClassIdentifier: Assembly-CSharp::Game.Upgrades.UpgradeData
   startValue: 15
-  incrementPerLevel: 2
-  cost: 10
+  incrementPerLevel: 1
+  cost: 5

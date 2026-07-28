@@ -4883,7 +4883,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.Bomb
   duration: 1
   height: 10
-  explosionRange: 2
+  explosionRange: {fileID: 11400000, guid: 0f78a24d89ed6104a90fd2b6a3dcfabf, type: 2}
   vfx: {fileID: 8757578938277980448}
   vfxExplosionPrefab: {fileID: 4010577882930940681, guid: 23152c9c1149d984389cd53adc23ceec, type: 3}
 --- !u!1 &2062428151034686866

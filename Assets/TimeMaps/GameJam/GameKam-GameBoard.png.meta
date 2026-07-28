@@ -586,7 +586,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GameKam-GameBoard_20
+      name: aaa-0
       rect:
         serializedVersion: 2
         x: 16
@@ -1048,7 +1048,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GameKam-GameBoard_47
+      name: aaa-1
       rect:
         serializedVersion: 2
         x: 144
@@ -1070,7 +1070,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GameKam-GameBoard_48
+      name: aaa-2
       rect:
         serializedVersion: 2
         x: 160
@@ -1092,7 +1092,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GameKam-GameBoard_49
+      name: aaa-3
       rect:
         serializedVersion: 2
         x: 176
@@ -1114,7 +1114,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GameKam-GameBoard_50
+      name: aaa-4
       rect:
         serializedVersion: 2
         x: 192
@@ -1312,7 +1312,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GameKam-GameBoard_59
+      name: aaa-5
       rect:
         serializedVersion: 2
         x: 144
@@ -1334,7 +1334,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GameKam-GameBoard_60
+      name: aaa-6
       rect:
         serializedVersion: 2
         x: 160
@@ -1356,7 +1356,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GameKam-GameBoard_61
+      name: aaa-7
       rect:
         serializedVersion: 2
         x: 176
@@ -3423,7 +3423,6 @@ TextureImporter:
       GameKam-GameBoard_198: -494378589
       GameKam-GameBoard_199: -1325486727
       GameKam-GameBoard_2: -3552354190836528480
-      GameKam-GameBoard_20: 1900618325
       GameKam-GameBoard_200: 515080123
       GameKam-GameBoard_201: 765670183
       GameKam-GameBoard_202: 1838769961
@@ -3486,11 +3485,7 @@ TextureImporter:
       GameKam-GameBoard_44: 1656848145
       GameKam-GameBoard_45: 751540178
       GameKam-GameBoard_46: 2117714083
-      GameKam-GameBoard_47: 145119511
-      GameKam-GameBoard_48: -1776866977
-      GameKam-GameBoard_49: -1809497241
       GameKam-GameBoard_5: -1719600731068784525
-      GameKam-GameBoard_50: -1193707415
       GameKam-GameBoard_51: -1908210944
       GameKam-GameBoard_52: 1029528682
       GameKam-GameBoard_53: -2060416265
@@ -3499,10 +3494,7 @@ TextureImporter:
       GameKam-GameBoard_56: 1996606057
       GameKam-GameBoard_57: -633082730
       GameKam-GameBoard_58: 1983350951
-      GameKam-GameBoard_59: -1842903647
       GameKam-GameBoard_6: -5158907487037559699
-      GameKam-GameBoard_60: 1265302858
-      GameKam-GameBoard_61: 1446217527
       GameKam-GameBoard_62: -1981910133
       GameKam-GameBoard_63: -1550287379
       GameKam-GameBoard_64: -943921392
@@ -3544,6 +3536,14 @@ TextureImporter:
       GameKam-GameBoard_97: 374862145
       GameKam-GameBoard_98: -1960805403
       GameKam-GameBoard_99: 1569508077
+      aaa-0: 1900618325
+      aaa-1: 145119511
+      aaa-2: -1776866977
+      aaa-3: -1809497241
+      aaa-4: -1193707415
+      aaa-5: -1842903647
+      aaa-6: 1265302858
+      aaa-7: 1446217527
       plata-1: -294522139
       plata-2: -920894153
       plata-3: 256155920

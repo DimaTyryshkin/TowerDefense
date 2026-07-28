@@ -1,5 +1,6 @@
 using GamePackages.Core;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -12,6 +13,7 @@ namespace Game.CoreGame
     {
         [Inject] RangeVisualizer rangeVfx;
         [Inject] SpriteRenderer towerPreview;
+        [Inject] Dictionary<Vector2Int, bool> bloks;
         Sprite previewSprite;
         Func<float> attackRange;
 
@@ -34,18 +36,25 @@ namespace Game.CoreGame
                 return;
             }
 
+
+
             Vector2 mousePos = Mouse.current.position.ReadValue();
             Vector3 worldPoint = gameCamera.ScreenPointToWorldPointOnPlane(mousePos, Plaine.XY);
             Vector2Int cell = grid.WorldToCell(worldPoint);
             Vector3 cellPos = grid.CellToWorld(cell);
             towerPreview.transform.position = cellPos;
             towerPreview.sprite = previewSprite;
-            rangeVfx.Play(attackRange(), Color.white);
+
+            bool isBlock = bloks.ContainsKey(cell);
+            rangeVfx.Play(attackRange(), isBlock ? Color.red : Color.white);
             rangeVfx.Position = cellPos;
 
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 if (buildingsOnBoard.Exist(cell))
+                    return;
+
+                if (isBlock)
                     return;
 
                 ClickBuild.Invoke(cell);

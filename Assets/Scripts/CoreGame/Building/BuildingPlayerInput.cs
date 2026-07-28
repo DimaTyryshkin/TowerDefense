@@ -16,6 +16,7 @@ namespace Game.CoreGame
         [Inject] SpriteRenderer towerPreview;
         [Inject] BuildingsOnBoardColelction buildingsOnBoard;
 
+
         BuildBrush activeBrush;
         DebugMarker marker;
 

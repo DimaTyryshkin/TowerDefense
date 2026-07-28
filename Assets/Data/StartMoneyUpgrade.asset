@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: StartMoneyUpgrade
   m_EditorClassIdentifier: Assembly-CSharp::Game.Upgrades.UpgradeData
   startValue: 15
-  incrementPerLevel: 3
-  cost: 10
+  incrementPerLevel: 5
+  cost: 5

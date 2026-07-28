@@ -41,7 +41,34 @@ MonoBehaviour:
       m_RotationOrder: 0
     enemy: {fileID: 1301351841868251877, guid: 2deba63ff60cd14419bb294d3c0b7c17, type: 3}
     currentCount: 25
-  - count: 18
+  - count: 26
+    chanceOverTime:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    enemy: {fileID: 1301351841868251877, guid: 65bfc7a4c8902384498d699886515b26, type: 3}
+    currentCount: 24
+  - count: 6
     chanceOverTime:
       serializedVersion: 2
       m_Curve:
@@ -66,32 +93,5 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
-    enemy: {fileID: 1301351841868251877, guid: 1e34b3e3de3acf142a184ea71c722dee, type: 3}
-    currentCount: 18
-  - count: 2
-    chanceOverTime:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 0
-    enemy: {fileID: 1301351841868251877, guid: 5483e3f1a2b90764fb27f9bd9773a82f, type: 3}
-    currentCount: 2
+    enemy: {fileID: 1301351841868251877, guid: 2a0f10cb634f1744083ad940b53827f5, type: 3}
+    currentCount: 4

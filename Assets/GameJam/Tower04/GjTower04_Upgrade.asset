@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Upgrades.UpgradeData
   startValue: 0
   incrementPerLevel: 1
+  cost: 40

@@ -24226,9 +24226,9 @@ GameObject:
   - component: {fileID: 4209763997484787846}
   - component: {fileID: 7550423639526191997}
   - component: {fileID: 264879202962315728}
-  - component: {fileID: 8927277558392712185}
   - component: {fileID: 1497265432724564523}
   - component: {fileID: 7281001989584300931}
+  - component: {fileID: 2314222304889408950}
   m_Layer: 0
   m_Name: GjTower04
   m_TagString: Untagged
@@ -24266,7 +24266,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e939d9c22df60846be618c9f0157b5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.WeaponTowerAI
-  weaponComponent: {fileID: 8927277558392712185}
+  weaponComponent: {fileID: 2314222304889408950}
 --- !u!114 &264879202962315728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24280,28 +24280,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.Gui.ShopItem
   sprite: {fileID: -1055179999, guid: 26f3a497aa4e68a4eaec29da13842019, type: 3}
-  cost: 30
---- !u!114 &8927277558392712185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7707073014613146173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c24baaf3729c93409dec7ebd6d0dc84, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.HomingRocketWeaponComponent
-  attackRange: {fileID: 11400000, guid: 15fdd0856b9574c42b0dfb931d2ba169, type: 2}
-  damageDuration: 0
-  damageValue: {fileID: 11400000, guid: 45bd3efc108b36c4e9321b08e2fe0a30, type: 2}
-  damageType: 0
-  findTargetMode: 0
-  attackPeriod: 0.5
-  animationEventDelay: 0
-  homingRocketPrefab: {fileID: 8109775530781139036, guid: a18cb4b6b0c6217499dc2f22e4e6ff29, type: 3}
-  startPoint: {fileID: 8134407766219021551}
+  cost: 20
 --- !u!114 &1497265432724564523
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24382,6 +24361,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!114 &2314222304889408950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7707073014613146173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01f569ba35c986b4cac54cd8662307b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.BombWeaponComponent
+  attackRange: {fileID: 11400000, guid: 15fdd0856b9574c42b0dfb931d2ba169, type: 2}
+  damageDuration: 0
+  damageValue: {fileID: 11400000, guid: 45bd3efc108b36c4e9321b08e2fe0a30, type: 2}
+  damageType: 0
+  findTargetMode: 3
+  attackPeriod: 1
+  bombPrefab: {fileID: -349548147536515895, guid: 369364809c1ebe248ba3375f568c7781, type: 3}
+  startPoint: {fileID: 8134407766219021551}
 --- !u!1 &8522919144783965889
 GameObject:
   m_ObjectHideFlags: 0

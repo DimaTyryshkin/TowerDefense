@@ -1,6 +1,5 @@
 using Game.Upgrades;
 using GamePackages.Core.Validation;
-using NUnit.Framework;
 using UnityEngine;
 
 namespace Game.CoreGame
@@ -9,7 +8,7 @@ namespace Game.CoreGame
     {
         [SerializeField] float duration;
         [SerializeField] float height;
-        [SerializeField] UpgradeData explosionRange;
+        [SerializeField, IsntNull] UpgradeData explosionRange;
         [SerializeField, IsntNull] ParticleSystem vfx;
         [SerializeField, IsntNull] ParticleSystem vfxExplosionPrefab;
 
@@ -24,9 +23,9 @@ namespace Game.CoreGame
 
         float ExplosionRange => explosionRange.Value;
 
-        internal void Init(Damage damage, HealthComponentOnBoardCollection healthCollection, Vector2 targetPos)
+        public void Init(Damage damage, HealthComponentOnBoardCollection healthCollection, Vector2 targetPos)
         {
-            Assert.IsNotNull(healthCollection);
+            //Assert.IsNotNull(healthCollection);
             this.healthCollection = healthCollection;
             this.damage = damage;
             startPos = transform.position;

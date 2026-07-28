@@ -19,5 +19,5 @@ MonoBehaviour:
     upgradeData: {fileID: 11400000, guid: 86d395675a2ee11438af8c9c1b94d29d, type: 2}
   - shopItem: {fileID: 264879202962315728, guid: 554c9655928b74e4d9fc9b7caaa5e36a, type: 3}
     upgradeData: {fileID: 11400000, guid: b842eee0535c1c94a93140a8d9cd3c53, type: 2}
-  - shopItem: {fileID: 264879202962315728, guid: 6e598e3455f64cf4d94f28d3cfbeb781, type: 3}
+  - shopItem: {fileID: 264879202962315728, guid: 3c359929795263f40bb81607a307bb8f, type: 3}
     upgradeData: {fileID: 11400000, guid: 63d906cff58b30b40bdc0e427d79d9c2, type: 2}

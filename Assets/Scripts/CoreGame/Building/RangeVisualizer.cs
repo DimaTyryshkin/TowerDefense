@@ -25,14 +25,15 @@ namespace Game.CoreGame
 
         internal void Play(float range, Color color)
         {
+            var main = rangeVfx.main;
+            main.startColor = color;
+
             if (!isStoped)
                 return;
 
             var share = rangeVfx.shape;
-            var main = rangeVfx.main;
 
             share.radius = range;
-            main.startColor = color;
 
             rangeVfx.Play(true);
 

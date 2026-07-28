@@ -7,6 +7,7 @@ using GamePackages.Core;
 using GamePackages.Core.Validation;
 using GamePackages.InputSystem;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -36,6 +37,7 @@ namespace Game
 
         [Header("Buildings")]
         [SerializeField, IsntNull] BuildingsCollection buildingsCollection;
+        [SerializeField] Transform blocksRoot;
 
         [Header("Gui")]
         [SerializeField, IsntNull] TMP_Text waveNumber;
@@ -63,6 +65,19 @@ namespace Game
 
         private void Start()
         {
+            Dictionary<Vector2Int, bool> blocks = new Dictionary<Vector2Int, bool>();
+
+            foreach (var block in blocksRoot.GetComponentsInChildren<Transform>())
+            {
+                if (blocksRoot == block)
+                    continue;
+
+                Vector2Int cell = (Vector2Int)grid.WorldToCell(block.transform.position);
+                blocks.Add(cell, true);
+                block.position = grid.CellToWorld((Vector3Int)cell);
+            }
+
+            //
             startUpgrade.SetOne();
             towerPreview.gameObject.SetActive(false);
             gameOver.Hide();
@@ -79,6 +94,7 @@ namespace Game
             //targetForEnemy.DamageReceiver.Health.Init();
 
             injector = new Injector();
+            injector.Register(blocks);
             injector.Register(guihit);
             injector.Register(rangeVfx);
             injector.Register(gameCamera);
@@ -184,6 +200,11 @@ namespace Game
 
             // === Debug ===
 
+            debugPanel.AddButton("AddMoney", () =>
+            {
+                playerBank += new Currency(10);
+                towerShopView.DrawPlayerBank(playerBank);
+            });
 
             debugPanel.AddButton("Restart", () =>
             {
@@ -223,7 +244,7 @@ namespace Game
 
         void DrawWaveNumber()
         {
-            waveNumber.text = (enemySpawner.WaveIndex + 1).ToString();
+            waveNumber.text = $"{enemySpawner.WaveIndex + 1} / {enemySpawner.WaveTotalAmount}";
         }
 
         void RestartGame()
@@ -323,5 +344,7 @@ namespace Game
             buildingsOnBoard[cell] = newTower.gameObject;
             return newTower;
         }
+
+
     }
 }

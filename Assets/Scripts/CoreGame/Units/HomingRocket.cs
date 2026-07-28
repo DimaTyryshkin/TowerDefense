@@ -1,6 +1,6 @@
 using GamePackages.Core.Validation;
-using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Game.CoreGame
 {
@@ -11,7 +11,7 @@ namespace Game.CoreGame
         DamageReceiver target;
         Damage damage;
 
-        internal void Init(DamageReceiver target, Damage damage)
+        public void Init(DamageReceiver target, Damage damage)
         {
             Assert.IsNotNull(target);
             this.target = target;
