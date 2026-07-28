@@ -13,14 +13,4 @@ MonoBehaviour:
   m_Name: _WavesCollection
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.WavesCollection
   collection:
-  - {fileID: 11400000, guid: f9a378bdf0d7a954ea7c465f7b87c5ee, type: 2}
-  - {fileID: 11400000, guid: cf715c50b39b3c74a8149df570101360, type: 2}
-  - {fileID: 11400000, guid: c07c4c7fbbe214d4785b1a9cca824543, type: 2}
-  - {fileID: 11400000, guid: 6d3118552c554a241b3ecfbf2e21d6dd, type: 2}
-  - {fileID: 11400000, guid: 4eca43794430be046913bbcfd2586d0e, type: 2}
-  - {fileID: 11400000, guid: 021ef1961901ac442ba54ff4a5ac3b15, type: 2}
-  - {fileID: 11400000, guid: f4d544c27bc0f094bb8331701a0847d1, type: 2}
-  - {fileID: 11400000, guid: 4bd4b5efb6f1c4f469c4164f29437065, type: 2}
-  - {fileID: 11400000, guid: 3e91ca5d6b0a8944dbc61a3dbc263f71, type: 2}
   - {fileID: 11400000, guid: f0150ab91d4fef045804cd358f22b6f3, type: 2}
-  - {fileID: 11400000, guid: dcf693767d9a2f34f9e1ae95b724357a, type: 2}

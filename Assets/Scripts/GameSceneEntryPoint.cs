@@ -33,11 +33,10 @@ namespace Game
         [SerializeField, IsntNull] BuildingPlayerInput buildPlayerInput;
         [SerializeField, IsntNull] SortedTilesSystem sortedTilesSystem;
         [SerializeField, IsntNull] DebugPanel debugPanel;
-        [SerializeField, IsntNull] BombTimer bombTimer;
 
         [Header("Buildings")]
         [SerializeField, IsntNull] BuildingsCollection buildingsCollection;
-        [SerializeField] Transform blocksRoot;
+        [SerializeField, IsntNull] Transform blocksRoot;
 
         [Header("Gui")]
         [SerializeField, IsntNull] TMP_Text waveNumber;
@@ -177,8 +176,6 @@ namespace Game
                     return;
 
                 bombCounter--;
-                bombTimer.SetCount(bombCounter);
-
                 if (bombCounter == 0)
                 {
                     ResetTimeScale();
@@ -237,7 +234,6 @@ namespace Game
 
             // === Start Game === 
             bombCounter = 10;
-            bombTimer.SetCount(bombCounter);
             enemySpawner.ResetWaves();
             towerShopView.Draw(playerBank, shopButtonsStates);
         }

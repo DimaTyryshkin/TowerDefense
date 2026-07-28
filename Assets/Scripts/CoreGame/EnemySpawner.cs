@@ -13,9 +13,6 @@ namespace Game.CoreGame
         [SerializeField, IsntNull] EnemySpawnPoint[] spawnPoints;
         [SerializeField, IsntNull] WavesCollection waves;
         [SerializeField, IsntNull] Transform gravesRoot;
-        [SerializeField, IsntNull] Transform wawesIndicator;
-        [SerializeField, IsntNull] SpriteRenderer wawesIndicatorSprite;
-        [SerializeField, IsntNull] Gradient gradient;
         [Inject] HealthComponentOnBoardCollection enemyesOnBoardCollection;
         [Inject] HealthComponentOnBoardCollection targetsForEnemyColelction;
 
@@ -72,10 +69,6 @@ namespace Game.CoreGame
         {
             if (waveIndex < waves.collection.Length)
             {
-                float k = ((float)waveIndex + 1) / (float)waves.collection.Length;
-                wawesIndicatorSprite.color = gradient.Evaluate(k);
-                wawesIndicator.localScale = new Vector3(1, 1f - k, 1);
-
                 isSpawning = true;
                 enemyWasKilledInWave = 0;
                 waves.collection[waveIndex].Init();
