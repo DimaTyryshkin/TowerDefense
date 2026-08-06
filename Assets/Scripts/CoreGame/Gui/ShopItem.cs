@@ -15,10 +15,10 @@ namespace Game.CoreGame.Gui
 
         private void OnValidate()
         {
-            if (!sprite)
-                return;
+            //if (!sprite)
+            //    return;
 
-            GetComponent<SpriteRenderer>().sprite = sprite;
+            //GetComponent<SpriteRenderer>().sprite = sprite;
         }
     }
 }

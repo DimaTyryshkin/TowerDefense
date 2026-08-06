@@ -22,6 +22,9 @@ namespace Game.CoreGame
 
         internal override bool IsTargetInRange => isAttacking || FindTarget();
 
+        internal DamageReceiver LastTarget => lastTarget;
+
+
         DamageReceiver lastTarget;
         float timeNextAttack;
         float timeNextAttackAnimationEvent;
@@ -29,6 +32,8 @@ namespace Game.CoreGame
         int findTaretCounter;
 
         float DamageValue => damageValue.Value;
+
+
 
         private void Start()
         {

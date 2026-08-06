@@ -10,11 +10,11 @@ namespace Game.CoreGame
     class EnemySpawner : MonoBehaviour, IValidated
     {
         [SerializeField, IsntNull] HealthComponentView enemyHealthView;
-        [SerializeField, IsntNull] EnemySpawnPoint[] spawnPoints;
         [SerializeField, IsntNull] WavesCollection waves;
         [SerializeField, IsntNull] Transform gravesRoot;
         [Inject] HealthComponentOnBoardCollection enemyesOnBoardCollection;
         [Inject] HealthComponentOnBoardCollection targetsForEnemyColelction;
+        [Inject] EnemySpawnPoint[] spawnPoints;
 
         internal event UnityAction WaveEnd;
         internal event UnityAction EnemyFinishMove;

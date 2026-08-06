@@ -19,14 +19,14 @@ namespace Game
 {
     class GameSceneEntryPoint : MonoBehaviour
     {
-        [SerializeField, IsntNull] Grid grid;
+        [SerializeField, IsntNull] World world;
         [SerializeField, IsntNull] GuiHit guihit;
         [SerializeField, IsntNull] Camera gameCamera;
         [SerializeField, IsntNull] GameOverPanel gameOver;
+        [SerializeField, IsntNull] EnemySpawner enemySpawner;
         [SerializeField, IsntNull] Button restart;
         [SerializeField, IsntNull] UpgradeTree upgradeTree;
         [SerializeField, IsntNull] RangeVisualizer rangeVfx;
-        [SerializeField, IsntNull] EnemySpawner enemySpawner;
         [SerializeField, IsntNull] SpriteRenderer towerPreview;
         [SerializeField, IsntNull] TowerShopView towerShopView;
         //[SerializeField, IsntNull] TargetForEnemy targetForEnemy;
@@ -71,9 +71,9 @@ namespace Game
                 if (blocksRoot == block)
                     continue;
 
-                Vector2Int cell = (Vector2Int)grid.WorldToCell(block.transform.position);
+                Vector2Int cell = (Vector2Int)world.grid.WorldToCell(block.transform.position);
                 blocks.Add(cell, true);
-                block.position = grid.CellToWorld((Vector3Int)cell);
+                block.position = world.grid.CellToWorld((Vector3Int)cell);
             }
 
             //
@@ -85,7 +85,7 @@ namespace Game
 
             enemyOnBoard = new();
             buildingsOnBoard = new();
-            gridWrapper = new GridWrapper(grid);
+            gridWrapper = new GridWrapper(world.grid);
             playerBank = new Currency(StartMoney);
             HealthComponentOnBoardCollection targetsForEnmey = new();
 
@@ -103,7 +103,8 @@ namespace Game
 
             injector.Inject(towerShopView);
             injector.Inject(buildPlayerInput, towerPreview).Init();
-            injector.RegisterAndInject(enemySpawner, enemyOnBoard, targetsForEnmey).ResetWaves();
+
+            injector.RegisterAndInject(enemySpawner, world.enemySpawnPoints, enemyOnBoard, targetsForEnmey).ResetWaves();
             injector.Inject(debugPanel);
 
 

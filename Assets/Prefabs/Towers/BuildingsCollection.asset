@@ -13,11 +13,7 @@ MonoBehaviour:
   m_Name: BuildingsCollection
   m_EditorClassIdentifier: Assembly-CSharp::Game.BuildingsCollection
   buildigs:
-  - shopItem: {fileID: 6628261482527830807, guid: 205dd0f8341552e48b37163154f933df, type: 3}
+  - shopItem: {fileID: 3671734859092341026, guid: 83885e870e173fe44a55320903d66cd0, type: 3}
     upgradeData: {fileID: 11400000, guid: eb316b317efb1aa4a94c31bef789da7e, type: 2}
-  - shopItem: {fileID: 8648311413961316284, guid: 46c415efbd85876418ec5071ba9ef4e0, type: 3}
-    upgradeData: {fileID: 11400000, guid: b6952929faa30494f8d513da1aa81d96, type: 2}
-  - shopItem: {fileID: 264879202962315728, guid: f3a4bdab51b60714f8a841fd42a7dee2, type: 3}
-    upgradeData: {fileID: 11400000, guid: 75e3baec4973a484e903c20ed1d5d6ef, type: 2}
-  - shopItem: {fileID: 6529144088913786996, guid: ef895742074f1f149985010a06797adb, type: 3}
+  - shopItem: {fileID: 6529144088913786996, guid: cfffa84b62ff0f84080593e3f0974673, type: 3}
     upgradeData: {fileID: 11400000, guid: 245354886b6683c43b8efec854a452e4, type: 2}

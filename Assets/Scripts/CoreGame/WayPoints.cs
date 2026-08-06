@@ -13,6 +13,7 @@ namespace Game.CoreGame
     class WayPoints : MonoBehaviour
     {
         [SerializeField] bool drawGizmos;
+        [SerializeField] bool snapToHalf;
         [SerializeField, IsntNull] Grid snapGrid;
 
         [SerializeField, IsntNull]
@@ -53,7 +54,7 @@ namespace Game.CoreGame
             foreach (Transform point in wayPoints)
             {
                 Vector3Int cell = snapGrid.WorldToCell(point.position);
-                point.position = (Vector2)(snapGrid.CellToWorld(cell) + snapGrid.cellSize * 0.5f);
+                point.position = (Vector2)(snapGrid.CellToWorld(cell) + snapGrid.cellSize * (snapToHalf ? 0.5f : 0.001f));
             }
         }
 #endif

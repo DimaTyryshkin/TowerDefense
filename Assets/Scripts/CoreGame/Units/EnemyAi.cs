@@ -11,6 +11,7 @@ namespace Game.CoreGame
         [SerializeField, IsntNull] WayMoveComponent moveComponent;
         [SerializeField, IsntNull] WeaponComponent weapon;
         [SerializeField, IsntNull] GameObject grave;
+        [SerializeField, IsntNull] Animator thisAniamtor;
 
         UnitStateMashine stateMashine;
         Transform gravesRoot;
@@ -47,7 +48,9 @@ namespace Game.CoreGame
             Vector3 p = (Vector2)transform.position + Random.insideUnitCircle * 0.4f;
             var go = gravesRoot.InstantiateAsChild(grave, p);
             go.gameObject.transform.position = p;
-            Destroy(gameObject);
+            //Destroy(gameObject);
+
+            thisAniamtor.SetBool("death", true);
         }
 
         internal Vector2 PredictPosition(float inFutureTimeOffset)

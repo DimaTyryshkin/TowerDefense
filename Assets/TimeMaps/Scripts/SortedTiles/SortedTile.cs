@@ -1,5 +1,6 @@
 ﻿using GamePackages.Core.Validation;
 using NaughtyAttributes;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -31,11 +32,13 @@ namespace Game.SortedTiles
         [SerializeField] int orderOffset;
         [SerializeField] bool isDynamic;
         [SerializeField] bool applyToParticleSystems;
+        [SerializeField] bool applyToChild;
         [SerializeField, IsntNull] SpriteRenderer spriteRenderer;
 
         int order;
         SortedTilesSystem system;
         ParticleRendered[] particles;
+        SpriteRenderer[] children;
         public bool debug;
 
         public string GroupName => groupName;
@@ -60,6 +63,12 @@ namespace Game.SortedTiles
                     {
                         for (int i = 0; i < particles.Length; i++)
                             particles[i].renderer.sortingOrder = value + particles[i].originSortingOrder;
+                    }
+
+                    if (applyToChild)
+                    {
+                        for (int i = 0; i < children.Length; i++)
+                            children[i].sortingOrder = value + i + 1;
                     }
                 }
             }
@@ -96,7 +105,7 @@ namespace Game.SortedTiles
                 return;
 
             system = SortedTilesSystem.inst;
-            Assert.IsNotNull(system);
+            UnityEngine.Assertions.Assert.IsNotNull(system);
 
             order = spriteRenderer.sortingOrder;
 
@@ -104,6 +113,20 @@ namespace Game.SortedTiles
                 particles = GetComponentsInChildren<ParticleSystemRenderer>()
                 .Select(r => new ParticleRendered(r, r.sortingOrder))
                 .ToArray();
+
+            if (applyToChild)
+            {
+                List<SpriteRenderer> childs = new();
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    SpriteRenderer sr = transform.GetChild(i).GetComponent<SpriteRenderer>();
+                    if (sr)
+                        childs.Add(sr);
+                }
+
+                children = childs.ToArray();
+            }
+
         }
 
         public void SetGroupName(string groupName)
