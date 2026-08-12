@@ -43,5 +43,18 @@ namespace Game.CoreGame
             Assert.IsFalse(cellToBuilding.ContainsKey(cell));
             cellToBuilding[cell] = building;
         }
+
+        internal void RemveValue(GameObject go)
+        {
+            Vector2Int? cell = null;
+            foreach (var pair in cellToBuilding)
+            {
+                if (pair.Value == go)
+                    cell = pair.Key;
+            }
+
+            if (cell.HasValue)
+                cellToBuilding.Remove(cell.Value);
+        }
     }
 }

@@ -1,20 +1,26 @@
+using Game.SortedTiles;
 using GamePackages.Core;
 using GamePackages.Core.Validation;
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Game.CoreGame
 {
-    class EnemyAi : MonoBehaviour
+    class EnemyComposer : MonoBehaviour
     {
         [SerializeField, IsntNull] HealthComponent health;
         [SerializeField, IsntNull] WayMoveComponent moveComponent;
         [SerializeField, IsntNull] WeaponComponent weapon;
         [SerializeField, IsntNull] GameObject grave;
         [SerializeField, IsntNull] Animator thisAniamtor;
+        [SerializeField, IsntNull] SortedTile sortedTile;
+        [SerializeField, SortingLayer] int deathLayer;
 
         UnitStateMashine stateMashine;
         Transform gravesRoot;
+
+        internal HealthComponent Health => health;
 
         void Update()
         {
@@ -51,6 +57,7 @@ namespace Game.CoreGame
             //Destroy(gameObject);
 
             thisAniamtor.SetBool("death", true);
+            sortedTile.SetLayer(deathLayer);
         }
 
         internal Vector2 PredictPosition(float inFutureTimeOffset)

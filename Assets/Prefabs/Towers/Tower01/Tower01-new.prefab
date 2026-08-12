@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 3461431771466189273}
   - component: {fileID: 3326672687508783591}
   - component: {fileID: 8451257879819344306}
+  - component: {fileID: -181880310327018528}
   m_Layer: 0
   m_Name: Tower01-new
   m_TagString: Untagged
@@ -130,13 +131,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea9ee51e3bd943e9b5bff64c036425d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.SortedTiles::Game.SortedTiles.SortedTile
+  simpleMod: 0
   groupName: 
   yOffsetInPixelsFromBotBase: 4
   height: 0
   orderOffset: 0
+  applyToChild: 0
+  offset: 0
   isDynamic: 0
   applyToParticleSystems: 0
-  applyToChild: 0
   spriteRenderer: {fileID: 8451257879819344306}
   debug: 0
 --- !u!95 &3326672687508783591
@@ -221,6 +224,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!114 &-181880310327018528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5872059063284420456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b033d97dfde04043bb666b743d3b1d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.WeaponStatistics
+  totalDamage: 0
 --- !u!1 &8923863821805722557
 GameObject:
   m_ObjectHideFlags: 0

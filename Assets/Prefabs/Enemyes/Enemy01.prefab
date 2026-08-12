@@ -59,6 +59,8 @@ MonoBehaviour:
   weapon: {fileID: -6457514392763932362}
   grave: {fileID: 3631696236144865933, guid: d7e5dc7089c2b8d41a27de2eb1630c7c, type: 3}
   thisAniamtor: {fileID: 3690337152600211712}
+  sortedTile: {fileID: -3268258333908378383}
+  deathLayer: -1114866783
 --- !u!114 &-6457514392763932362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,6 +120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CoreGame.DamageReceiver
   healthComponent: {fileID: 3088800716895306178}
+  viewCenter: {fileID: 1037099256140840004}
   slowingBuff: {fileID: -3935548645729101910}
   periodicDamageBuff: {fileID: 7817367068139496312}
 --- !u!114 &-3935548645729101910
@@ -160,13 +163,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea9ee51e3bd943e9b5bff64c036425d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.SortedTiles::Game.SortedTiles.SortedTile
+  simpleMod: 1
   groupName: 
   yOffsetInPixelsFromBotBase: 0
   height: 0
   orderOffset: 0
+  applyToChild: 0
+  offset: -0.28466672
   isDynamic: 1
   applyToParticleSystems: 0
-  applyToChild: 0
   spriteRenderer: {fileID: 3047361717374032500}
   debug: 0
 --- !u!1 &2709766814035398349

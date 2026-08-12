@@ -15,12 +15,12 @@ namespace Game.CoreGame
             bomb.transform.position = startPoint.position;
             bomb.gameObject.SetActive(true);
 
-            EnemyAi enemyAi = enemy.GetComponent<EnemyAi>();
+            EnemyComposer enemyComposer = enemy.GetComponent<EnemyComposer>();
 
             Vector2 targetPos = Vector2.zero;
 
-            if (enemyAi)
-                targetPos = enemyAi.PredictPosition(bombPrefab.Duration);
+            if (enemyComposer)
+                targetPos = enemyComposer.PredictPosition(bombPrefab.Duration);
             else
                 targetPos = enemy.transform.position;
 

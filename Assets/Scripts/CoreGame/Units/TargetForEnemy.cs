@@ -12,7 +12,7 @@ namespace Game.CoreGame
 
         internal void Start()
         {
-            healthComponentView.Init(damageReceiver.Health, Vector3.zero);
+            healthComponentView.Init(damageReceiver, Vector3.zero);
             damageReceiver.Health.Death += HealthComponent_Death;
         }
 

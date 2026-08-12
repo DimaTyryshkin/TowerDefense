@@ -16,11 +16,11 @@ namespace Game.CoreGame
         internal override void ApplyDamage(Damage damage)
         {
             if (damage.type == DamageType.Basic)
-                healthComponent.ApplyDamage(damage.value);
+                healthComponent.ApplyDamage(damage.value, damage.damageOwner);
             else if (damage.type == DamageType.Coold)
-                slowingBuff.Activate(damage.value, damage.duration);
+                slowingBuff.Activate(damage.value, damage.duration, damage.damageOwner);
             else if (damage.type == DamageType.Poison)
-                periodicDamageBuff.Activate(damage.value, damage.duration);
+                periodicDamageBuff.Activate(damage.value, damage.duration, damage.damageOwner);
         }
 
         void HealthComponent_Death(HealthComponent arg0)

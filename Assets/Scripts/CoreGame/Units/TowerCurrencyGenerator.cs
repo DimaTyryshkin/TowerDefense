@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.CoreGame
 {
-    class TowerCurrencyGenerator : MonoBehaviour
+    class TowerCurrencyGenerator : TowerComposer
     {
         [SerializeField] int moneyAddPedWave;
         [SerializeField, IsntNull] ParticleSystem effectVfx;

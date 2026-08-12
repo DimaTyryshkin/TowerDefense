@@ -9,8 +9,17 @@ namespace Game.CoreGame
 
     struct Damage
     {
-        internal float value;
-        internal DamageType type;
-        internal float duration;
+        internal readonly float value;
+        internal readonly DamageType type;
+        internal readonly float duration;
+        internal readonly WeaponComponent damageOwner;
+
+        public Damage(float value, DamageType type, float duration, WeaponComponent damageOwner)
+        {
+            this.value = value;
+            this.type = type;
+            this.duration = duration;
+            this.damageOwner = damageOwner;
+        }
     }
 }

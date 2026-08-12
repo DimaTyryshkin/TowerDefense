@@ -9,6 +9,7 @@ namespace Game.CoreGame
 {
     class EnemySpawner : MonoBehaviour, IValidated
     {
+        [SerializeField] float enemyHealthViewOffset;
         [SerializeField, IsntNull] HealthComponentView enemyHealthView;
         [SerializeField, IsntNull] WavesCollection waves;
         [SerializeField, IsntNull] Transform gravesRoot;
@@ -18,19 +19,22 @@ namespace Game.CoreGame
 
         internal event UnityAction WaveEnd;
         internal event UnityAction EnemyFinishMove;
+        internal event UnityAction<HealthComponent> EnemySpawed;
         internal int WaveIndex => waveIndex;
         internal int WaveTotalAmount => waves.collection.Length;
+        internal bool InWave => inWave;
 
         float timeNextSpawn;
-        //int enemyTotal; 
         int enmeyNeedKillToWin;
         int enemyWasKilledInWave;
         int waveIndex;
-        bool isSpawning;
+        bool inWave;
+
+        bool IsSpawning => waves.collection[waveIndex].CurrentCount < waves.collection[waveIndex].TotalAmount;
 
         private void Update()
         {
-            if (!isSpawning)
+            if (!inWave || !IsSpawning)
                 return;
 
             if (Time.time < timeNextSpawn)
@@ -43,22 +47,15 @@ namespace Game.CoreGame
             var enemy = InstatiateEnemy(waveItem.enemy, spawnPoint.wayPoints.GetPoint(0).position, spawnPoint.wayPoints);
             enemy.move.gameObject.name = $"{waveItem.enemy.gameObject.name} wave={waveIndex:00} inWaveIndex={(wave.CurrentCount - 1):00}";
 
-            //EnemySpawn?.Invoke(newEnemy);
+            EnemySpawed?.Invoke(enemy.health);
 
-            bool nextEnemyExist = wave.CurrentCount < wave.TotalAmount;
-            if (nextEnemyExist)
-            {
+            if (IsSpawning)
                 timeNextSpawn = Time.time + waveItem.delayAfterSpawn;
-            }
-            else
-            {
-                isSpawning = false;
-            }
         }
 
         internal void ResetWaves()
         {
-            isSpawning = false;
+            inWave = false;
             waveIndex = 0;
             //enemyTotal = 0; 
         }
@@ -69,7 +66,7 @@ namespace Game.CoreGame
         {
             if (waveIndex < waves.collection.Length)
             {
-                isSpawning = true;
+                inWave = true;
                 enemyWasKilledInWave = 0;
                 waves.collection[waveIndex].Init();
                 enmeyNeedKillToWin = waves.collection[waveIndex].TotalAmount;
@@ -97,11 +94,10 @@ namespace Game.CoreGame
             enmeyNeedKillToWin++;
         }
 
-
         (
             WayMoveComponent move,
             HealthComponent health,
-            EnemyAi ai,
+            EnemyComposer enemyComposer,
             HealthComponentView healthView
         )
             InstatiateEnemy(WayMoveComponent prefab, Vector2 pos, WayPoints wayPoints)
@@ -109,18 +105,19 @@ namespace Game.CoreGame
             WayMoveComponent enemyMove = Instantiate(prefab);
             DamageReceiver enemy = enemyMove.GetComponent<DamageReceiver>();
             HealthComponent enemyHealth = enemyMove.GetComponent<HealthComponent>();
-            EnemyAi enemyAi = enemyMove.GetComponent<EnemyAi>();
+            EnemyComposer enemyComposer = enemyMove.GetComponent<EnemyComposer>();
             HealthComponentView healthView = transform.InstantiateAsChild(enemyHealthView);
             enemyMove.transform.position = pos;
             enemyMove.gameObject.SetActive(true);
             enemyMove.FinishMove += Enemy_FinishMove;
             enemyHealth.Death += EnemyHealth_Death;
             enemyHealth.Init();
-            enemyAi.Init(targetsForEnemyColelction, wayPoints, gravesRoot);
-            healthView.Init(enemyHealth, Vector3.up * 0.55f);
+            enemyComposer.Init(targetsForEnemyColelction, wayPoints, gravesRoot);
+            healthView.Init(enemy, new Vector3(0, enemyHealthViewOffset, 0));
+            healthView.gameObject.SetActive(false);
 
             enemyesOnBoardCollection.Add(enemy);
-            return (enemyMove, enemyHealth, enemyAi, healthView);
+            return (enemyMove, enemyHealth, enemyComposer, healthView);
         }
 
         private void Enemy_FinishMove(WayMoveComponent enemy)
@@ -151,6 +148,7 @@ namespace Game.CoreGame
             if (enemyWasKilledInWave == enmeyNeedKillToWin)
             {
                 waveIndex++;
+                inWave = false;
                 WaveEnd.Invoke();
             }
         }

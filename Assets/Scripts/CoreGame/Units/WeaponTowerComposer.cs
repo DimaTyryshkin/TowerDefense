@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Game.CoreGame
 {
-    class WeaponTowerAI : MonoBehaviour
+    class WeaponTowerComposer : TowerComposer
     {
         [SerializeField, IsntNull] WeaponComponent weaponComponent;
         UnitStateMashine stateMashine;

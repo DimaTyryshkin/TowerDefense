@@ -25,7 +25,7 @@ namespace Game.CoreGame
 
         protected override void OnUpdate()
         {
-            health.ApplyDamage(Value * Time.deltaTime);
+            health.ApplyDamage(Value * Time.deltaTime, DamageOwner);
         }
     }
 }

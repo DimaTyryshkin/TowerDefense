@@ -1,3 +1,4 @@
+using Game.CoreGame.Gui;
 using GamePackages.Core;
 using GamePackages.InputSystem;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace Game.CoreGame
         DebugMarker marker;
 
         internal event UnityAction CancelBuilding;
+        internal event UnityAction<ShopItem> ClickOnTower;
 
         private void Update()
         {
@@ -59,6 +61,13 @@ namespace Game.CoreGame
 
                     //marker.Text($"{cell} null");
                     rangeVfx.StopAndCelar();
+                }
+
+                if (Mouse.current.leftButton.wasPressedThisFrame)
+                {
+                    ShopItem tower = buildingsOnBoard.Get<ShopItem>(cell);
+                    if (tower)
+                        ClickOnTower.Invoke(tower);
                 }
             }
         }

@@ -7,6 +7,8 @@ using UnityEngine;
 
 namespace Game.CoreGame
 {
+
+
     class LazerWeaponComponent : ShootingRangeWeaponComponent
     {
         [SerializeField] float attackPeriod;
@@ -26,7 +28,7 @@ namespace Game.CoreGame
         }
         protected override void Attack(DamageReceiver enemy, Damage damage)
         {
-            lazerParticleSystem.Play(lazerStartPoint, enemy.transform);
+            lazerParticleSystem.Play(lazerStartPoint, enemy.ViewCenter);
             enemy.ApplyDamage(damage);
         }
 

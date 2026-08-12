@@ -12,19 +12,19 @@ namespace Game.CoreGame
         [SerializeField] float redToGreenSpeed;
         [SerializeField] bool doNotMove;
 
-        HealthComponent enemyHealth;
+        DamageReceiver damageReceiver;
         Vector3 offset;
 
         private void LateUpdate()
         {
-            if (!enemyHealth)
+            if (!damageReceiver)
             {
                 Destroy(gameObject);
                 return;
             }
 
             if (!doNotMove)
-                transform.position = enemyHealth.transform.position + offset;
+                transform.position = damageReceiver.ViewCenter.position + offset;
 
             redHealthProressBar.NormilizedValue = Mathf.MoveTowards(
                 redHealthProressBar.NormilizedValue,
@@ -32,20 +32,23 @@ namespace Game.CoreGame
                 Time.deltaTime * redToGreenSpeed);
         }
 
-        internal void Init(HealthComponent enemyHealth, Vector3 offset)
+        internal void Init(DamageReceiver damageReceiver, Vector3 offset)
         {
-            Assert.IsNotNull(enemyHealth);
-            this.enemyHealth = enemyHealth;
+            Assert.IsNotNull(damageReceiver);
+            this.damageReceiver = damageReceiver;
             this.offset = offset;
-            enemyHealth.HealthChanged += (enemy, _) => Draw(enemy);
-            //enemyHealth.Death += _ => Destroy(gameObject);
+            damageReceiver.Health.HealthChanged += (enemy, _) => Draw(enemy);
+            damageReceiver.Health.Death += _ => Destroy(gameObject);
 
             redHealthProressBar.NormilizedValue = 1;
-            Draw(enemyHealth);
+            Draw(damageReceiver.Health);
         }
 
         void Draw(HealthComponent enemyHealth)
         {
+            if (!gameObject.activeSelf)
+                gameObject.SetActive(true);
+
             //redHealthProressBar.NormilizedValue = greenHealthProressBar.NormilizedValue;
             greenHealthProressBar.NormilizedValue = enemyHealth.Health / enemyHealth.MaxHealth;
         }

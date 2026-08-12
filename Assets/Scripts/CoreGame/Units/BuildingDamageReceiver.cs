@@ -5,7 +5,7 @@ namespace Game.CoreGame
         internal override void ApplyDamage(Damage damage)
         {
             if (damage.type == DamageType.Basic)
-                healthComponent.ApplyDamage(damage.value);
+                healthComponent.ApplyDamage(damage.value, damage.damageOwner);
         }
     }
 }

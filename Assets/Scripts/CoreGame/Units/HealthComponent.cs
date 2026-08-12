@@ -10,7 +10,10 @@ namespace Game.CoreGame
         [SerializeField] float maxHealth;
         float health;
 
+        public delegate void ApplyDamageCallback(HealthComponent target, float damage, WeaponComponent damageOwner);
+
         internal event UnityAction<HealthComponent> Death;
+        internal event ApplyDamageCallback TakeDemage;
         internal event UnityAction<HealthComponent, float> HealthChanged;
         internal bool IsDeath => health <= 0;
         internal bool IsLive => health > 0;
@@ -23,12 +26,14 @@ namespace Game.CoreGame
             HealthChanged?.Invoke(this, 0);
         }
 
-        internal void ApplyDamage(float damage)
+        internal void ApplyDamage(float damage, WeaponComponent damageOwner)
         {
             Assert.IsTrue(IsLive);
 
             float resultDamage = Mathf.Min(damage, health);
             health -= resultDamage;
+
+            TakeDemage?.Invoke(this, resultDamage, damageOwner);
 
             if (health <= 0)
             {
@@ -58,7 +63,7 @@ namespace Game.CoreGame
         [Button]
         void Kill()
         {
-            ApplyDamage(health);
+            ApplyDamage(health, null);
         }
     }
 }

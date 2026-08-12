@@ -20,10 +20,10 @@ namespace Game.SortedTiles
     {
         [SerializeField, IsntNull] Grid grid;
 
-        public readonly int PixelsPerUnit = 16;
-        readonly int heightToLayerFactor = 16;
+        [SerializeField] int PixelsPerUnit = 16;
+        [SerializeField] int heightToLayerFactor = 16;
         Dictionary<Vector3Int, SortedTile> cellToTile;
-        float maxY;
+        //float maxY;
         float cellHeight;
         internal static SortedTilesSystem inst;
 
@@ -37,7 +37,7 @@ namespace Game.SortedTiles
         {
             inst = this;
             cellHeight = grid.cellSize.y;
-            maxY = transform.position.y + 20;
+            //maxY = transform.position.y + 20;
             cellToTile = new Dictionary<Vector3Int, SortedTile>();
 
             SortedTile[] allTiles = grid.GetComponentsInChildren<SortedTile>(true);
@@ -57,15 +57,6 @@ namespace Game.SortedTiles
         }
 
         public void LinkTile(SortedTile tile) => LinkTile(tile, true);
-
-        int GetOrderFromY(float yPosition, SortedTile tile)
-        {
-            if (yPosition > maxY)
-                Debug.LogError($"{tile.gameObject.FullName()} yPosition={yPosition}");
-
-            float fromTopToPosition = maxY - yPosition;
-            return (int)(fromTopToPosition * heightToLayerFactor);
-        }
 
         SortedTile TileByCell(Vector3 world)
         {
@@ -122,9 +113,19 @@ namespace Game.SortedTiles
 
         internal int GetOrder(SortedTile tile)
         {
-            float y = tile.SpriteRenderer.bounds.min.y;
+            float y = tile.GetY();
             float additionalOffset = tile.YOffsetInPixelsFromBotBase / (float)PixelsPerUnit;
             return GetOrderFromY(y + additionalOffset - tile.Height * cellHeight, tile) + tile.OrderOffset;
+        }
+
+        int GetOrderFromY(float yPosition, SortedTile tile)
+        {
+            //if (yPosition > maxY)
+            //    Debug.LogError($"{tile.gameObject.FullName()} yPosition={yPosition}");
+            //float fromTopToPosition = maxY - yPosition;
+            //return (int)(fromTopToPosition * heightToLayerFactor);
+
+            return (int)((-yPosition) * heightToLayerFactor);
         }
 
 #if UNITY_EDITOR

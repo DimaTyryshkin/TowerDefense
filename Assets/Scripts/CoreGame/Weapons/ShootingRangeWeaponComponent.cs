@@ -31,8 +31,7 @@ namespace Game.CoreGame
         bool isAttacking;
         int findTaretCounter;
 
-        float DamageValue => damageValue.Value;
-
+        internal float DamageValue => damageValue.Value;
 
 
         private void Start()
@@ -65,13 +64,8 @@ namespace Game.CoreGame
                 if (LastTargetExistOrFindNewTaret())
                 {
                     findTaretCounter++;
-                    Attack(lastTarget, new Damage()
-                    {
-                        value = DamageValue,
-                        type = damageType,
-                        duration = damageDuration,
-
-                    });
+                    Attack(lastTarget,
+                        new Damage(DamageValue, damageType, damageDuration, this));
                 }
             }
         }

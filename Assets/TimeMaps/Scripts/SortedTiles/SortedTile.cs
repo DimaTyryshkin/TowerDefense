@@ -1,7 +1,8 @@
-﻿using GamePackages.Core.Validation;
+﻿using GamePackages.Core;
+using GamePackages.Core.Validation;
 using NaughtyAttributes;
-using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -22,25 +23,28 @@ namespace Game.SortedTiles
             }
         }
 
-        [SerializeField] string groupName;
+        [SerializeField] bool simpleMod;
 
-
+        [SerializeField, ShowIf("OldMod")] string groupName;
         [InfoBox("Сколько пикселей от низа кортинки до низа объекта", EInfoBoxType.Normal)]
-        [SerializeField] float yOffsetInPixelsFromBotBase;
+        [SerializeField, ShowIf("OldMod")] float yOffsetInPixelsFromBotBase;
         [InfoBox("Высота как бы по оси Z. Например, верхушка кактуса", EInfoBoxType.Normal)]
-        [SerializeField] int height;
-        [SerializeField] int orderOffset;
-        [SerializeField] bool isDynamic;
-        [SerializeField] bool applyToParticleSystems;
-        [SerializeField] bool applyToChild;
-        [SerializeField, IsntNull] SpriteRenderer spriteRenderer;
+        [SerializeField, ShowIf("OldMod")] int height;
+        [SerializeField, ShowIf("OldMod")] int orderOffset;
+        [SerializeField, ShowIf("OldMod")] bool applyToChild;
+
+        [SerializeField, ShowIf("simpleMod")] float offset;
+
+        [SerializeField, BoxGroup("")] bool isDynamic;
+        [SerializeField, BoxGroup("")] bool applyToParticleSystems;
+        [SerializeField, IsntNull, BoxGroup("")] SpriteRenderer spriteRenderer;
 
         int order;
         SortedTilesSystem system;
         ParticleRendered[] particles;
-        SpriteRenderer[] children;
         public bool debug;
 
+        bool OldMod => !simpleMod;// для Редактора ShowIf("OldMod")
         public string GroupName => groupName;
         public int Height => height;
         public int OrderOffset => orderOffset;
@@ -65,16 +69,16 @@ namespace Game.SortedTiles
                             particles[i].renderer.sortingOrder = value + particles[i].originSortingOrder;
                     }
 
-                    if (applyToChild)
-                    {
-                        for (int i = 0; i < children.Length; i++)
-                            children[i].sortingOrder = value + i + 1;
-                    }
+                    //if (applyToChild)
+                    //{
+                    //    for (int i = 0; i < spriteRenderers.Length; i++)
+                    //        spriteRenderers[i].sortingOrder = value + i + 1;
+                    //}
                 }
             }
         }
 
-        public void Start()
+        void Start()
         {
             if (!system)
                 Init();
@@ -92,13 +96,6 @@ namespace Game.SortedTiles
                 Order = system.GetOrder(this);
         }
 
-#if UNITY_EDITOR
-        private void Reset()
-        {
-            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        }
-#endif
-
         internal void Init()
         {
             if (system)
@@ -114,19 +111,23 @@ namespace Game.SortedTiles
                 .Select(r => new ParticleRendered(r, r.sortingOrder))
                 .ToArray();
 
-            if (applyToChild)
-            {
-                List<SpriteRenderer> childs = new();
-                for (int i = 0; i < transform.childCount; i++)
-                {
-                    SpriteRenderer sr = transform.GetChild(i).GetComponent<SpriteRenderer>();
-                    if (sr)
-                        childs.Add(sr);
-                }
+            //if (applyToChild)
+            //{
+            //    List<SpriteRenderer> childs = new();
+            //    for (int i = 0; i < transform.childCount; i++)
+            //    {
+            //        SpriteRenderer sr = transform.GetChild(i).GetComponent<SpriteRenderer>();
+            //        if (sr)
+            //            childs.Add(sr);
+            //    }
 
-                children = childs.ToArray();
-            }
+            //    spriteRenderers = childs.ToArray();
+            //}
+        }
 
+        public void SetLayer(int sortingLayerId)
+        {
+            spriteRenderer.sortingLayerID = sortingLayerId;
         }
 
         public void SetGroupName(string groupName)
@@ -134,12 +135,62 @@ namespace Game.SortedTiles
             this.groupName = groupName;
         }
 
+        internal float GetY()
+        {
+            if (simpleMod)
+                return transform.position.y + offset;
+            else
+                return GetSpriteRendererBot();
+        }
+
+        float GetSpriteRendererBot() => spriteRenderer.bounds.min.y;
+
 #if UNITY_EDITOR
+        private void Reset()
+        {
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            //spriteRenderers[0] = GetComponentInChildren<SpriteRenderer>();
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (!spriteRenderer)
+                return;
+
+            Vector3 p = transform.position;
+            p.y = GetY();
+            Gizmos.color = Color.green;
+            GizmosExtension.DrawCrossXY(p, 0.1f);
+        }
+
         [Button()]
+        void CalculateOffset()
+        {
+            Undo.RecordObject(this, "offset");
+            offset = GetSpriteRendererBot() - transform.position.y;
+
+
+        }
+
+        [Button()]
+        void OffsetAdd()
+        {
+            Undo.RecordObject(this, "offset");
+            offset += 1f / spriteRenderer.sprite.pixelsPerUnit;
+        }
+
+        [Button()]
+        void OffsetSub()
+        {
+            Undo.RecordObject(this, "offset");
+            offset -= 1f / spriteRenderer.sprite.pixelsPerUnit;
+        }
+
+        [Button(),]
         void UpdateOrder()
         {
             GetComponentInParent<SortedTilesSystem>().UpdateOrder();
         }
-#endif
+#endif 
     }
 }

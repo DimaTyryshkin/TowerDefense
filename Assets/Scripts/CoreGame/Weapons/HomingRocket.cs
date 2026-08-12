@@ -26,7 +26,7 @@ namespace Game.CoreGame
                 return;
             }
 
-            transform.position = Vector2.MoveTowards(transform.position, target.transform.position, Time.deltaTime * speed);
+            transform.position = Vector2.MoveTowards(transform.position, target.ViewCenter.position, Time.deltaTime * speed);
             if (Vector2.Distance(transform.position, target.transform.position) < 0.01f)
             {
                 target.ApplyDamage(damage);

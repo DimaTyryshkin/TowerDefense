@@ -35,8 +35,8 @@ namespace Game.CoreGame
         }
         protected override void Attack(DamageReceiver enemy, Damage damage)
         {
-            lazerParticleSystem1.Play(lazerStartPoint1, enemy.transform);
-            lazerParticleSystem2.Play(lazerStartPoint2, enemy.transform);
+            lazerParticleSystem1.Play(lazerStartPoint1, enemy.ViewCenter);
+            lazerParticleSystem2.Play(lazerStartPoint2, enemy.ViewCenter);
             enemy.ApplyDamage(damage);
         }
 

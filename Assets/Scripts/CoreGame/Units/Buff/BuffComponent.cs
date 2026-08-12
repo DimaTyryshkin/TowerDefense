@@ -6,8 +6,10 @@ namespace Game.CoreGame
     {
         float value;
         float endTime;
+        WeaponComponent damageOwner;
 
         internal float Value => value;
+        internal WeaponComponent DamageOwner => damageOwner;
 
         private void Update()
         {
@@ -17,11 +19,12 @@ namespace Game.CoreGame
                 OnUpdate();
         }
 
-        internal void Activate(float value, float duration)
+        internal void Activate(float value, float duration, WeaponComponent damageOwner)
         {
             if (value >= this.value)
             {
                 this.value = value;
+                this.damageOwner = damageOwner;
                 endTime = Time.time + duration;
 
                 if (!enabled)
