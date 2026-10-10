@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -15,11 +16,13 @@ namespace IncreKindom
     public class IncreKindom : MonoBehaviour
     {
         [SerializeField, IsntNull] Camera gameCamera;
+        [SerializeField, IsntNull] Camera canvasCamera;
         [SerializeField, IsntNull] GuiHit guiHit;
         [SerializeField, IsntNull] AppSounds appSounds;
 
+        [SerializeField] int startSpawn = 5;
+
         [Header("Cursor")]
-        [SerializeField] float startCursorRadius;
         [SerializeField, IsntNull] Transform cursor;
 
         [Header("Field")]
@@ -30,10 +33,6 @@ namespace IncreKindom
         [SerializeField] float custleRadius;
         [SerializeField, IsntNull] Transform custleCenter;
 
-        [Header("AddEnemy")]
-        [SerializeField] float upgradeCostFactor;
-        [SerializeField] float upgradeStartCost;
-
         [Header("Enemy")]
         [SerializeField] float spawnDelay;
         [SerializeField] float enemySpeed;
@@ -42,80 +41,272 @@ namespace IncreKindom
         [SerializeField, IsntNull] Enemy enemy1Prefab;
         [SerializeField, IsntNull] Enemy enemy2Prefab;
 
+        [Header("Boss")]
+        [SerializeField] float bossRadius;
+        [SerializeField, IsntNull] Transform boss;
+
+
         [Header("Push")]
         [SerializeField] float pushTime;
         [SerializeField] float pushSpeed;
         [SerializeField, IsntNull] SoundsSet pushHit;
+        [SerializeField, IsntNull] SoundsSet bossHit;
+
+        [Header("Upgrade")]
+        [SerializeField, IsntNull] UpgradeData2 addEnemy1Upgrade;
+        [SerializeField, IsntNull] UpgradeData2 addEnemy2Upgrade;
+        [SerializeField, IsntNull] UpgradeData2 addDamageUpgrade;
+        [SerializeField, IsntNull] UpgradeData2 addRangeUpgrade;
+        [SerializeField, IsntNull] UpgradeData2 growSeedUpgrade;
 
         [Header("GUI")]
         [SerializeField, IsntNull] TMP_Text playerMoneyText;
+        [SerializeField, IsntNull] Transform playerMoneyRoot;
+        [SerializeField, IsntNull] AnimationCurve moneyAnimation;
         [SerializeField, IsntNull] UpgradeButton addEnemy1Button;
         [SerializeField, IsntNull] UpgradeButton addEnemy2Button;
         [SerializeField, IsntNull] UpgradeButton addDamageButton;
         [SerializeField, IsntNull] UpgradeButton addRangeButton;
+        [SerializeField, IsntNull] UpgradeButton growSeedButton;
+
+        [Header("FlyMoney")]
+        [SerializeField, IsntNull] RectTransform moneyGuiPoint;
+        [SerializeField, IsntNull] FlyMoneyAnimation moneyInFlyPrefab;
 
         Rect fieldRect;
         Vector2 cursorPos;
-        float cursorActualRadius;
+        Vector2 bossPos;
+        Vector2 moneyWorldPoint;
+
+        Vector2 oldCursorPos;
         int playerMoney;
-        int addEnemy1UpgradeLevel;
-        int addEnemy2UpgradeLevel;
-        int addDamageUpgradeLevel;
-        int addRangeUpgradeLevel;
+        int growOrder1;
+        int growOrder2;
+        float timeNextGrow;
+        float moneyAnimationStart;
+        DynamicObjectPool pool;
+
         List<Enemy> enemyes;
+        List<UpgradeRule> upgradeList;
 
         void Start()
         {
+            enemyes = new();
+            upgradeList = new();
+            pool = DynamicObjectPool.GetInst();
+
+            bossPos = boss.position;
+            boss.localScale = Vector3.one * (bossRadius * 2);
+
             fieldRect = new Rect((Vector2)p1.position, (Vector2)(p2.position - p1.position));
-            addEnemy1UpgradeLevel = 1;
-            addEnemy2UpgradeLevel = 0;
-            addDamageUpgradeLevel = 0;
             playerMoney = 0;
-            enemyes = new List<Enemy>();
+
             playerMoneyText.text = "0";
             enemy1Prefab.gameObject.SetActive(false);
             enemy2Prefab.gameObject.SetActive(false);
+            moneyInFlyPrefab.gameObject.SetActive(false);
 
             appSounds.Init(new AppAudioAccountData());
             AppSounds.SetAsSceneSound(appSounds);
 
+            UpgradeRule AddRule(UpgradeRule rule)
+            {
+                rule.upgradeData.ResetLevet();
+                upgradeList.Add(rule);
+                rule.Init();
+                return rule;
+            }
 
-            SetRange();
-            addEnemy1Button.Click += () => AddEnemy1Upgrade();
-            addEnemy2Button.Click += () => AddEnemy2Upgrade();
-            addDamageButton.Click += () => AddDamageUpgrade();
-            addRangeButton.Click += () => AddRangeUpgrade();
+            AddRule(new UpgradeRule()
+            {
+                game = this,
+                button = addEnemy1Button,
+                upgradeData = addEnemy1Upgrade,
+                ApplyUpgrade = upgrade => SpawnNewEnmey(enemy1Prefab)
+            });
+
+            AddRule(new UpgradeRule()
+            {
+                game = this,
+                button = addEnemy2Button,
+                upgradeData = addEnemy2Upgrade,
+                ApplyUpgrade = upgrade => SpawnNewEnmey(enemy2Prefab)
+            });
+
+            AddRule(new UpgradeRule()
+            {
+                game = this,
+                button = addDamageButton,
+                upgradeData = addDamageUpgrade,
+                ApplyUpgrade = _ => { }
+            });
+
+            AddRule(new UpgradeRule()
+            {
+                game = this,
+                button = growSeedButton,
+                upgradeData = growSeedUpgrade,
+                ApplyUpgrade = _ => { }
+            });
+
+            AddRule(new UpgradeRule()
+            {
+                game = this,
+                button = addRangeButton,
+                upgradeData = addRangeUpgrade,
+                ApplyUpgrade = upgrade => SetupRange(upgrade)
+            }).CallApplyUpgrade();
+
+            Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, moneyGuiPoint.position);
+            moneyWorldPoint = gameCamera.ScreenPointToWorldPointOnPlane(screenPoint, Plaine.XY);
+
 
             DrawGui();
-            SpawnNewEnmey(enemy1Prefab);
+
+            for (int i = 0; i < startSpawn; i++)
+            {
+                SpawnNewEnmey(enemy1Prefab);
+            }
         }
+
+        [SerializeField] float cursorSpeedFacor;
 
         void Update()
         {
+            float dt = Time.deltaTime;
+            float time = Time.time;
+            Vector2 cursodVelocity = (cursorPos - oldCursorPos) * Time.deltaTime;
+
+            // == Attack ===
+            //int maxAttack = attackPeriodUpgrade.IntValue;
+            int damage = addDamageUpgrade.IntValue;
+            float radius = addRangeUpgrade.Value;
+
+            float scale = moneyAnimation.Evaluate(Time.time - moneyAnimationStart);
+            playerMoneyRoot.SetLocalScale(new Vector3(scale, scale, scale));
+
             foreach (var enemy in enemyes)
             {
-                if (enemy.State != EnemyState.Main)
-                    continue;
-
-                Vector2 fromCursorToEnemyDir = (Vector2)enemy.transform.position - cursorPos;
-                if (fromCursorToEnemyDir.magnitude < cursorActualRadius + enemy.Radius)
+                if (enemy.State is EnemyState.Main or EnemyState.Push)
                 {
-                    AppSounds.Play(pushHit);
-                    enemy.health -= addDamageUpgradeLevel + 1;
-                    if (enemy.health > 0)
+                    Vector2 fromCursorToEnemy = (Vector2)enemy.transform.position - cursorPos;
+                    if (fromCursorToEnemy.magnitude < radius + enemy.Radius)
                     {
-                        enemy.State = EnemyState.Push;
-                    }
-                    else
-                    {
-                        enemy.State = EnemyState.PushDeath;
-                    }
+                        if (enemy.State is EnemyState.Main)
+                        {
+                            enemy.health -= damage;
+                            //AddMoney(enemy.Revard);
 
-                    enemy.pushDir = fromCursorToEnemyDir;
-                    enemy.pushEndTime = Time.time + pushTime;
+                            var newFlyMoney = pool.Get(moneyInFlyPrefab);
+                            newFlyMoney.Init(enemy.Revard, enemy.transform.position, moneyWorldPoint);
+                            newFlyMoney.gameObject.SetActive(true);
+                            newFlyMoney.FlyFinish += MoneyInFly_FinishFly;
+
+                            enemy.pushEndTime = Time.time + pushTime;
+                            AppSounds.Play(pushHit);
+
+                            if (enemy.health > 0)
+                            {
+                                enemy.State = EnemyState.Push;
+                            }
+                            else
+                            {
+                                enemy.State = EnemyState.PushDeath;
+                                HideEnemy(enemy);
+                                growOrder1++;
+                                if (growOrder1 == 1)
+                                {
+                                    float growDelay = 1f / growSeedUpgrade.Value;
+                                    timeNextGrow = Time.time + growDelay;
+                                }
+
+                                //RespawnEnemyRandomInRect(enemy);
+                            }
+                        }
+
+                        Vector2 dir = cursodVelocity * cursorSpeedFacor + fromCursorToEnemy.normalized;
+                        enemy.pushDir = dir.normalized;
+
+                        //maxAttack--;
+                        //if (maxAttack <= 0)
+                        //    break;
+                    }
+                }
+
+                // === Bos ===
+                /*
+                if (enemy.State is EnemyState.Main or EnemyState.Push)
+                {
+                    Vector2 toEnemy = (Vector2)enemy.transform.position - bossPos;
+                    if (toEnemy.magnitude < bossRadius + enemy.Radius)
+                    {
+                        if (enemy.State is EnemyState.Push)
+                        {
+                            AppSounds.Play(bossHit);
+                            //enemy.health -= damage;
+                            AddMoney(enemy.Revard);
+                            //enemy.pushEndTime = Time.time + pushTime;
+                        }
+
+                        Vector2 dir = toEnemy.normalized;
+                        enemy.pushDir = dir.normalized;
+
+                        //maxAttack--;
+                        //if (maxAttack <= 0)
+                        //    break;
+                    }
+                }
+                */
+            }
+
+            // === Move ===
+            //UpdateMove();
+            UpdateGrow();
+
+
+            // === 
+            foreach (var enemy in enemyes)
+            {
+                if (enemy.State is EnemyState.Push)
+                {
+                    if (Time.time > enemy.pushEndTime)
+                        enemy.State = EnemyState.Main;
                 }
             }
 
+        }
+
+        private void MoneyInFly_FinishFly(FlyMoneyAnimation flyMoney)
+        {
+            AddMoney(flyMoney.Money);
+            pool.Return(flyMoney.gameObject);
+            pool.gameObject.SetActive(false);
+        }
+
+        private void LateUpdate()
+        {
+            //if (guiHit.IsGuiUnderPointer)
+            //    return;
+
+            oldCursorPos = cursorPos;
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+            cursorPos = gameCamera.ScreenPointToWorldPointOnPlane(mousePos, Plaine.XY);
+            cursor.position = cursorPos;
+        }
+
+#if UNITY_EDITOR
+        void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.yellow;
+            GizmosExtension.DrawRect(fieldRect);
+            //Gizmos.DrawWireSphere(transform.position, enemySpawnDistace);
+            //Gizmos.DrawWireSphere(transform.position, newEnemySpawnDistace);
+            //Gizmos.DrawWireSphere(custleCenter.position, custleRadius);
+        }
+#endif
+
+        void UpdateMove()
+        {
             foreach (var enemy in enemyes)
             {
                 /*
@@ -136,7 +327,7 @@ namespace IncreKindom
 
                 if (enemy.State is EnemyState.Push)
                 {
-                    enemy.transform.position += (Vector3)(enemy.pushDir.normalized * pushSpeed * Time.deltaTime);
+                    enemy.transform.position += (Vector3)(enemy.pushDir * pushSpeed * Time.deltaTime);
 
                     if (Time.time > enemy.pushEndTime)
                     {
@@ -157,28 +348,77 @@ namespace IncreKindom
 
                 if (enemy.State is EnemyState.Main)
                 {
-                    enemy.transform.position += (Vector3)(enemy.pushDir.normalized * enemySpeed * Time.deltaTime);
+                    enemy.transform.position += (Vector3)(enemy.pushDir * enemySpeed * Time.deltaTime);
                 }
 
 
                 Vector2 p = enemy.transform.position;
+                //Vector2 dir = enemy.pushDir;
+
+                // 1 Бесконечное поле
+                /*
                 if (p.x < fieldRect.xMin)
                     p.x = fieldRect.xMax;
-
-                if (p.x > fieldRect.xMax)
+                else if (p.x > fieldRect.xMax)
                     p.x = fieldRect.xMin;
-
-                if (p.y < fieldRect.yMin)
+                else if (p.y < fieldRect.yMin)
                     p.y = fieldRect.yMax;
-
-                if (p.y > fieldRect.yMax)
+                else if (p.y > fieldRect.yMax)
                     p.y = fieldRect.yMin;
+                */
+
+                // 2 Респавн
+                /*
+                if (p.x < fieldRect.xMin ||
+                    p.x > fieldRect.xMax ||
+                    p.y < fieldRect.yMin ||
+                    p.y > fieldRect.yMax)
+                    RespawnEnemyRandom(enemy);
+                */
+
+                // 3 Отскок от стены
+
+                if (p.x < fieldRect.xMin)
+                {
+                    enemy.pushDir = Vector2.Reflect(enemy.pushDir, Vector2.right);
+                    p.x = fieldRect.xMin;
+                }
+                else if (p.x > fieldRect.xMax)
+                {
+                    enemy.pushDir = Vector2.Reflect(enemy.pushDir, Vector2.left);
+                    p.x = fieldRect.xMax;
+                }
+                else if (p.y < fieldRect.yMin)
+                {
+                    enemy.pushDir = Vector2.Reflect(enemy.pushDir, Vector2.up);
+                    p.y = fieldRect.yMin;
+                }
+                else if (p.y > fieldRect.yMax)
+                {
+                    enemy.pushDir = Vector2.Reflect(enemy.pushDir, Vector2.down);
+                    p.y = fieldRect.yMax;
+                }
 
                 enemy.transform.position = p;
             }
         }
-
-
+        void UpdateGrow()
+        {
+            if (Time.time >= timeNextGrow && growOrder1 > 0)
+            {
+                foreach (var enemy in enemyes)
+                {
+                    if (enemy.State == EnemyState.PushDeath)
+                    {
+                        RespawnEnemyRandomInRect(enemy);
+                        growOrder1--;
+                        float growDelay = 1f / growSeedUpgrade.Value;
+                        timeNextGrow = Time.time + growDelay;
+                        return;
+                    }
+                }
+            }
+        }
 
         void RespawnEnemyWithDelay(Enemy enemey, float delay)
         {
@@ -187,44 +427,30 @@ namespace IncreKindom
 
         void HideEnemy(Enemy enemy)
         {
-            enemy.State = EnemyState.Hide;
-            enemy.transform.position = new Vector3(-999999, 0, 0);
+            //enemy.State = EnemyState.Hide;
+            enemy.transform.position = new Vector3(-9999, 0, 0);
         }
 
         IEnumerator RespawnEnemyWithDelay_Coroutine(Enemy enemey, float delay)
         {
             yield return new WaitForSeconds(delay);
-            RespawnEnemy(enemey);
+            RespawnEnemyAtRight(enemey);
         }
 
 
-        private void LateUpdate()
-        {
-            //if (guiHit.IsGuiUnderPointer)
-            //    return;
-
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-            cursorPos = gameCamera.ScreenPointToWorldPointOnPlane(mousePos, Plaine.XY);
-            cursor.position = cursorPos;
-        }
-
-
-#if UNITY_EDITOR
-        void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.yellow;
-            GizmosExtension.DrawRect(fieldRect);
-            //Gizmos.DrawWireSphere(transform.position, enemySpawnDistace);
-            //Gizmos.DrawWireSphere(transform.position, newEnemySpawnDistace);
-            //Gizmos.DrawWireSphere(custleCenter.position, custleRadius);
-        }
-#endif
 
         void KillEnmey(Enemy enemy)
         {
-            playerMoney += enemy.Revard;
+            AddMoney(enemy.Revard);
             HideEnemy(enemy);
-            RespawnEnemyWithDelay(enemy, spawnDelay);
+            //RespawnEnemyWithDelay(enemy, spawnDelay);
+            RespawnEnemyRandomOnSine(enemy);
+        }
+
+        void AddMoney(int add)
+        {
+            moneyAnimationStart = Time.time;
+            playerMoney += add;
             DrawGui();
         }
 
@@ -241,104 +467,103 @@ namespace IncreKindom
             newEnmey.gameObject.SetActive(true);
             newEnmey.ApplyRadius();
             enemyes.Add(newEnmey);
-            RespawnEnemy(newEnmey);
+            //RespawnEnemyAtRight(newEnmey);
+            //RespawnEnemyRandomOnSine(newEnmey);
+            RespawnEnemyRandomInRect(newEnmey);
         }
 
-        void RespawnEnemy(Enemy enemy)
+        void RespawnEnemyAtRight(Enemy enemy)
         {
-            // 1
-            enemy.transform.position = fieldRect.RandomPointOnSide();
-            enemy.pushDir = (new Vector2(-5, 0) + Random.onUnitCircle).normalized;
-
-            // 2
+            // 2 Справа на лево
             Vector2 p1 = new Vector2(fieldRect.xMax, fieldRect.yMin);
             Vector2 p2 = new Vector2(fieldRect.xMax, fieldRect.yMax);
             enemy.transform.position = new Vector2(fieldRect.xMax, Random.Range(fieldRect.yMin, fieldRect.yMax));
-            enemy.pushDir = (Random.onUnitCircle).normalized;
+            enemy.pushDir = (new Vector2(-5, 0) + Random.onUnitCircle).normalized;
 
             enemy.health = enemy.StartHealth;
             enemy.State = EnemyState.Main;
         }
 
-
-
-        void AddEnemy1Upgrade()
+        void RespawnEnemyRandomOnSine(Enemy enemy)
         {
-            playerMoney -= AddEnemy1UpgradeCost();
-            addEnemy1UpgradeLevel++;
+            // 1 Полный рандом
+            enemy.transform.position = fieldRect.RandomPointOnSide();
+            enemy.pushDir = Random.onUnitCircle.normalized;
 
-            int newEnmeyCount = 1;// Mathf.RoundToInt(enemyes.Count * 0.3f) + 2;
-            for (int i = 0; i < newEnmeyCount; i++)
-                SpawnNewEnmey(enemy1Prefab);
-
-            DrawGui();
+            enemy.health = enemy.StartHealth;
+            enemy.State = EnemyState.Main;
         }
 
-        void AddEnemy2Upgrade()
+        void RespawnEnemyRandomInRect(Enemy enemy)
         {
-            playerMoney -= AddEnemy2UpgradeCost();
-            addEnemy2UpgradeLevel++;
+            // 1 Полный рандом
+            enemy.transform.position = fieldRect.RandomPoint();
+            //enemy.pushDir = Random.onUnitCircle.normalized;
 
-            int newEnmeyCount = 1;// Mathf.RoundToInt(enemyes.Count * 0.3f) + 2;
-            for (int i = 0; i < newEnmeyCount; i++)
-                SpawnNewEnmey(enemy2Prefab);
-
-            DrawGui();
+            enemy.health = enemy.StartHealth;
+            enemy.State = EnemyState.Main;
         }
 
-        void AddDamageUpgrade()
+        void SetupRange(UpgradeData2 upgrade)
         {
-            playerMoney -= AddDamageUpgradeCost();
-            addDamageUpgradeLevel++;
-            DrawGui();
+            cursor.localScale = Vector3.one * (upgrade.Value * 2);
         }
-
-        void AddRangeUpgrade()
-        {
-            playerMoney -= AddDamageUpgradeCost();
-            addRangeUpgradeLevel++;
-            SetRange();
-            DrawGui();
-        }
-
-        void SetRange()
-        {
-            cursorActualRadius = startCursorRadius * (addRangeUpgradeLevel + 1);
-            cursor.localScale = Vector3.one * (cursorActualRadius * 2);
-        }
-
 
         void DrawGui()
         {
             playerMoneyText.text = playerMoney.ToString();
 
+            foreach (UpgradeRule item in upgradeList)
             {
-                int cost = AddEnemy1UpgradeCost();
-                addEnemy1Button.Draw(playerMoney >= cost, cost, addEnemy1UpgradeLevel);
+                item.DrawButton(playerMoney);
             }
-
-            {
-                int cost = AddEnemy2UpgradeCost();
-                addEnemy2Button.Draw(playerMoney >= cost, cost, addEnemy2UpgradeLevel);
-            }
-
-            {
-                int cost = AddDamageUpgradeCost();
-                addDamageButton.Draw(playerMoney >= cost, cost, addDamageUpgradeLevel);
-            }
-
-            {
-                int cost = AddRangeUpgradeCost();
-                addRangeButton.Draw(playerMoney >= cost, cost, addRangeUpgradeLevel);
-            }
-
-
         }
 
+        [System.Serializable]
+        class UpgradeRule
+        {
+            public UpgradeButton button;
+            public UpgradeData2 upgradeData;
+            public IncreKindom game;
+            public UnityAction<UpgradeData2> ApplyUpgrade;
 
-        int AddEnemy1UpgradeCost() => Mathf.RoundToInt(addEnemy1UpgradeLevel * upgradeCostFactor + upgradeStartCost);
-        int AddEnemy2UpgradeCost() => Mathf.RoundToInt((addEnemy2UpgradeLevel) * 10 + 100);
-        int AddDamageUpgradeCost() => Mathf.RoundToInt((addDamageUpgradeLevel + 1) * 20);
-        int AddRangeUpgradeCost() => Mathf.RoundToInt((addRangeUpgradeLevel + 1) * 20);
+            public void Init()
+            {
+                button.Click += () =>
+                {
+                    if (Keyboard.current.shiftKey.isPressed)
+                    {
+                        while (game.playerMoney >= upgradeData.IntCost && upgradeData.Level.level < upgradeData.MaxLevel.level)
+                            OnClick();
+                    }
+                    else
+                    {
+                        OnClick();
+                    }
+
+                    game.DrawGui();
+                };
+
+                button.DrawLabel(upgradeData.GuiName);
+            }
+
+            void OnClick()
+            {
+                game.playerMoney -= upgradeData.IntCost;
+                upgradeData.AddLevel();
+                CallApplyUpgrade();
+            }
+
+            public void CallApplyUpgrade()
+            {
+                ApplyUpgrade.Invoke(upgradeData);
+            }
+
+            public void DrawButton(int playerNomey)
+            {
+                int cost = upgradeData.IntCost;
+                button.Draw(playerNomey >= cost, cost, upgradeData.Level.level, upgradeData.MaxLevel.level);
+            }
+        }
     }
 }

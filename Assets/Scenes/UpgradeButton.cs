@@ -9,12 +9,13 @@ namespace IncreKindom
 {
     public class UpgradeButton : MonoBehaviour
     {
-        [SerializeField] string text;
         [SerializeField, IsntNull] Button button;
         [SerializeField, IsntNull] GameObject panel1;
         [SerializeField, IsntNull] GameObject panel2;
+        [SerializeField, IsntNull] GameObject panelMax;
         [SerializeField, IsntNull] TMP_Text labelText1;
         [SerializeField, IsntNull] TMP_Text labelText2;
+        [SerializeField, IsntNull] TMP_Text labelText3;
         [SerializeField, IsntNull] TMP_Text costText1;
         [SerializeField, IsntNull] TMP_Text costText2;
         [SerializeField, IsntNull] TMP_Text levelText1;
@@ -24,28 +25,38 @@ namespace IncreKindom
 
         private void Start()
         {
-            labelText1.text = text;
-            labelText2.text = text;
-
             button.onClick.AddListener(OnClick);
         }
 
-        private void OnClick()
+        void OnClick()
         {
             Click?.Invoke();
         }
 
-        public void Draw(bool available, int cost, int level)
+        public void DrawLabel(string label)
         {
-            panel1.SetActive(available);
-            panel2.SetActive(!available);
+            labelText1.text = label;
+            labelText2.text = label;
+            labelText3.text = label;
+        }
 
-            if (available)
+        public void Draw(bool available, int cost, int level, int maxLevel)
+        {
+            bool isMaxLevel = level >= maxLevel;
+            bool a = !isMaxLevel && available;
+            bool b = !isMaxLevel && !available;
+
+            panel1.SetActive(a);
+            panel2.SetActive(b);
+            panelMax.SetActive(isMaxLevel);
+
+            if (a)
             {
                 levelText1.text = level.ToString();
                 costText1.text = cost.ToString();
             }
-            else
+
+            if (b)
             {
                 levelText2.text = level.ToString();
                 costText2.text = cost.ToString();
@@ -55,13 +66,13 @@ namespace IncreKindom
         [Button]
         void Draw1()
         {
-            Draw(true, 5, 2);
+            Draw(true, 5, 2, 2);
         }
 
         [Button]
         void Draw2()
         {
-            Draw(false, 5, 2);
+            Draw(false, 5, 2, 3);
         }
     }
 }

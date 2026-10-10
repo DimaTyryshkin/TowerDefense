@@ -1,3 +1,4 @@
+using GamePackages.Core.Validation;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -20,6 +21,8 @@ namespace IncreKindom
         [SerializeField] Color mainColor;
         [SerializeField] Color pushColor;
         [SerializeField] Color deathColor;
+        [SerializeField, IsntNull] GameObject view;
+        [SerializeField, IsntNull] GameObject whiteView;
 
         public SpriteRenderer spriteRenderer;
 
@@ -42,17 +45,21 @@ namespace IncreKindom
 
                 if (State == EnemyState.Main)
                 {
-                    spriteRenderer.color = mainColor;
+                    view.SetActive(true);
+                    whiteView.SetActive(false);
+                    //spriteRenderer.color = mainColor;
                 }
 
                 if (State == EnemyState.Push)
                 {
-                    spriteRenderer.color = pushColor;
+                    view.SetActive(false);
+                    whiteView.SetActive(true);
+                    //spriteRenderer.color = pushColor;
                 }
 
                 if (State == EnemyState.PushDeath)
                 {
-                    spriteRenderer.color = deathColor;
+                    //spriteRenderer.color = deathColor;
                 }
             }
         }
@@ -63,7 +70,7 @@ namespace IncreKindom
         [Button]
         public void ApplyRadius()
         {
-            spriteRenderer.transform.localScale = Vector3.one * (Radius * 2);
+            transform.localScale = Vector3.one * (Radius * 2);
         }
 
 #if UNITY_EDITOR
