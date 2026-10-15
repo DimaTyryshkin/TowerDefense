@@ -42,13 +42,19 @@ namespace IncreKindom
 
         public void Draw(bool available, int cost, int level, int maxLevel)
         {
-            bool isMaxLevel = level >= maxLevel;
+            bool isMaxLevel = level >= maxLevel && maxLevel > 0;
             bool a = !isMaxLevel && available;
             bool b = !isMaxLevel && !available;
 
             panel1.SetActive(a);
             panel2.SetActive(b);
             panelMax.SetActive(isMaxLevel);
+
+            if (maxLevel == 0)
+            {
+                levelText1.gameObject.SetActive(false);
+                levelText2.gameObject.SetActive(false);
+            }
 
             if (a)
             {

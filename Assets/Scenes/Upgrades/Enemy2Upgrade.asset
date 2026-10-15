@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Enemy2Upgrade
   m_EditorClassIdentifier: Assembly-CSharp::IncreKindom.UpgradeData2
   guiName: "\u0428\u0430\u0440\u0438\u043A B"
-  maxLevel: 400
-  startCost: 60
+  maxLevel: 0
+  startCost: 10
   lastCost: 60
   startValue: 1
   lastValue: 401

@@ -15,6 +15,7 @@ namespace IncreKindom
 
     public class Enemy : MonoBehaviour
     {
+        [SerializeField] int type;
         [SerializeField] float startHealth;
         [SerializeField] float radius;
         [SerializeField] int revard;
@@ -26,6 +27,7 @@ namespace IncreKindom
 
         public SpriteRenderer spriteRenderer;
 
+        public int Type => type;
         public float StartHealth => startHealth;
         public float Radius => radius;
         public int Revard => revard;

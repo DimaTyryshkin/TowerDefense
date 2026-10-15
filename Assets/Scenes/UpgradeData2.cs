@@ -27,6 +27,7 @@ namespace IncreKindom
         public UpgradeLevel Level => new UpgradeLevel(level);
         //public UpgradeLevel Level => new UpgradeLevel(GameFactory.Data.upgrades.GetOrDefault(name, 0));
         public UpgradeLevel MaxLevel => new UpgradeLevel(maxLevel);
+        public bool NotMaxLevel => level < maxLevel || maxLevel == 0;
 
 
         int level { get; set; }
@@ -47,12 +48,18 @@ namespace IncreKindom
 
         public float GetValue(int level)
         {
+            if (maxLevel == 0)
+                return startValue;
+
             //return ((lastValue - startValue) / (maxLevel - 1)) * (level - 1) + startValue; // Линейный рост от Lvl1
             return ((lastValue - startValue) / maxLevel) * level + startValue; // Линейный рост от Lvl0
         }
 
         public float GetCost(int level)
         {
+            if (maxLevel == 0)
+                return startCost;
+
             // return ((lastCost - startCost) / (maxLevel - 1)) * (level - 1) + startCost; // Линейный рост от Lvl1
             return ((lastCost - startCost) / maxLevel) * level + startCost; // Линейный рост от Lvl0
         }
@@ -63,5 +70,6 @@ namespace IncreKindom
         [ShowNativeProperty] float Value0 => GetValue(0);
         [ShowNativeProperty] float Value1 => GetValue(1);
         [ShowNativeProperty] float ValueLast => GetValue(maxLevel);
+
     }
 }

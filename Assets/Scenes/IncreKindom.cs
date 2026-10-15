@@ -3,6 +3,7 @@ using GamePackages.Core;
 using GamePackages.Core.Validation;
 using GamePackages.InputSystem;
 using NaughtyAttributes;
+
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -73,10 +74,17 @@ namespace IncreKindom
         [SerializeField, IsntNull] RectTransform moneyGuiPoint;
         [SerializeField, IsntNull] FlyMoneyAnimation moneyInFlyPrefab;
 
+
+        [Header("Seeding")]
+        //[SerializeField, IsntNull] int seedingCost1cost;
+        [SerializeField, IsntNull] RectTransform seedingSpawn;
+        [SerializeField, IsntNull] FlySeedlingAnimator flySeedlingAnimator;
+
         Rect fieldRect;
         Vector2 cursorPos;
         Vector2 bossPos;
         Vector2 moneyWorldPoint;
+        Vector2 buySeedingButtonWorldPoint;
 
         Vector2 oldCursorPos;
         int playerMoney;
@@ -105,6 +113,7 @@ namespace IncreKindom
             enemy1Prefab.gameObject.SetActive(false);
             enemy2Prefab.gameObject.SetActive(false);
             moneyInFlyPrefab.gameObject.SetActive(false);
+            flySeedlingAnimator.gameObject.SetActive(false);
 
             appSounds.Init(new AppAudioAccountData());
             AppSounds.SetAsSceneSound(appSounds);
@@ -122,7 +131,8 @@ namespace IncreKindom
                 game = this,
                 button = addEnemy1Button,
                 upgradeData = addEnemy1Upgrade,
-                ApplyUpgrade = upgrade => SpawnNewEnmey(enemy1Prefab)
+                //ApplyUpgrade = upgrade => SpawnNewEnmey(enemy1Prefab)
+                ApplyUpgrade = upgrade => SpawnSeeding(enemy1Prefab)
             });
 
             AddRule(new UpgradeRule()
@@ -130,7 +140,8 @@ namespace IncreKindom
                 game = this,
                 button = addEnemy2Button,
                 upgradeData = addEnemy2Upgrade,
-                ApplyUpgrade = upgrade => SpawnNewEnmey(enemy2Prefab)
+                //ApplyUpgrade = upgrade => SpawnNewEnmey(enemy2Prefab)
+                ApplyUpgrade = upgrade => SpawnSeeding(enemy2Prefab)
             });
 
             AddRule(new UpgradeRule()
@@ -157,9 +168,8 @@ namespace IncreKindom
                 ApplyUpgrade = upgrade => SetupRange(upgrade)
             }).CallApplyUpgrade();
 
-            Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, moneyGuiPoint.position);
-            moneyWorldPoint = gameCamera.ScreenPointToWorldPointOnPlane(screenPoint, Plaine.XY);
-
+            moneyWorldPoint = GetWorldPoint(moneyGuiPoint);
+            buySeedingButtonWorldPoint = GetWorldPoint(seedingSpawn);
 
             DrawGui();
 
@@ -167,6 +177,12 @@ namespace IncreKindom
             {
                 SpawnNewEnmey(enemy1Prefab);
             }
+        }
+
+        Vector2 GetWorldPoint(RectTransform rectTransform)
+        {
+            Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, rectTransform.position);
+            return gameCamera.ScreenPointToWorldPointOnPlane(screenPoint, Plaine.XY);
         }
 
         [SerializeField] float cursorSpeedFacor;
@@ -194,11 +210,12 @@ namespace IncreKindom
                     {
                         if (enemy.State is EnemyState.Main)
                         {
-                            enemy.health -= damage;
+                            float hpChange = Mathf.Min(damage, (int)enemy.health);
+                            enemy.health -= hpChange;
                             //AddMoney(enemy.Revard);
 
                             var newFlyMoney = pool.Get(moneyInFlyPrefab);
-                            newFlyMoney.Init(enemy.Revard, enemy.transform.position, moneyWorldPoint);
+                            newFlyMoney.Init(Mathf.RoundToInt(enemy.Revard * hpChange), enemy.transform.position, moneyWorldPoint);
                             newFlyMoney.gameObject.SetActive(true);
                             newFlyMoney.FlyFinish += MoneyInFly_FinishFly;
 
@@ -211,16 +228,17 @@ namespace IncreKindom
                             }
                             else
                             {
-                                enemy.State = EnemyState.PushDeath;
-                                HideEnemy(enemy);
-                                growOrder1++;
-                                if (growOrder1 == 1)
-                                {
-                                    float growDelay = 1f / growSeedUpgrade.Value;
-                                    timeNextGrow = Time.time + growDelay;
-                                }
+                                //enemy.State = EnemyState.PushDeath;
 
-                                //RespawnEnemyRandomInRect(enemy);
+                                HideEnemy(enemy);
+                                //growOrder1++;
+                                //if (growOrder1 == 1)
+                                //{
+                                //    float growDelay = 1f / growSeedUpgrade.Value;
+                                //    timeNextGrow = Time.time + growDelay;
+                                //}
+
+
                             }
                         }
 
@@ -232,6 +250,16 @@ namespace IncreKindom
                         //    break;
                     }
                 }
+
+                /*
+                if (enemy.State is EnemyState.Hide)
+                {
+                    if (Time.time >= enemy.pushEndTime)
+                    {
+                        RespawnEnemyRandomInRect(enemy);
+                    }
+                }
+                */
 
                 // === Bos ===
                 /*
@@ -261,7 +289,8 @@ namespace IncreKindom
 
             // === Move ===
             //UpdateMove();
-            UpdateGrow();
+            //UpdateGrow();
+            UpdateDrafeMove();
 
 
             // === 
@@ -280,7 +309,6 @@ namespace IncreKindom
         {
             AddMoney(flyMoney.Money);
             pool.Return(flyMoney.gameObject);
-            pool.gameObject.SetActive(false);
         }
 
         private void LateUpdate()
@@ -304,6 +332,26 @@ namespace IncreKindom
             //Gizmos.DrawWireSphere(custleCenter.position, custleRadius);
         }
 #endif
+
+        [Range(0, 50), SerializeField]
+        float drafeSpeed;
+
+        void UpdateDrafeMove()
+        {
+            Vector3 drafe = new Vector3(-drafeSpeed * Time.deltaTime, 0, 0);
+            foreach (var enemy in enemyes)
+            {
+                if (enemy.State == EnemyState.Hide)
+                    continue;
+
+                Vector3 p = enemy.transform.position;
+                p = p + drafe;
+                if (p.x < fieldRect.xMin)
+                    p.x = fieldRect.xMax;
+
+                enemy.transform.position = p;
+            }
+        }
 
         void UpdateMove()
         {
@@ -402,22 +450,42 @@ namespace IncreKindom
                 enemy.transform.position = p;
             }
         }
+
+        int index;
         void UpdateGrow()
         {
             if (Time.time >= timeNextGrow && growOrder1 > 0)
             {
-                foreach (var enemy in enemyes)
+                for (; index < enemyes.Count; index++)
                 {
+                    var enemy = enemyes[index];
                     if (enemy.State == EnemyState.PushDeath)
                     {
-                        RespawnEnemyRandomInRect(enemy);
+                        RespawnEnemy(enemy);
+
                         growOrder1--;
                         float growDelay = 1f / growSeedUpgrade.Value;
                         timeNextGrow = Time.time + growDelay;
                         return;
                     }
                 }
+
+                index = 0;
             }
+        }
+
+        Enemy GetEnemyForRespawn(int enemyType)
+        {
+            foreach (var enemy in enemyes)
+            {
+                if (enemy.State == EnemyState.Hide &&
+                    enemy.Type == enemyType)
+                {
+                    return enemy;
+                }
+            }
+
+            return null;
         }
 
         void RespawnEnemyWithDelay(Enemy enemey, float delay)
@@ -427,24 +495,23 @@ namespace IncreKindom
 
         void HideEnemy(Enemy enemy)
         {
-            //enemy.State = EnemyState.Hide;
-            enemy.transform.position = new Vector3(-9999, 0, 0);
+            enemy.State = EnemyState.Hide;
+            enemy.pushEndTime = Time.time + 1;
+            enemy.transform.position = new Vector3(+9999, 0, 0);
         }
 
         IEnumerator RespawnEnemyWithDelay_Coroutine(Enemy enemey, float delay)
         {
             yield return new WaitForSeconds(delay);
-            RespawnEnemyAtRight(enemey);
+            RespawnEnemy(enemey);
         }
-
-
 
         void KillEnmey(Enemy enemy)
         {
             AddMoney(enemy.Revard);
             HideEnemy(enemy);
             //RespawnEnemyWithDelay(enemy, spawnDelay);
-            RespawnEnemyRandomOnSine(enemy);
+            //RespawnEnemy(enemy);
         }
 
         void AddMoney(int add)
@@ -457,51 +524,78 @@ namespace IncreKindom
         [Button]
         void AddMoney()
         {
-            playerMoney += 100;
+            playerMoney += 1000;
             DrawGui();
         }
 
         void SpawnNewEnmey(Enemy prefab)
         {
-            var newEnmey = Instantiate(prefab);
-            newEnmey.gameObject.SetActive(true);
-            newEnmey.ApplyRadius();
-            enemyes.Add(newEnmey);
-            //RespawnEnemyAtRight(newEnmey);
-            //RespawnEnemyRandomOnSine(newEnmey);
-            RespawnEnemyRandomInRect(newEnmey);
+            var enemy = InstantiateNewEnmey(prefab);
+            RespawnEnemy(enemy);
         }
 
-        void RespawnEnemyAtRight(Enemy enemy)
+        Enemy InstantiateNewEnmey(Enemy prefab)
         {
-            // 2 Справа на лево
-            Vector2 p1 = new Vector2(fieldRect.xMax, fieldRect.yMin);
-            Vector2 p2 = new Vector2(fieldRect.xMax, fieldRect.yMax);
-            enemy.transform.position = new Vector2(fieldRect.xMax, Random.Range(fieldRect.yMin, fieldRect.yMax));
-            enemy.pushDir = (new Vector2(-5, 0) + Random.onUnitCircle).normalized;
+            var enemy = Instantiate(prefab);
+            enemy.gameObject.SetActive(true);
+            enemy.ApplyRadius();
+            enemyes.Add(enemy);
+            return enemy;
+        }
 
+        void SpawnSeeding(Enemy prefab)
+        {
+            var posAndDir = GetPosForEnemy();
+
+            var newItem = pool.Get(flySeedlingAnimator);
+            newItem.Init(prefab, buySeedingButtonWorldPoint, posAndDir.pos);
+            newItem.gameObject.SetActive(true);
+            newItem.FlyFinish += Seeding_OnLand;
+        }
+
+        private void Seeding_OnLand(FlySeedlingAnimator animator)
+        {
+            Enemy enemy = GetEnemyForRespawn(animator.EnemyPrefab.Type);
+            if (!enemy)
+                enemy = InstantiateNewEnmey(animator.EnemyPrefab);
+
+            SetEnemyMainState(enemy, animator.EndPos, Vector2.one);
+
+            pool.Return(animator.gameObject);
+            animator.gameObject.SetActive(false);
+        }
+
+        void RespawnEnemy(Enemy enemy)
+        {
+            var posAndDir = GetPosForEnemy();
+            SetEnemyMainState(enemy, posAndDir.pos, posAndDir.dir);
+        }
+
+        void SetEnemyMainState(Enemy enemy, Vector2 pos, Vector2 dir)
+        {
+            enemy.transform.position = pos;
+            enemy.pushDir = dir;
             enemy.health = enemy.StartHealth;
             enemy.State = EnemyState.Main;
         }
 
-        void RespawnEnemyRandomOnSine(Enemy enemy)
+        (Vector2 pos, Vector2 dir) GetPosForEnemy()
         {
-            // 1 Полный рандом
-            enemy.transform.position = fieldRect.RandomPointOnSide();
-            enemy.pushDir = Random.onUnitCircle.normalized;
+            if (drafeSpeed > 0)
+            {
+                Vector2 p1 = new Vector2(fieldRect.xMax, fieldRect.yMin);
+                Vector2 p2 = new Vector2(fieldRect.xMax, fieldRect.yMax);
+                return
+                    (new Vector2(fieldRect.xMax, Random.Range(fieldRect.yMin, fieldRect.yMax)),
+                    (new Vector2(-5, 0) + Random.onUnitCircle).normalized);
+            }
+            else
+            {
+                return (fieldRect.RandomPoint(), Vector2.zero);
+            }
 
-            enemy.health = enemy.StartHealth;
-            enemy.State = EnemyState.Main;
-        }
+            // 2 enemy.transform.position = fieldRect.RandomPointOnSide();
 
-        void RespawnEnemyRandomInRect(Enemy enemy)
-        {
-            // 1 Полный рандом
-            enemy.transform.position = fieldRect.RandomPoint();
-            //enemy.pushDir = Random.onUnitCircle.normalized;
-
-            enemy.health = enemy.StartHealth;
-            enemy.State = EnemyState.Main;
         }
 
         void SetupRange(UpgradeData2 upgrade)
@@ -533,7 +627,7 @@ namespace IncreKindom
                 {
                     if (Keyboard.current.shiftKey.isPressed)
                     {
-                        while (game.playerMoney >= upgradeData.IntCost && upgradeData.Level.level < upgradeData.MaxLevel.level)
+                        while (game.playerMoney >= upgradeData.IntCost && upgradeData.NotMaxLevel)
                             OnClick();
                     }
                     else

@@ -7,7 +7,7 @@ namespace IncreKindom
 {
     class FlyMoneyAnimation : MonoBehaviour
     {
-        [SerializeField, IsntNull] float flyTime;
+        [SerializeField, IsntNull] float flySpeed;
         [SerializeField, IsntNull] AnimationCurve flyMoneyAnimationCurve;
 
         public event UnityAction<FlyMoneyAnimation> FlyFinish;
@@ -15,16 +15,18 @@ namespace IncreKindom
 
         float t;
         int money;
-        Vector2 target;
+        float flyTime;
+        Vector2 endPos;
         Vector2 startPos;
 
-        public void Init(int money, Vector2 startPos, Vector2 target)
+        public void Init(int money, Vector2 startPos, Vector2 endPos)
         {
             this.t = 0;
             transform.position = startPos;
             this.startPos = startPos;
-            this.target = target;
+            this.endPos = endPos;
             this.money = money;
+            flyTime = Vector2.Distance(startPos, endPos) / flySpeed;
         }
 
         private void Update()
@@ -36,7 +38,7 @@ namespace IncreKindom
             }
             else
             {
-                transform.position = Vector2.Lerp(startPos, target, flyMoneyAnimationCurve.Evaluate(t));
+                transform.position = Vector2.Lerp(startPos, endPos, flyMoneyAnimationCurve.Evaluate(t));
             }
         }
     }
