@@ -41,6 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Tree
+    uniqueID: 3087543435
+    locked: 0
   - name: Base-TileMap
     uniqueID: 2602723171
     locked: 0

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee40b4d9aecac0b4981202972d0fab5a, type: 3}
+  m_Name: axe-5-ax-hits-on-wood-cut-01
+  m_EditorClassIdentifier: GamePackages::GamePackages.Audio.AudioClipWrapper
+  useCount: 1
+  audioClip: {fileID: 8300000, guid: 720b06f2fa6370f429ff27bf4c3ee1b5, type: 3}
+  volume: 0.5
+  startTime: 0
+  pitch:
+    min: 0.91384244
+    max: 1.0317422

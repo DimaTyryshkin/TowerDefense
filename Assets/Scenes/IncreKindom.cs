@@ -231,14 +231,13 @@ namespace IncreKindom
                                 //enemy.State = EnemyState.PushDeath;
 
                                 HideEnemy(enemy);
+
                                 //growOrder1++;
                                 //if (growOrder1 == 1)
                                 //{
                                 //    float growDelay = 1f / growSeedUpgrade.Value;
                                 //    timeNextGrow = Time.time + growDelay;
-                                //}
-
-
+                                //} 
                             }
                         }
 
@@ -251,15 +250,7 @@ namespace IncreKindom
                     }
                 }
 
-                /*
-                if (enemy.State is EnemyState.Hide)
-                {
-                    if (Time.time >= enemy.pushEndTime)
-                    {
-                        RespawnEnemyRandomInRect(enemy);
-                    }
-                }
-                */
+                UpdateRespawnFromHide();
 
                 // === Bos ===
                 /*
@@ -350,6 +341,20 @@ namespace IncreKindom
                     p.x = fieldRect.xMax;
 
                 enemy.transform.position = p;
+            }
+        }
+
+        void UpdateRespawnFromHide()
+        {
+            foreach (var enemy in enemyes)
+            {
+                if (enemy.State is EnemyState.Hide)
+                {
+                    if (Time.time >= enemy.pushEndTime)
+                    {
+                        RespawnEnemy(enemy);
+                    }
+                }
             }
         }
 
@@ -577,6 +582,7 @@ namespace IncreKindom
             enemy.pushDir = dir;
             enemy.health = enemy.StartHealth;
             enemy.State = EnemyState.Main;
+            enemy.ApplySortingOrder();
         }
 
         (Vector2 pos, Vector2 dir) GetPosForEnemy()

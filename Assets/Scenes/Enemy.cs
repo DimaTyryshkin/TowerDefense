@@ -22,10 +22,7 @@ namespace IncreKindom
         [SerializeField] Color mainColor;
         [SerializeField] Color pushColor;
         [SerializeField] Color deathColor;
-        [SerializeField, IsntNull] GameObject view;
-        [SerializeField, IsntNull] GameObject whiteView;
-
-        public SpriteRenderer spriteRenderer;
+        [SerializeField, IsntNull] FlashSprite flashSprite;
 
         public int Type => type;
         public float StartHealth => startHealth;
@@ -47,15 +44,13 @@ namespace IncreKindom
 
                 if (State == EnemyState.Main)
                 {
-                    view.SetActive(true);
-                    whiteView.SetActive(false);
+                    flashSprite.SetAmount(0);
                     //spriteRenderer.color = mainColor;
                 }
 
                 if (State == EnemyState.Push)
                 {
-                    view.SetActive(false);
-                    whiteView.SetActive(true);
+                    flashSprite.SetAmount(1);
                     //spriteRenderer.color = pushColor;
                 }
 
@@ -66,13 +61,17 @@ namespace IncreKindom
             }
         }
 
-
         EnemyState state;
 
         [Button]
         public void ApplyRadius()
         {
             transform.localScale = Vector3.one * (Radius * 2);
+        }
+
+        public void ApplySortingOrder()
+        {
+            flashSprite.SpriteRenderer.sortingOrder = -Mathf.RoundToInt(transform.position.y * 100);
         }
 
 #if UNITY_EDITOR

@@ -20,4 +20,5 @@ MonoBehaviour:
   audioMixerGroup: {fileID: 24300002, guid: 58aa9c5ac24a6b24b88e624be9fd3df2, type: 2}
   dontDestroyOnload: 0
   clips:
-  - {fileID: 11400000, guid: a4ab215deb5abc246a24d4992cd84da1, type: 2}
+  - {fileID: 11400000, guid: 1d31d721e0c128f499de7ca51dad2145, type: 2}
+  - {fileID: 11400000, guid: fa7bdf45e0ff935489c76d58b2f9cf4a, type: 2}
