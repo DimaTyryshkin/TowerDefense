@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6ef9527e7c71604ba0bdbca1bccc8b2, type: 3}
   m_Name: Enemy1Upgrade
   m_EditorClassIdentifier: Assembly-CSharp::IncreKindom.UpgradeData2
-  guiName: "\u0428\u0430\u0440\u0438\u043A \u0410"
-  maxLevel: 0
-  startCost: 2
-  lastCost: 9
+  guiName: "\u0421\u043E\u0441\u043D\u0430"
+  maxLevel: 99
+  startCost: 5
+  lastCost: 104
   startValue: 1
-  lastValue: 401
+  lastValue: 101

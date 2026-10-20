@@ -10,6 +10,7 @@ namespace IncreKindom
         [SerializeField, IsntNull] float flySpeed;
         [SerializeField, IsntNull] float height;
         [SerializeField, IsntNull] AnimationCurve yCurve;
+        [SerializeField, IsntNull] AnimationCurve tCurve;
 
         public event UnityAction<FlySeedlingAnimator> FlyFinish;
         public Enemy EnemyPrefab => enemyPrefab;
@@ -42,8 +43,9 @@ namespace IncreKindom
             }
             else
             {
-                Vector2 pos = Vector2.Lerp(startPos, endPos, t);
-                pos.y += yCurve.Evaluate(t);
+                float t2 = tCurve.Evaluate(t);
+                Vector2 pos = Vector2.Lerp(startPos, endPos, t2);
+                pos.y += yCurve.Evaluate(t2) * height;
                 transform.position = pos;
             }
         }

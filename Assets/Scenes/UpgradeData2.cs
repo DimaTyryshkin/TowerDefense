@@ -23,6 +23,7 @@ namespace IncreKindom
         public float Value => GetValue(level);
         public float Cost => GetCost(level);
         public int IntValue => Mathf.FloorToInt(GetValue(level));
+        public bool IsOpen => level > 0;
         public int IntCost => Mathf.FloorToInt(GetCost(level));
         public UpgradeLevel Level => new UpgradeLevel(level);
         //public UpgradeLevel Level => new UpgradeLevel(GameFactory.Data.upgrades.GetOrDefault(name, 0));

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6ef9527e7c71604ba0bdbca1bccc8b2, type: 3}
+  m_Name: Enemy4Upgrade
+  m_EditorClassIdentifier: Assembly-CSharp::IncreKindom.UpgradeData2
+  guiName: "\u0417\u043E\u043B\u043E\u0442\u043E\u0439 \u044F\u043F\u043E\u043D\u0441\u043A\u0438\u0439
+    \u043A\u043B\u0451\u043D"
+  maxLevel: 99
+  startCost: 10
+  lastCost: 60
+  startValue: 1
+  lastValue: 100

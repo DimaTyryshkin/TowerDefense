@@ -6,6 +6,7 @@ using NaughtyAttributes;
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -22,6 +23,7 @@ namespace IncreKindom
         [SerializeField, IsntNull] AppSounds appSounds;
 
         [SerializeField] int startSpawn = 5;
+        [SerializeField] float startRespawnRange = 2;
 
         [Header("Cursor")]
         [SerializeField, IsntNull] Transform cursor;
@@ -30,9 +32,6 @@ namespace IncreKindom
         [SerializeField, IsntNull] Transform p1;
         [SerializeField, IsntNull] Transform p2;
 
-        [Header("Custle")]
-        [SerializeField] float custleRadius;
-        [SerializeField, IsntNull] Transform custleCenter;
 
         [Header("Enemy")]
         [SerializeField] float spawnDelay;
@@ -41,6 +40,8 @@ namespace IncreKindom
         [SerializeField] float enemySpawnDistace;
         [SerializeField, IsntNull] Enemy enemy1Prefab;
         [SerializeField, IsntNull] Enemy enemy2Prefab;
+        [SerializeField, IsntNull] Enemy enemy3Prefab;
+        [SerializeField, IsntNull] Enemy enemy4Prefab;
 
         [Header("Boss")]
         [SerializeField] float bossRadius;
@@ -56,16 +57,37 @@ namespace IncreKindom
         [Header("Upgrade")]
         [SerializeField, IsntNull] UpgradeData2 addEnemy1Upgrade;
         [SerializeField, IsntNull] UpgradeData2 addEnemy2Upgrade;
+        [SerializeField, IsntNull] UpgradeData2 addEnemy3Upgrade;
+        [SerializeField, IsntNull] UpgradeData2 addEnemy4Upgrade;
+
+        [SerializeField, IsntNull] UpgradeData2 openEnemy2Upgrade;
+        [SerializeField, IsntNull] UpgradeData2 openEnemy3Upgrade;
+        [SerializeField, IsntNull] UpgradeData2 openEnemy4Upgrade;
+        [SerializeField, IsntNull] UpgradeData2 openUpgradeUpgrade;
+
         [SerializeField, IsntNull] UpgradeData2 addDamageUpgrade;
         [SerializeField, IsntNull] UpgradeData2 addRangeUpgrade;
         [SerializeField, IsntNull] UpgradeData2 growSeedUpgrade;
 
         [Header("GUI")]
         [SerializeField, IsntNull] TMP_Text playerMoneyText;
+        [SerializeField, IsntNull] GameObject shopPanel;
+        [SerializeField, IsntNull] Button shopButton;
+        [SerializeField, IsntNull] GameObject upgradePanel;
+        [SerializeField, IsntNull] GameObject upgradesMenuButton;
         [SerializeField, IsntNull] Transform playerMoneyRoot;
         [SerializeField, IsntNull] AnimationCurve moneyAnimation;
+
         [SerializeField, IsntNull] UpgradeButton addEnemy1Button;
         [SerializeField, IsntNull] UpgradeButton addEnemy2Button;
+        [SerializeField, IsntNull] UpgradeButton addEnemy3Button;
+        [SerializeField, IsntNull] UpgradeButton addEnemy4Button;
+
+        [SerializeField, IsntNull] UpgradeButton openUpgradesButton;
+        [SerializeField, IsntNull] UpgradeButton openEnemy2Button;
+        [SerializeField, IsntNull] UpgradeButton openEnemy3Button;
+        [SerializeField, IsntNull] UpgradeButton openEnemy4Button;
+
         [SerializeField, IsntNull] UpgradeButton addDamageButton;
         [SerializeField, IsntNull] UpgradeButton addRangeButton;
         [SerializeField, IsntNull] UpgradeButton growSeedButton;
@@ -79,6 +101,11 @@ namespace IncreKindom
         //[SerializeField, IsntNull] int seedingCost1cost;
         [SerializeField, IsntNull] RectTransform seedingSpawn;
         [SerializeField, IsntNull] FlySeedlingAnimator flySeedlingAnimator;
+
+        [Header("Wood")]
+        [SerializeField] float woodRadius;
+        [SerializeField, IsntNull] GameObject woodPrefab;
+        [SerializeField, IsntNull] FlySeedlingAnimator woodFlyPrefab;
 
         Rect fieldRect;
         Vector2 cursorPos;
@@ -95,11 +122,13 @@ namespace IncreKindom
         DynamicObjectPool pool;
 
         List<Enemy> enemyes;
+        List<SpriteRenderer> woods;
         List<UpgradeRule> upgradeList;
 
         void Start()
         {
             enemyes = new();
+            woods = new();
             upgradeList = new();
             pool = DynamicObjectPool.GetInst();
 
@@ -112,14 +141,22 @@ namespace IncreKindom
             playerMoneyText.text = "0";
             enemy1Prefab.gameObject.SetActive(false);
             enemy2Prefab.gameObject.SetActive(false);
+            enemy3Prefab.gameObject.SetActive(false);
+            enemy4Prefab.gameObject.SetActive(false);
+            woodPrefab.gameObject.SetActive(false);
+            woodFlyPrefab.gameObject.SetActive(false);
             moneyInFlyPrefab.gameObject.SetActive(false);
             flySeedlingAnimator.gameObject.SetActive(false);
+            shopPanel.SetActive(true);
+            upgradePanel.SetActive(false);
+
 
             appSounds.Init(new AppAudioAccountData());
             AppSounds.SetAsSceneSound(appSounds);
 
             UpgradeRule AddRule(UpgradeRule rule)
             {
+                rule.game = this;
                 rule.upgradeData.ResetLevet();
                 upgradeList.Add(rule);
                 rule.Init();
@@ -128,25 +165,93 @@ namespace IncreKindom
 
             AddRule(new UpgradeRule()
             {
-                game = this,
                 button = addEnemy1Button,
                 upgradeData = addEnemy1Upgrade,
-                //ApplyUpgrade = upgrade => SpawnNewEnmey(enemy1Prefab)
                 ApplyUpgrade = upgrade => SpawnSeeding(enemy1Prefab)
             });
 
             AddRule(new UpgradeRule()
             {
-                game = this,
                 button = addEnemy2Button,
                 upgradeData = addEnemy2Upgrade,
-                //ApplyUpgrade = upgrade => SpawnNewEnmey(enemy2Prefab)
                 ApplyUpgrade = upgrade => SpawnSeeding(enemy2Prefab)
             });
 
             AddRule(new UpgradeRule()
             {
-                game = this,
+                button = addEnemy3Button,
+                upgradeData = addEnemy3Upgrade,
+                ApplyUpgrade = upgrade => SpawnSeeding(enemy3Prefab)
+            });
+
+            AddRule(new UpgradeRule()
+            {
+                button = addEnemy4Button,
+                upgradeData = addEnemy4Upgrade,
+                ApplyUpgrade = upgrade => SpawnSeeding(enemy4Prefab)
+            });
+
+            // === Upgrades ===
+
+            AddRule(new UpgradeRule()
+            {
+                button = openUpgradesButton,
+                upgradeData = openUpgradeUpgrade,
+                ApplyUpgrade = upgrade =>
+                {
+                    upgradesMenuButton.SetActive(upgrade.IsOpen);
+                    openEnemy2Button.gameObject.SetActive(upgrade.IsOpen);
+                    openUpgradesButton.gameObject.SetActive(!upgrade.IsOpen);
+                }
+            }).CallApplyUpgrade();
+
+            AddRule(new UpgradeRule()
+            {
+                button = openEnemy2Button,
+                upgradeData = openEnemy2Upgrade,
+                ApplyUpgrade = upgrade =>
+                {
+                    addEnemy2Button.gameObject.SetActive(upgrade.IsOpen);
+                    openEnemy3Button.gameObject.SetActive(upgrade.IsOpen);
+                    addDamageButton.gameObject.SetActive(upgrade.IsOpen);
+                    addRangeButton.gameObject.SetActive(upgrade.IsOpen);
+
+                    if (upgrade.IsOpen)
+                        shopButton.OnSubmit(new UnityEngine.EventSystems.PointerEventData(null));
+                }
+            }).CallApplyUpgrade();
+
+            AddRule(new UpgradeRule()
+            {
+                button = openEnemy3Button,
+                upgradeData = openEnemy3Upgrade,
+                ApplyUpgrade = upgrade =>
+                {
+                    addEnemy3Button.gameObject.SetActive(upgrade.IsOpen);
+                    openEnemy4Button.gameObject.SetActive(upgrade.IsOpen);
+                }
+            }).CallApplyUpgrade();
+
+            AddRule(new UpgradeRule()
+            {
+                button = openEnemy4Button,
+                upgradeData = openEnemy4Upgrade,
+                ApplyUpgrade = upgrade =>
+                {
+                    addEnemy4Button.gameObject.SetActive(upgrade.IsOpen);
+                }
+            }).CallApplyUpgrade();
+
+            //AddRule(new UpgradeRule()
+            //{
+            //    game = this,
+            //    button = growSeedButton,
+            //    upgradeData = growSeedUpgrade,
+            //    ApplyUpgrade = _ => { }
+            //});
+
+            AddRule(new UpgradeRule()
+            {
                 button = addDamageButton,
                 upgradeData = addDamageUpgrade,
                 ApplyUpgrade = _ => { }
@@ -154,19 +259,11 @@ namespace IncreKindom
 
             AddRule(new UpgradeRule()
             {
-                game = this,
-                button = growSeedButton,
-                upgradeData = growSeedUpgrade,
-                ApplyUpgrade = _ => { }
-            });
-
-            AddRule(new UpgradeRule()
-            {
-                game = this,
                 button = addRangeButton,
                 upgradeData = addRangeUpgrade,
                 ApplyUpgrade = upgrade => SetupRange(upgrade)
             }).CallApplyUpgrade();
+
 
             moneyWorldPoint = GetWorldPoint(moneyGuiPoint);
             buySeedingButtonWorldPoint = GetWorldPoint(seedingSpawn);
@@ -178,6 +275,8 @@ namespace IncreKindom
                 SpawnNewEnmey(enemy1Prefab);
             }
         }
+
+        bool step2 => true;
 
         Vector2 GetWorldPoint(RectTransform rectTransform)
         {
@@ -214,10 +313,23 @@ namespace IncreKindom
                             enemy.health -= hpChange;
                             //AddMoney(enemy.Revard);
 
-                            var newFlyMoney = pool.Get(moneyInFlyPrefab);
-                            newFlyMoney.Init(Mathf.RoundToInt(enemy.Revard * hpChange), enemy.transform.position, moneyWorldPoint);
-                            newFlyMoney.gameObject.SetActive(true);
-                            newFlyMoney.FlyFinish += MoneyInFly_FinishFly;
+                            // === Летят бревна
+                            //for (int i = 0; i < hpChange; i++)
+                            //{
+                            //    var newFlyWood = pool.Get(woodFlyPrefab);
+                            //    newFlyWood.transform.Rotate(0, 0, Random.Range(0, 360));
+                            //    newFlyWood.Init(null, enemy.transform.position, GetPosForWood(enemy.transform.position));
+                            //    newFlyWood.gameObject.SetActive(true);
+                            //    newFlyWood.FlyFinish += WoodInFly_Landing;
+                            //}
+
+                            // === сразу летят деньги
+                            //var newFlyMoney = pool.Get(moneyInFlyPrefab);
+                            //newFlyMoney.Init(Mathf.RoundToInt(enemy.Revard * hpChange), enemy.transform.position, moneyWorldPoint);
+                            //newFlyMoney.gameObject.SetActive(true);
+                            //newFlyMoney.FlyFinish += MoneyInFly_FinishFly;
+
+
 
                             enemy.pushEndTime = Time.time + pushTime;
                             AppSounds.Play(pushHit);
@@ -229,6 +341,16 @@ namespace IncreKindom
                             else
                             {
                                 //enemy.State = EnemyState.PushDeath;
+
+                                // === Летят бревна только после смерти
+                                for (int i = 0; i < enemy.Revard; i++)
+                                {
+                                    var newFlyWood = pool.Get(woodFlyPrefab);
+                                    newFlyWood.transform.Rotate(0, 0, Random.Range(0, 360));
+                                    newFlyWood.Init(null, enemy.transform.position, GetPosForWood(enemy.transform.position));
+                                    newFlyWood.gameObject.SetActive(true);
+                                    newFlyWood.FlyFinish += WoodInFly_Landing;
+                                }
 
                                 HideEnemy(enemy);
 
@@ -249,8 +371,6 @@ namespace IncreKindom
                         //    break;
                     }
                 }
-
-                UpdateRespawnFromHide();
 
                 // === Bos ===
                 /*
@@ -281,7 +401,12 @@ namespace IncreKindom
             // === Move ===
             //UpdateMove();
             //UpdateGrow();
+
+            UpdateRespawnFromHide();
+
             UpdateDrafeMove();
+
+            UpdateWood();
 
 
             // === 
@@ -321,6 +446,10 @@ namespace IncreKindom
             //Gizmos.DrawWireSphere(transform.position, enemySpawnDistace);
             //Gizmos.DrawWireSphere(transform.position, newEnemySpawnDistace);
             //Gizmos.DrawWireSphere(custleCenter.position, custleRadius);
+
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(woodPrefab.transform.position, woodRadius);
         }
 #endif
 
@@ -479,19 +608,26 @@ namespace IncreKindom
             }
         }
 
-        Enemy GetEnemyForRespawn(int enemyType)
+        void UpdateWood()
         {
-            foreach (var enemy in enemyes)
+            float radius = addRangeUpgrade.Value;
+
+            foreach (var wood in woods)
             {
-                if (enemy.State == EnemyState.Hide &&
-                    enemy.Type == enemyType)
+                Vector2 fromCursorToEnemy = (Vector2)wood.transform.position - cursorPos;
+                if (fromCursorToEnemy.magnitude < radius + woodRadius)
                 {
-                    return enemy;
+                    var newFlyMoney = pool.Get(moneyInFlyPrefab);
+                    newFlyMoney.Init(1, wood.transform.position, moneyWorldPoint);
+                    newFlyMoney.gameObject.SetActive(true);
+                    newFlyMoney.FlyFinish += MoneyInFly_FinishFly;
+
+                    HideTransform(wood.transform);
                 }
             }
-
-            return null;
         }
+
+        [SerializeField] float respawnDelay = 1;
 
         void RespawnEnemyWithDelay(Enemy enemey, float delay)
         {
@@ -501,8 +637,13 @@ namespace IncreKindom
         void HideEnemy(Enemy enemy)
         {
             enemy.State = EnemyState.Hide;
-            enemy.pushEndTime = Time.time + 1;
-            enemy.transform.position = new Vector3(+9999, 0, 0);
+            enemy.pushEndTime = Time.time + respawnDelay;
+            HideTransform(enemy.transform);
+        }
+
+        void HideTransform(Transform transform)
+        {
+            transform.position = new Vector3(+9999, 0, 0);
         }
 
         IEnumerator RespawnEnemyWithDelay_Coroutine(Enemy enemey, float delay)
@@ -548,6 +689,14 @@ namespace IncreKindom
             return enemy;
         }
 
+        SpriteRenderer InstantiateNewWood(GameObject prefab)
+        {
+            var item = Instantiate(prefab);
+            item.gameObject.SetActive(true);
+            woods.Add(item.GetComponent<SpriteRenderer>());
+            return item.GetComponent<SpriteRenderer>();
+        }
+
         void SpawnSeeding(Enemy prefab)
         {
             var posAndDir = GetPosForEnemy();
@@ -568,6 +717,54 @@ namespace IncreKindom
 
             pool.Return(animator.gameObject);
             animator.gameObject.SetActive(false);
+        }
+
+        bool woodDoNotStay => true;
+        private void WoodInFly_Landing(FlySeedlingAnimator flyAnimator)
+        {
+            if (woodDoNotStay)
+            {
+                var newFlyMoney = pool.Get(moneyInFlyPrefab);
+                newFlyMoney.Init(1, flyAnimator.EndPos, moneyWorldPoint);
+                newFlyMoney.gameObject.SetActive(true);
+                newFlyMoney.FlyFinish += MoneyInFly_FinishFly;
+            }
+            else
+            {
+                var wood = GetWoodForRespawn();
+                if (!wood)
+                    wood = InstantiateNewWood(woodPrefab);
+
+                wood.transform.position = flyAnimator.EndPos;
+                wood.sortingOrder = GameMath.SortingOrderFromY(wood.transform.position.y - woodRadius);
+            }
+
+            pool.Return(flyAnimator.gameObject);
+        }
+
+        Enemy GetEnemyForRespawn(int enemyType)
+        {
+            foreach (var enemy in enemyes)
+            {
+                if (enemy.State == EnemyState.Hide &&
+                    enemy.Type == enemyType)
+                {
+                    return enemy;
+                }
+            }
+
+            return null;
+        }
+
+        SpriteRenderer GetWoodForRespawn()
+        {
+            foreach (var wood in woods)
+            {
+                if (wood.transform.position.x > 1000)
+                    return wood;
+            }
+
+            return null;
         }
 
         void RespawnEnemy(Enemy enemy)
@@ -597,11 +794,33 @@ namespace IncreKindom
             }
             else
             {
+                if (enemyes.Count < 15) //TODO увеличть до максимума.
+                {
+                    var list = enemyes.Where(e => e.State is EnemyState.Main or EnemyState.Push);
+                    if (list.Count() > 0)
+                    {
+                        int index = Random.Range(0, list.Count());
+                        //Debug.Log($"{}{}");
+                        Vector2 p = list.ElementAt(index).transform.position;
+                        p = fieldRect.Clamp(p + Random.insideUnitCircle * startRespawnRange);
+                        return (p, Vector2.zero);
+                    }
+                }
+
                 return (fieldRect.RandomPoint(), Vector2.zero);
             }
 
             // 2 enemy.transform.position = fieldRect.RandomPointOnSide();
 
+        }
+
+        [SerializeField] float woodFlyRange = 1;
+        Vector2 GetPosForWood(Vector2 treePos)
+        {
+            //return fieldRect.Clamp(treePos + Random.onUnitCircle * woodFlyRange);
+
+            float dx = Random.Range(-woodFlyRange, woodFlyRange);
+            return fieldRect.Clamp(treePos + new Vector2(dx, -0.3f));
         }
 
         void SetupRange(UpgradeData2 upgrade)
