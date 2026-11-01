@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::IncreKindom.UpgradeData2
   guiName: "\u0420\u0430\u0434\u0438\u0443\u0441"
   maxLevel: 2
-  startCost: 20
-  lastCost: 100
+  startCost: 100
+  lastCost: 300
   startValue: 0.2
   lastValue: 0.6

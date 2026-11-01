@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DamageUpgrade
   m_EditorClassIdentifier: Assembly-CSharp::IncreKindom.UpgradeData2
   guiName: "\u0423\u0440\u043E\u043D"
-  maxLevel: 8
+  maxLevel: 11
   startCost: 200
-  lastCost: 100
+  lastCost: 1000
   startValue: 1
-  lastValue: 9
+  lastValue: 12

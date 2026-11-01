@@ -40,7 +40,14 @@ namespace IncreKindom
                 if (state == value)
                     return;
 
+                if (state == EnemyState.Hide)
+                    gameObject.SetActive(true);
+
                 state = value;
+
+                if (value == EnemyState.Hide)
+                    gameObject.SetActive(false);
+
 
                 if (State == EnemyState.Main)
                 {

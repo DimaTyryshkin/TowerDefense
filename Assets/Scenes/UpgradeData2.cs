@@ -56,6 +56,15 @@ namespace IncreKindom
             return ((lastValue - startValue) / maxLevel) * level + startValue; // Линейный рост от Lvl0
         }
 
+        public float GetSumCost(int level)
+        {
+            float sum = 0;
+            for (int i = 0; i <= level; i++)
+                sum += GetCost(i);
+
+            return sum;
+        }
+
         public float GetCost(int level)
         {
             if (maxLevel == 0)
