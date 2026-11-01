@@ -7,6 +7,7 @@ using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -70,16 +71,15 @@ namespace IncreKindom
         [SerializeField, IsntNull] UpgradeData2 addEnemy3Upgrade;
         [SerializeField, IsntNull] UpgradeData2 addEnemy4Upgrade;
 
-        [SerializeField, IsntNull] UpgradeData2 openEnemy2Upgrade;
-        [SerializeField, IsntNull] UpgradeData2 openEnemy3Upgrade;
-        [SerializeField, IsntNull] UpgradeData2 openEnemy4Upgrade;
-        [SerializeField, IsntNull] UpgradeData2 openUpgradeUpgrade;
+        [SerializeField, IsntNull] UpgradeData2 openTruskUpgrade;
 
         [SerializeField, IsntNull] UpgradeData2 addDamageUpgrade;
         [SerializeField, IsntNull] UpgradeData2 addRangeUpgrade;
         [SerializeField, IsntNull] UpgradeData2 growSeedUpgrade;
 
         [Header("GUI")]
+        [SerializeField, IsntNull] GameObject openUpgradeButton;
+        [SerializeField, IsntNull] GameObject upgradeTreePanel;
         [SerializeField, IsntNull] TMP_Text playerMoneyText;
         [SerializeField, IsntNull] GameObject leftPanel;
         [SerializeField, IsntNull] GameObject topPanel;
@@ -95,10 +95,7 @@ namespace IncreKindom
         [SerializeField, IsntNull] UpgradeButton addEnemy3Button;
         [SerializeField, IsntNull] UpgradeButton addEnemy4Button;
 
-        [SerializeField, IsntNull] UpgradeButton openUpgradesButton;
-        [SerializeField, IsntNull] UpgradeButton openEnemy2Button;
-        [SerializeField, IsntNull] UpgradeButton openEnemy3Button;
-        [SerializeField, IsntNull] UpgradeButton openEnemy4Button;
+        [SerializeField, IsntNull] UpgradeButton openTruskButton;
 
         [SerializeField, IsntNull] UpgradeButton addDamageButton;
         [SerializeField, IsntNull] UpgradeButton addRangeButton;
@@ -108,6 +105,10 @@ namespace IncreKindom
         [SerializeField, IsntNull] RectTransform moneyGuiPoint;
         [SerializeField, IsntNull] FlyMoneyAnimation moneyInFlyPrefab;
 
+        [Header("Trusk")]
+        [SerializeField, IsntNull] int truskCapacity;
+        [SerializeField, IsntNull] GameObject trusk1;
+        [SerializeField, IsntNull] ProgressBarWithText truskProgressBar;
 
         [Header("Seeding")]
         //[SerializeField, IsntNull] int seedingCost1cost;
@@ -145,6 +146,8 @@ namespace IncreKindom
         void Start()
         {
             pausePanel.SetActive(false);
+            upgradeTreePanel.SetActive(false);
+            openUpgradeButton.SetActive(false);
             addMoneyButton.onClick.AddListener(AddMoney);
             restartButton.onClick.AddListener(() =>
             {
@@ -162,6 +165,7 @@ namespace IncreKindom
             fieldRect = new Rect((Vector2)p1.position, (Vector2)(p2.position - p1.position));
             playerMoney = 0;
 
+            truskProgressBar.Draw(0, 100);
             playerMoneyText.text = "0";
             enemy1Prefab.gameObject.SetActive(false);
             enemy2Prefab.gameObject.SetActive(false);
@@ -171,6 +175,8 @@ namespace IncreKindom
             woodFlyPrefab.gameObject.SetActive(false);
             moneyInFlyPrefab.gameObject.SetActive(false);
             flySeedlingAnimator.gameObject.SetActive(false);
+            topPanel.SetActive(true);
+            leftPanel.SetActive(true);
             shopPanel.SetActive(true);
             upgradePanel.SetActive(false);
 
@@ -381,9 +387,6 @@ namespace IncreKindom
 #endif
         void SetupRules()
         {
-            topPanel.SetActive(false);
-            leftPanel.SetActive(false);
-
             UpgradeRule AddRule(UpgradeRule rule)
             {
                 rule.game = this;
@@ -402,7 +405,11 @@ namespace IncreKindom
                     if (upgrade.IsOpen)
                         SpawnSeeding(enemy1Prefab);
 
-                    upgradesMenuButton.SetActive(enemyes.Count > enemyesToOpenUpgrades);
+                    //upgradesMenuButton.SetActive(enemyes.Count > enemyesToOpenUpgrades);
+                    bool isOpenUpgrades = enemyes.Count > enemyesToOpenUpgrades;
+                    addDamageButton.gameObject.SetActive(isOpenUpgrades);
+                    addRangeButton.gameObject.SetActive(isOpenUpgrades);
+                    addEnemy2Button.gameObject.SetActive(isOpenUpgrades);
                 }
             }).CallApplyUpgrade();
 
@@ -410,88 +417,44 @@ namespace IncreKindom
             {
                 button = addEnemy2Button,
                 upgradeData = addEnemy2Upgrade,
-                ApplyUpgrade = upgrade => SpawnSeeding(enemy2Prefab)
-            });
+                ApplyUpgrade = upgrade =>
+                {
+                    if (upgrade.IsOpen)
+                        SpawnSeeding(enemy2Prefab);
+
+                    addEnemy3Button.gameObject.SetActive(upgrade.IsOpen);
+                }
+            }).CallApplyUpgrade();
 
             AddRule(new UpgradeRule()
             {
                 button = addEnemy3Button,
                 upgradeData = addEnemy3Upgrade,
-                ApplyUpgrade = upgrade => SpawnSeeding(enemy3Prefab)
-            });
+                ApplyUpgrade = upgrade =>
+                {
+                    if (upgrade.IsOpen)
+                        SpawnSeeding(enemy3Prefab);
+
+                    addEnemy4Button.gameObject.SetActive(upgrade.IsOpen);
+                    openTruskButton.gameObject.SetActive(upgrade.IsOpen);
+                }
+            }).CallApplyUpgrade();
 
             AddRule(new UpgradeRule()
             {
                 button = addEnemy4Button,
                 upgradeData = addEnemy4Upgrade,
-                ApplyUpgrade = upgrade => SpawnSeeding(enemy4Prefab)
+                ApplyUpgrade = upgrade =>
+                {
+                    if (upgrade.IsOpen)
+                        SpawnSeeding(enemy4Prefab);
+
+                    //openTruskButton.gameObject.SetActive(upgrade.IsOpen);
+                }
             });
 
             // === Upgrades ===
 
-            //AddRule(new UpgradeRule()
-            //{
-            //    button = openUpgradesButton,
-            //    upgradeData = openUpgradeUpgrade,
-            //    ApplyUpgrade = upgrade =>
-            //    {
-            //        upgradesMenuButton.SetActive(upgrade.IsOpen);
-            //        openEnemy2Button.gameObject.SetActive(upgrade.IsOpen);
-            //        openUpgradesButton.gameObject.SetActive(!upgrade.IsOpen);
-            //    }
-            //}).CallApplyUpgrade();
-
-            openEnemy2Button.gameObject.SetActive(true);
-
-            AddRule(new UpgradeRule()
-            {
-                button = openEnemy2Button,
-                upgradeData = openEnemy2Upgrade,
-                ApplyUpgrade = upgrade =>
-                {
-                    addEnemy2Button.gameObject.SetActive(upgrade.IsOpen);
-                    openEnemy3Button.gameObject.SetActive(upgrade.IsOpen);
-                    addDamageButton.gameObject.SetActive(upgrade.IsOpen);
-                    addRangeButton.gameObject.SetActive(upgrade.IsOpen);
-
-                    if (upgrade.IsOpen)
-                        SpawnSeeding(enemy2Prefab);
-                }
-            }).CallApplyUpgrade();
-
-            AddRule(new UpgradeRule()
-            {
-                button = openEnemy3Button,
-                upgradeData = openEnemy3Upgrade,
-                ApplyUpgrade = upgrade =>
-                {
-                    addEnemy3Button.gameObject.SetActive(upgrade.IsOpen);
-                    openEnemy4Button.gameObject.SetActive(upgrade.IsOpen);
-
-                    if (upgrade.IsOpen)
-                        SpawnSeeding(enemy3Prefab);
-                }
-            }).CallApplyUpgrade();
-
-            AddRule(new UpgradeRule()
-            {
-                button = openEnemy4Button,
-                upgradeData = openEnemy4Upgrade,
-                ApplyUpgrade = upgrade =>
-                {
-                    addEnemy4Button.gameObject.SetActive(upgrade.IsOpen);
-                    if (upgrade.IsOpen)
-                        SpawnSeeding(enemy4Prefab);
-                }
-            }).CallApplyUpgrade();
-
-            //AddRule(new UpgradeRule()
-            //{
-            //    game = this,
-            //    button = growSeedButton,
-            //    upgradeData = growSeedUpgrade,
-            //    ApplyUpgrade = _ => { }
-            //});
 
             AddRule(new UpgradeRule()
             {
@@ -505,6 +468,17 @@ namespace IncreKindom
                 button = addRangeButton,
                 upgradeData = addRangeUpgrade,
                 ApplyUpgrade = upgrade => SetupRange(upgrade)
+            }).CallApplyUpgrade();
+
+            AddRule(new UpgradeRule()
+            {
+                button = openTruskButton,
+                upgradeData = openTruskUpgrade,
+                ApplyUpgrade = upgrade =>
+                {
+                    trusk1.gameObject.SetActive(upgrade.IsOpen);
+                    truskProgressBar.gameObject.SetActive(upgrade.IsOpen);
+                }
             }).CallApplyUpgrade();
         }
 
@@ -721,6 +695,9 @@ namespace IncreKindom
             moneyAnimationStart = Time.time;
             playerMoney += add;
             DrawGui();
+
+            if (openTruskUpgrade.IsOpen && playerMoney >= truskCapacity)
+                openUpgradeButton.SetActive(true);
         }
 
         [Button]
@@ -852,7 +829,7 @@ namespace IncreKindom
             }
             else
             {
-                if (enemyes.Count > 0 && enemyes.Count < 110) //TODO увеличть до максимума.
+                if (enemyes.Count > 0)
                 {
                     int index = 0;
                     int offset = Random.Range(0, enemyes.Count);
@@ -913,6 +890,7 @@ namespace IncreKindom
         void DrawGui()
         {
             playerMoneyText.text = playerMoney.ToString();
+            truskProgressBar.Draw(playerMoney, truskCapacity);
 
             foreach (UpgradeRule item in upgradeList)
             {
@@ -948,6 +926,16 @@ namespace IncreKindom
                 button.DrawLabel(upgradeData.GuiName);
             }
 
+            public void DrawAllForEditor()
+            {
+#if UNITY_EDITOR
+                Undo.RegisterCompleteObjectUndo(button, "DrawButton");
+                button.DrawLabel(upgradeData.GuiName);
+                DrawButton(int.MaxValue);
+#endif
+            }
+
+
             void OnClick()
             {
                 game.playerMoney -= upgradeData.IntCost;
@@ -960,10 +948,10 @@ namespace IncreKindom
                 ApplyUpgrade.Invoke(upgradeData);
             }
 
-            public void DrawButton(int playerNomey)
+            public void DrawButton(int playerMomey)
             {
                 int cost = upgradeData.IntCost;
-                button.Draw(playerNomey >= cost, cost, upgradeData.Level.level, upgradeData.MaxLevel.level);
+                button.Draw(playerMomey >= cost, cost, upgradeData.Level.level, upgradeData.MaxLevel.level);
             }
         }
     }

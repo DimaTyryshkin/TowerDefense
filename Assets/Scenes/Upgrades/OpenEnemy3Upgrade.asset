@@ -15,6 +15,6 @@ MonoBehaviour:
   guiName: "\u041D\u043E\u0432\u043E\u0435 \u0434\u0435\u0440\u0435\u0432\u043E"
   maxLevel: 1
   startCost: 1000
-  lastCost: 60
-  startValue: 1
-  lastValue: 401
+  lastCost: 0
+  startValue: 0
+  lastValue: 0

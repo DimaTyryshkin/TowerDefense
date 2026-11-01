@@ -16,5 +16,5 @@ MonoBehaviour:
   maxLevel: 1
   startCost: 0
   lastCost: 0
-  startValue: 1
-  lastValue: 401
+  startValue: 0
+  lastValue: 0
