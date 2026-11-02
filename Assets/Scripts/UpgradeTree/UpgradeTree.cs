@@ -31,7 +31,7 @@ namespace Game.Upgrades
 
         int UpgradePoints
         {
-            get => GameFactory.Data.upgradePoints;
+            get => 1000;//GameFactory.Data.upgradePoints;
             set => GameFactory.Data.upgradePoints = value;
         }
 
@@ -84,7 +84,7 @@ namespace Game.Upgrades
 
             node.OpenUpgrade();
             node.State = node.CalculateState(UpgradePoints);
-            UpgradePoints -= node.upgradeData.Cost;
+            UpgradePoints -= node.upgradeData.IntCost;
             DrawBank();
 
             foreach (UpgradeTreeNode n in allNodes.Except(node.nextNodes))
@@ -176,6 +176,12 @@ namespace Game.Upgrades
 
             if (Application.isPlaying)
                 Start();
+        }
+
+        [Button]
+        void DebugDraw()
+        {
+            GameFactory.Data.Save();
         }
 #endif
     }

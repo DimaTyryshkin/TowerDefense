@@ -1,5 +1,6 @@
 using GamePackages.Core;
 using GamePackages.Core.Validation;
+using IncreKindom;
 using NaughtyAttributes;
 using System;
 using System.Collections.Generic;
@@ -16,21 +17,27 @@ namespace Game.Upgrades
     class UpgradeTreeNode : MonoBehaviour, IValidated
     {
         [SerializeField] int level;
-        [SerializeField] Sprite towerSprite;
-        [IsntNull] public UpgradeData upgradeData;
+        [IsntNull] public UpgradeData2 upgradeData;
+
+        [Header("Gui")]
         [SerializeField, IsntNull] Button button;
-        [SerializeField, IsntNull] TMP_Text infoText;
-        [SerializeField, IsntNull] TMP_Text costText1;
-        [SerializeField, IsntNull] TMP_Text costText2;
-        [SerializeField, IsntNull] GameObject previousNotOpen;
-        [SerializeField, IsntNull] GameObject notEnought;
-        [SerializeField, IsntNull] GameObject canOpen;
-        [SerializeField, IsntNull] GameObject opened;
+        [SerializeField, IsntNull] TMP_Text nameText;
+        [SerializeField, IsntNull] TMP_Text costText;
+        [SerializeField, IsntNull] Image mainImage;
+        [SerializeField, IsntNull] Image border;
+        [SerializeField, IsntNull] Image bask;
+        [SerializeField, IsntNull] GameObject costPanel;
+        [SerializeField, IsntNull] GameObject particle;
+
+        [Space]
         [IsntNull] public UpgradeTreeNode[] nextNodes;
         [SerializeField, IsntNull] Image[] towerImages;
 
         [NonSerialized] List<UpgradeTreeLine> nextLines;
         [NonSerialized] List<UpgradeTreeNode> previousNodes;
+
+
+
 
         internal IReadOnlyList<UpgradeTreeLine> NextLines => nextLines;
         internal bool IsOpened => upgradeData.Level.level >= level;
@@ -43,11 +50,11 @@ namespace Game.Upgrades
         {
             button.onClick.AddListener(OnClick);
 
-            costText1.text = upgradeData.Cost.ToString();
-            costText2.text = upgradeData.Cost.ToString();
-            string text = infoText.text;
+            costText.text = GameUtils.AddCoinIcon(upgradeData.Cost.ToString());
+            string text = nameText.text;
             if (text.Contains("{0}"))
             {
+                /*
                 string parameter = upgradeData.IncrementPerLevel > 0 ? "+" : "";
 
                 bool isInt = Mathf.Abs(upgradeData.IncrementPerLevel % 1) < 0.01f;
@@ -57,12 +64,15 @@ namespace Game.Upgrades
                     parameter += upgradeData.IncrementPerLevel.ToString("0.0");
 
                 text = string.Format(text, parameter);
+                */
+                text = string.Format(text, "99");
             }
 
-            infoText.text = text;
+            nameText.text = text;
         }
 
 #if UNITY_EDITOR
+        static string drawGizmosKey => nameof(UpgradeTreeNode) + "drawGizmos";
         private void OnDrawGizmos()
         {
             if (nextNodes == null)
@@ -77,22 +87,30 @@ namespace Game.Upgrades
                 GizmosExtension.DrawArrowXY(transform.position, item.transform.position);
             }
 
+            if (!EditorPrefs.GetBool(drawGizmosKey))
+                return;
+
             Handles.color = Color.white;
             Handles.Label(transform.position + Vector3.left * 2 + Vector3.up * 1.5f, $"{upgradeData?.name} {level}");
-            //Handles.Label(transform.position + Vector3.up * 1.4f, $"{upgradeData?.name}");
-            Handles.Label(transform.position + Vector3.left * 2 + Vector3.up * 1.2f, $"+{upgradeData.IncrementPerLevel} cost={upgradeData.Cost}");
+            //Handles.Label(transform.position + Vector3.left * 2 + Vector3.up * 1.2f, $"+{upgradeData.IncrementPerLevel} cost={upgradeData.Cost}");
         }
 
         private void OnValidate()
         {
-            foreach (var towerImage in towerImages)
-                towerImage.sprite = towerSprite;
+            //foreach (var towerImage in towerImages)
+            //    towerImage.sprite = towerSprite;
         }
 
         [Button]
         void DebugLog()
         {
             Debug.Log($"IsOpened={IsOpened}");
+        }
+
+        [Button]
+        void SwichGizmos()
+        {
+            EditorPrefs.SetBool(drawGizmosKey, !EditorPrefs.GetBool(drawGizmosKey));
         }
 #endif
         internal void Init()
@@ -111,10 +129,13 @@ namespace Game.Upgrades
         {
             if (IsOpened)
                 return NodeState.Opened;
+
             if (!IsPreviusOpened)
                 return NodeState.PreviousNotOpened;
+
             if (upgradeData.Cost > playerBank)
                 return NodeState.NotEnought;
+
             return NodeState.CanOpen;
         }
         internal void AddNextLine(UpgradeTreeLine line) => nextLines.Add(line);
@@ -127,18 +148,6 @@ namespace Game.Upgrades
             Click.Invoke(this);
         }
 
-        internal void DrawState(NodeState state)
-        {
-            previousNotOpen.SetActive(false);
-            notEnought.SetActive(false);
-            canOpen.SetActive(false);
-            opened.SetActive(false);
-
-            previousNotOpen.SetActive(state == NodeState.PreviousNotOpened);
-            notEnought.SetActive(state == NodeState.NotEnought);
-            canOpen.SetActive(state == NodeState.CanOpen);
-            opened.SetActive(state == NodeState.Opened);
-        }
 
         internal void OpenUpgrade()
         {
@@ -170,6 +179,55 @@ namespace Game.Upgrades
             //if (nextLines.Count != nextNodes.Length)
             //    context.AddProblem(nameof(UpgradeTreeNode), ValidationProblem.Type.Error, "Не совпадает количество узлов и линий к ним");
 #endif
+        }
+        [Header("Styles")]
+        [SerializeField] Style previousNotOpenedStyle;
+        [SerializeField] Style notEnoughtStyle;
+        [SerializeField] Style canOpenStyle;
+        [SerializeField] Style openedStyle;
+
+        internal void DrawState(NodeState state)
+        {
+            if (state == NodeState.PreviousNotOpened)
+                previousNotOpenedStyle.Apply(this, 100);
+
+            if (state == NodeState.NotEnought)
+                notEnoughtStyle.Apply(this, 100);
+
+            if (state == NodeState.CanOpen)
+                canOpenStyle.Apply(this, 100);
+
+            if (state == NodeState.Opened)
+                openedStyle.Apply(this, 100);
+        }
+
+        [Button] void DrawPreviousNotOpened() => DrawState(NodeState.PreviousNotOpened);
+        [Button] void DrawNotEnought() => DrawState(NodeState.NotEnought);
+        [Button] void DrawCanOpen() => DrawState(NodeState.CanOpen);
+        [Button] void DrawOpened() => DrawState(NodeState.Opened);
+
+        [Serializable]
+        public struct Style
+        {
+            public Color coinColor;
+            public Color textColor;
+            public Color backgroundColor;
+            public Color borderColor;
+            public Color mainImage;
+            public bool cost;
+            public bool particle;
+
+            [Button]
+            public void Apply(UpgradeTreeNode node, int costValue)
+            {
+                node.mainImage.color = mainImage;
+                node.costText.color = textColor;
+                node.border.color = borderColor;
+                node.bask.color = backgroundColor;
+                node.costPanel.SetActive(cost);
+                node.particle.SetActive(particle);
+                node.costText.text = GameUtils.AddCoinIcon(costValue.ToString(), coinColor);
+            }
         }
     }
 }

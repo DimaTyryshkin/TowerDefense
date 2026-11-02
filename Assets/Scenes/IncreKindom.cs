@@ -102,7 +102,7 @@ namespace IncreKindom
         [SerializeField, IsntNull] UpgradeButton growSeedButton;
 
         [Header("FlyMoney")]
-        [SerializeField, IsntNull] RectTransform moneyGuiPoint;
+        [SerializeField, IsntNull] Transform moneyGuiPoint;
         [SerializeField, IsntNull] FlyMoneyAnimation moneyInFlyPrefab;
 
         [Header("Trusk")]
@@ -119,6 +119,9 @@ namespace IncreKindom
         [SerializeField] float woodRadius;
         [SerializeField, IsntNull] GameObject woodPrefab;
         [SerializeField, IsntNull] FlySeedlingAnimator woodFlyPrefab;
+
+        [Space]
+        [SerializeField, IsntNull] DebugSettings debugSettings;
 
         Rect fieldRect;
         Vector2 cursorPos;
@@ -197,10 +200,17 @@ namespace IncreKindom
             //}
         }
 
-        Vector2 GetWorldPoint(RectTransform rectTransform)
+        Vector2 GetWorldPoint(Transform transform)
         {
-            Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, rectTransform.position);
-            return gameCamera.ScreenPointToWorldPointOnPlane(screenPoint, Plaine.XY);
+            if (transform.GetComponentInParent<Canvas>())
+            {
+                Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, transform.position);
+                return gameCamera.ScreenPointToWorldPointOnPlane(screenPoint, Plaine.XY);
+            }
+            else
+            {
+                return transform.position;
+            }
         }
 
         [SerializeField] float cursorSpeedFacor;
@@ -406,7 +416,7 @@ namespace IncreKindom
                         SpawnSeeding(enemy1Prefab);
 
                     //upgradesMenuButton.SetActive(enemyes.Count > enemyesToOpenUpgrades);
-                    bool isOpenUpgrades = enemyes.Count > enemyesToOpenUpgrades;
+                    bool isOpenUpgrades = addEnemy1Upgrade.Level.level > enemyesToOpenUpgrades;
                     addDamageButton.gameObject.SetActive(isOpenUpgrades);
                     addRangeButton.gameObject.SetActive(isOpenUpgrades);
                     addEnemy2Button.gameObject.SetActive(isOpenUpgrades);
@@ -470,16 +480,19 @@ namespace IncreKindom
                 ApplyUpgrade = upgrade => SetupRange(upgrade)
             }).CallApplyUpgrade();
 
-            AddRule(new UpgradeRule()
-            {
-                button = openTruskButton,
-                upgradeData = openTruskUpgrade,
-                ApplyUpgrade = upgrade =>
-                {
-                    trusk1.gameObject.SetActive(upgrade.IsOpen);
-                    truskProgressBar.gameObject.SetActive(upgrade.IsOpen);
-                }
-            }).CallApplyUpgrade();
+            //AddRule(new UpgradeRule()
+            //{
+            //    button = openTruskButton,
+            //    upgradeData = openTruskUpgrade,
+            //    ApplyUpgrade = upgrade =>
+            //    {
+            //        trusk1.gameObject.SetActive(upgrade.IsOpen);
+            //        truskProgressBar.gameObject.SetActive(upgrade.IsOpen);
+            //    }
+            //}).CallApplyUpgrade();
+
+            trusk1.gameObject.SetActive(true);
+            truskProgressBar.gameObject.SetActive(true);
         }
 
         void UpdateDrafeMove()
@@ -693,10 +706,10 @@ namespace IncreKindom
                 leftPanel.SetActive(true);
 
             moneyAnimationStart = Time.time;
-            playerMoney += add;
+            playerMoney += add * debugSettings.RewadrFactor;
             DrawGui();
 
-            if (openTruskUpgrade.IsOpen && playerMoney >= truskCapacity)
+            if (playerMoney >= truskCapacity)
                 openUpgradeButton.SetActive(true);
         }
 
@@ -770,7 +783,7 @@ namespace IncreKindom
                     wood = InstantiateNewWood(woodPrefab);
 
                 wood.transform.position = flyAnimator.EndPos;
-                wood.sortingOrder = GameMath.SortingOrderFromY(wood.transform.position.y - woodRadius);
+                wood.sortingOrder = GameUtils.SortingOrderFromY(wood.transform.position.y - woodRadius);
                 wood.gameObject.SetActive(true);
             }
 

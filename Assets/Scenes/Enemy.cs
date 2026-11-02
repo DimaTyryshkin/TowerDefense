@@ -78,7 +78,7 @@ namespace IncreKindom
 
         public void ApplySortingOrder()
         {
-            flashSprite.SpriteRenderer.sortingOrder = GameMath.SortingOrderFromY(transform.position.y - radius);
+            flashSprite.SpriteRenderer.sortingOrder = GameUtils.SortingOrderFromY(transform.position.y - radius);
         }
 
 #if UNITY_EDITOR
