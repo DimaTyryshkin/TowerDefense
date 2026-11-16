@@ -2,7 +2,7 @@ using GamePackages.Core.Validation;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace IncreKindom
+namespace IncreGame
 {
     public enum EnemyState
     {
@@ -16,7 +16,7 @@ namespace IncreKindom
     public class Enemy : MonoBehaviour
     {
         [SerializeField] int type;
-        [SerializeField] float startHealth;
+        [SerializeField] int startHealth;
         [SerializeField] float radius;
         [SerializeField] int revard;
         [SerializeField] Color mainColor;
@@ -25,11 +25,11 @@ namespace IncreKindom
         [SerializeField, IsntNull] FlashSprite flashSprite;
 
         public int Type => type;
-        public float StartHealth => startHealth;
+        public int StartHealth => startHealth;
         public float Radius => radius;
         public int Revard => revard;
 
-        public float health { get; set; }
+        public int health { get; set; }
         public float pushEndTime { get; set; }
         public Vector2 pushDir { get; set; }
 

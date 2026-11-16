@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Upgrades
 {
-    class UpgradeTreeLine : MonoBehaviour
+    public class UpgradeTreeLine : MonoBehaviour
     {
         [SerializeField, IsntNull] GameObject opened;
         [SerializeField, IsntNull] GameObject particles;

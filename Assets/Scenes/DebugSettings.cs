@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace IncreKindom
+namespace IncreGame
 {
     [CreateAssetMenu]
     public class DebugSettings : ScriptableObject

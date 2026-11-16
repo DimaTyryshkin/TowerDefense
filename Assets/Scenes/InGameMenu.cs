@@ -2,7 +2,7 @@ using GamePackages.Core.Validation;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace IncreKindom
+namespace IncreGame
 {
     public class InGameMenu : MonoBehaviour
     {

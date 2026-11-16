@@ -1,18 +1,22 @@
+using Game.Common;
 using Game.Upgrades;
+using GamePackages.Core;
+using GamePackages.Core.Validation;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace IncreKindom
+namespace IncreGame
 {
     [CreateAssetMenu]
-    class UpgradeData2 : ScriptableObject
+    public class UpgradeData2 : ScriptableObject
     {
         [SerializeField] string guiName;
+        [SerializeField, ShowAssetPreview, IsntNull] Sprite sprite;
         [SerializeField] int maxLevel;
 
         [Header("Cost")]
-        [SerializeField] float startCost;
-        [SerializeField] float lastCost;
+        [SerializeField] int startCost;
+        [SerializeField] int lastCost;
 
         [Header("Value")]
         [SerializeField] float startValue;
@@ -20,10 +24,12 @@ namespace IncreKindom
 
 
         public string GuiName => guiName;
+        public Sprite Sprite => sprite;
         public float Value => GetValue(level);
         public float Cost => GetCost(level);
         public int IntValue => Mathf.FloorToInt(GetValue(level));
         public bool IsOpen => level > 0;
+        public bool IsMaxLevel => level == maxLevel;
         public int IntCost => Mathf.FloorToInt(GetCost(level));
         public UpgradeLevel Level => new UpgradeLevel(level);
         //public UpgradeLevel Level => new UpgradeLevel(GameFactory.Data.upgrades.GetOrDefault(name, 0));
@@ -31,47 +37,58 @@ namespace IncreKindom
         public bool NotMaxLevel => level < maxLevel || maxLevel == 0;
 
 
-        int level { get; set; }
+        int level
+        {
+            get => GameFactory.Data.upgrades.GetOrDefault(name, 0);
+            set => GameFactory.Data.upgrades[name] = value;
+        }
 
-        internal void AddLevel()
+        public void AddLevel()
         {
             level++;
             //GameFactory.Data.upgrades[name] = Level.level + 1;
 
         }
 
+        public void SetLevel(int level) => this.level = level;
+
         [Button]
-        internal void ResetLevet()
+        public void ResetLevet()
         {
             //GameFactory.Data.upgrades[name] = 1;
             level = 0;
         }
 
+        [Button]
+        public void SetOne()
+        {
+            level = 1;
+        }
+
         public float GetValue(int level)
         {
-            if (maxLevel == 0)
-                return startValue;
-
             //return ((lastValue - startValue) / (maxLevel - 1)) * (level - 1) + startValue; // Линейный рост от Lvl1
             return ((lastValue - startValue) / maxLevel) * level + startValue; // Линейный рост от Lvl0
         }
 
-        public float GetSumCost(int level)
+        public int GetCostSum(int level)
         {
             float sum = 0;
-            for (int i = 0; i <= level; i++)
+            for (int i = 0; i < level; i++)
                 sum += GetCost(i);
 
-            return sum;
+            return Mathf.FloorToInt(sum);
         }
 
-        public float GetCost(int level)
+
+        public int GetCost(int level)
         {
             if (maxLevel == 0)
                 return startCost;
 
             // return ((lastCost - startCost) / (maxLevel - 1)) * (level - 1) + startCost; // Линейный рост от Lvl1
-            return ((lastCost - startCost) / maxLevel) * level + startCost; // Линейный рост от Lvl0
+            float cost = ((lastCost - startCost) / maxLevel) * level + startCost; // Линейный рост от Lvl0
+            return Mathf.FloorToInt(cost); ;
         }
 
         [ShowNativeProperty] float Cost0 => GetCost(0);

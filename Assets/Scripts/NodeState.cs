@@ -1,6 +1,6 @@
 namespace Game.Upgrades
 {
-    enum NodeState
+    public enum NodeState
     {
         NotSet = 0,
         PreviousNotOpened = 1,

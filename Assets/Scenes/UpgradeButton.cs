@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace IncreKindom
+namespace IncreGame
 {
     public class UpgradeButton : MonoBehaviour
     {

@@ -3,7 +3,7 @@ using GamePackages.Core.Validation;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace IncreKindom
+namespace IncreGame
 {
     class FlySeedlingAnimator : MonoBehaviour
     {

@@ -2,7 +2,7 @@ using GamePackages.Core.Validation;
 using TMPro;
 using UnityEngine;
 
-namespace IncreKindom
+namespace IncreGame
 {
     public class ProgressBarWithText : MonoBehaviour
     {

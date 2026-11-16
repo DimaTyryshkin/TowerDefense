@@ -2,7 +2,7 @@ using GamePackages.Core.Validation;
 using System;
 using UnityEngine;
 
-namespace IncreKindom
+namespace IncreGame
 {
     public class FlashSprite : MonoBehaviour
     {

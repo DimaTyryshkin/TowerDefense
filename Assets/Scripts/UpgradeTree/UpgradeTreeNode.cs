@@ -1,6 +1,6 @@
 using GamePackages.Core;
 using GamePackages.Core.Validation;
-using IncreKindom;
+using IncreGame;
 using NaughtyAttributes;
 using System;
 using System.Collections.Generic;
@@ -14,20 +14,24 @@ using UnityEngine.UI;
 
 namespace Game.Upgrades
 {
-    class UpgradeTreeNode : MonoBehaviour, IValidated
+    public class UpgradeTreeNode : MonoBehaviour, IValidated
     {
         [SerializeField] int level;
+        [SerializeField] bool allLevels;
+
         [IsntNull] public UpgradeData2 upgradeData;
 
         [Header("Gui")]
         [SerializeField, IsntNull] Button button;
         [SerializeField, IsntNull] TMP_Text nameText;
         [SerializeField, IsntNull] TMP_Text costText;
+        [SerializeField, IsntNull] TMP_Text levelText;
         [SerializeField, IsntNull] Image mainImage;
         [SerializeField, IsntNull] Image border;
         [SerializeField, IsntNull] Image bask;
         [SerializeField, IsntNull] GameObject costPanel;
         [SerializeField, IsntNull] GameObject particle;
+        [SerializeField, IsntNull] GameObject levelPanel;
 
         [Space]
         [IsntNull] public UpgradeTreeNode[] nextNodes;
@@ -37,38 +41,27 @@ namespace Game.Upgrades
         [NonSerialized] List<UpgradeTreeNode> previousNodes;
 
 
-
-
         internal IReadOnlyList<UpgradeTreeLine> NextLines => nextLines;
-        internal bool IsOpened => upgradeData.Level.level >= level;
-        internal bool IsPreviusOpened => previousNodes.All(n => n.IsOpened);
-        internal NodeState State { get; set; }
+        internal bool IsOpened
+        {
+            get
+            {
+                if (allLevels)
+                    return upgradeData.IsMaxLevel;
+                else
+                    return upgradeData.Level.level > level;
+            }
+        }
+        public bool IsPreviusOpened => previousNodes.All(n => n.IsOpened);
+        public bool AllLevels => allLevels;
+        public int Level => level;
+        public NodeState State { get; set; }
 
-        internal event UnityAction<UpgradeTreeNode> Click;
+        public event UnityAction<UpgradeTreeNode> Click;
 
-        private void Start()
+        void Start()
         {
             button.onClick.AddListener(OnClick);
-
-            costText.text = GameUtils.AddCoinIcon(upgradeData.Cost.ToString());
-            string text = nameText.text;
-            if (text.Contains("{0}"))
-            {
-                /*
-                string parameter = upgradeData.IncrementPerLevel > 0 ? "+" : "";
-
-                bool isInt = Mathf.Abs(upgradeData.IncrementPerLevel % 1) < 0.01f;
-                if (isInt)
-                    parameter += Mathf.RoundToInt(upgradeData.IncrementPerLevel).ToString();
-                else
-                    parameter += upgradeData.IncrementPerLevel.ToString("0.0");
-
-                text = string.Format(text, parameter);
-                */
-                text = string.Format(text, "99");
-            }
-
-            nameText.text = text;
         }
 
 #if UNITY_EDITOR
@@ -91,7 +84,8 @@ namespace Game.Upgrades
                 return;
 
             Handles.color = Color.white;
-            Handles.Label(transform.position + Vector3.left * 2 + Vector3.up * 1.5f, $"{upgradeData?.name} {level}");
+            string lebel = allLevels ? "ALL" : $"{level}";
+            Handles.Label(transform.position + new Vector3(-0.2f, 0.7f), lebel);
             //Handles.Label(transform.position + Vector3.left * 2 + Vector3.up * 1.2f, $"+{upgradeData.IncrementPerLevel} cost={upgradeData.Cost}");
         }
 
@@ -101,10 +95,12 @@ namespace Game.Upgrades
             //    towerImage.sprite = towerSprite;
         }
 
-        [Button]
+        [Button()]
         void DebugLog()
         {
+
             Debug.Log($"IsOpened={IsOpened}");
+            Debug.Log($"IsPreviusOpened={IsPreviusOpened}");
         }
 
         [Button]
@@ -113,19 +109,41 @@ namespace Game.Upgrades
             EditorPrefs.SetBool(drawGizmosKey, !EditorPrefs.GetBool(drawGizmosKey));
         }
 #endif
-        internal void Init()
+        public void Init()
         {
             previousNodes = new();
             nextLines = new();
         }
 
-        internal void BuildTree()
+        /*
+        public void Darw()
+        { 
+            string text = nameText.text;
+            if (text.Contains("{0}"))
+            {
+                string parameter = upgradeData.IncrementPerLevel > 0 ? "+" : "";
+
+                bool isInt = Mathf.Abs(upgradeData.IncrementPerLevel % 1) < 0.01f;
+                if (isInt)
+                    parameter += Mathf.RoundToInt(upgradeData.IncrementPerLevel).ToString();
+                else
+                    parameter += upgradeData.IncrementPerLevel.ToString("0.0");
+
+                text = string.Format(text, parameter);
+                text = string.Format(text, "99");
+            }
+
+            nameText.text = text; 
+        }
+        */
+
+        public void BuildTree()
         {
             foreach (var node in nextNodes)
                 node.AddPreviousNode(this);
         }
 
-        internal NodeState CalculateState(int playerBank)
+        public NodeState CalculateState(int playerBank)
         {
             if (IsOpened)
                 return NodeState.Opened;
@@ -138,7 +156,8 @@ namespace Game.Upgrades
 
             return NodeState.CanOpen;
         }
-        internal void AddNextLine(UpgradeTreeLine line) => nextLines.Add(line);
+
+        public void AddNextLine(UpgradeTreeLine line) => nextLines.Add(line);
 
         void AddPreviousNode(UpgradeTreeNode node) => previousNodes.Add(node);
 
@@ -148,10 +167,11 @@ namespace Game.Upgrades
             Click.Invoke(this);
         }
 
-
-        internal void OpenUpgrade()
+        public void OpenUpgrade()
         {
-            Assert.IsTrue(level == upgradeData.Level.level + 1);
+            if (!allLevels)
+                Assert.IsTrue(level == upgradeData.Level.level);
+
             upgradeData.AddLevel();
         }
 
@@ -188,17 +208,41 @@ namespace Game.Upgrades
 
         internal void DrawState(NodeState state)
         {
+            mainImage.sprite = upgradeData.Sprite;
+            nameText.text = upgradeData.GuiName;
+
+
+            Style style = new();
+
             if (state == NodeState.PreviousNotOpened)
-                previousNotOpenedStyle.Apply(this, 100);
+                style = previousNotOpenedStyle;
 
             if (state == NodeState.NotEnought)
-                notEnoughtStyle.Apply(this, 100);
+                style = notEnoughtStyle;
 
             if (state == NodeState.CanOpen)
-                canOpenStyle.Apply(this, 100);
+                style = canOpenStyle;
 
             if (state == NodeState.Opened)
-                openedStyle.Apply(this, 100);
+                style = openedStyle;
+
+            mainImage.color = style.mainImage;
+            costText.color = style.textColor;
+            border.color = style.borderColor;
+            bask.color = style.backgroundColor;
+            costPanel.SetActive(style.cost);
+            levelPanel.SetActive(style.level);
+            particle.SetActive(style.particle);
+            costText.text = GameUtils.AddCoinIcon(upgradeData.IntCost.ToString(), style.coinColor);
+
+            levelPanel.SetActive(style.level && allLevels && upgradeData.IsOpen);
+            if (allLevels)
+            {
+                if (upgradeData.IsMaxLevel)
+                    levelText.text = "max";
+                else
+                    levelText.text = "× " + upgradeData.Level.level.ToString();
+            }
         }
 
         [Button] void DrawPreviousNotOpened() => DrawState(NodeState.PreviousNotOpened);
@@ -215,19 +259,8 @@ namespace Game.Upgrades
             public Color borderColor;
             public Color mainImage;
             public bool cost;
+            public bool level;
             public bool particle;
-
-            [Button]
-            public void Apply(UpgradeTreeNode node, int costValue)
-            {
-                node.mainImage.color = mainImage;
-                node.costText.color = textColor;
-                node.border.color = borderColor;
-                node.bask.color = backgroundColor;
-                node.costPanel.SetActive(cost);
-                node.particle.SetActive(particle);
-                node.costText.text = GameUtils.AddCoinIcon(costValue.ToString(), coinColor);
-            }
         }
     }
 }

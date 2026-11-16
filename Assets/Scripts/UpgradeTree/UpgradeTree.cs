@@ -2,12 +2,14 @@ using GamePackages.Core.Validation;
 using NaughtyAttributes;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions;
 using GamePackages.Core;
 using TMPro;
 using Game.Common;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using IncreGame;
+
+
 
 
 
@@ -18,20 +20,21 @@ using UnityEditor;
 
 namespace Game.Upgrades
 {
-    class UpgradeTree : MonoBehaviour
+    public class UpgradeTree : MonoBehaviour
     {
         [SerializeField, IsntNull] TMP_Text playerBankText;
         [SerializeField, IsntNull] RectTransform linesRoot;
         [SerializeField, IsntNull] UpgradeTreeLine lineTemplate;
-        [SerializeField, IsntNull] UpgradeData startUpgrade;
+        [SerializeField, IsntNull] UpgradeData2 startUpgrade;
         [SerializeField, IsntNull] Button closeButton;
-        [SerializeField, IsntNull] UpgradeTreeNode[] allNodes;
+        [IsntNull] public UpgradeTreeNode[] allNodes;
+        [IsntNull] public UpgradeTreeNode[] debugNodes;
 
         internal event UnityAction Close;
 
-        int UpgradePoints
+        public int UpgradePoints
         {
-            get => 1000;//GameFactory.Data.upgradePoints;
+            get => GameFactory.Data.upgradePoints;
             set => GameFactory.Data.upgradePoints = value;
         }
 
@@ -39,7 +42,14 @@ namespace Game.Upgrades
         {
             startUpgrade.SetOne();
             lineTemplate.gameObject.SetActive(false);
-            DrawBank();
+
+            Draw(UpgradePoints);
+            closeButton.onClick.AddListener(() => Close.Invoke());
+        }
+
+        public void Draw(int upgradePoint)
+        {
+            DrawBank(upgradePoint);
 
             foreach (var node in allNodes)
                 node.Init();
@@ -51,7 +61,7 @@ namespace Game.Upgrades
 
             foreach (var node in allNodes)
             {
-                NodeState state = node.CalculateState(UpgradePoints);
+                NodeState state = node.CalculateState(upgradePoint);
                 node.State = state;
                 node.DrawState(state);
 
@@ -60,19 +70,17 @@ namespace Game.Upgrades
 
                 node.Click += Node_Click;
             }
-
-            closeButton.onClick.AddListener(() => Close.Invoke());
         }
 
-        internal void Show()
+        public void Show()
         {
-            DrawBank();
+            DrawBank(UpgradePoints);
             gameObject.SetActive(true);
         }
 
         internal void Hide() => gameObject.SetActive(false);
 
-        void DrawBank() => playerBankText.text = UpgradePoints.ToString();
+        void DrawBank(int upgradePoint) => playerBankText.text = upgradePoint.ToString();
 
         void Node_Click(UpgradeTreeNode node)
         {
@@ -85,7 +93,7 @@ namespace Game.Upgrades
             node.OpenUpgrade();
             node.State = node.CalculateState(UpgradePoints);
             UpgradePoints -= node.upgradeData.IntCost;
-            DrawBank();
+            DrawBank(UpgradePoints);
 
             foreach (UpgradeTreeNode n in allNodes.Except(node.nextNodes))
             {
@@ -95,7 +103,7 @@ namespace Game.Upgrades
                 NodeState newState = n.CalculateState(UpgradePoints);
                 if (newState != n.State)
                 {
-                    Assert.IsTrue(newState == NodeState.NotEnought, $"state={n.State} newState={newState} name={n.gameObject.name}");
+                    //Assert.IsTrue(newState == NodeState.NotEnought, $"state={n.State} newState={newState} name={n.gameObject.name}");
                     n.State = newState;
                     n.DrawNotEnoughtWithAnimation();
 
@@ -178,10 +186,15 @@ namespace Game.Upgrades
                 Start();
         }
 
+        [SerializeField] int debugUpgradePoints;
+
         [Button]
-        void DebugDraw()
+        public void DebugDraw()
         {
-            GameFactory.Data.Save();
+            LoadNodes();
+            //GameFactory.Data.Save();
+            startUpgrade.SetOne();
+            Draw(debugUpgradePoints);
         }
 #endif
     }

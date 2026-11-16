@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/IncreKindom.unity
+    path: Assets/IncreTimber/IncreTimer.unity
     guid: 41d98b1a1025ad24db9f68ac6c16c0cc
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: afbe5ef95c07aa7498db274b226fa46d, type: 2}
