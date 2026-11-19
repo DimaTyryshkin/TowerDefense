@@ -6,6 +6,7 @@ namespace IncreGame
     public static class GameUtils
     {
         public static int SortingOrderFromY(float y) => -Mathf.RoundToInt(y * 100);
+        public static int SortingOrderFromMinY(SpriteRenderer s) => SortingOrderFromY(s.bounds.min.y);
 
         public static string AddCoinIcon(string originText) => "<sprite name=\"coin\"> " + originText;
         public static string AddCoinIcon(string originText, Color iconColor)

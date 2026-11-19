@@ -9,6 +9,7 @@ namespace Game.Common
 
 #pragma warning disable UAC1009 // Unsupported collection type for serialization
 #pragma warning disable UAC1001 // Public field skipped by serialization due to missing [Serializable]
+        public int playerUpgradePoints;
 
         public Dictionary<string, int> upgrades = new();
 

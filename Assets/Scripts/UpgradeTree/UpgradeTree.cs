@@ -27,16 +27,21 @@ namespace Game.Upgrades
         [SerializeField, IsntNull] UpgradeTreeLine lineTemplate;
         [SerializeField, IsntNull] UpgradeData2 startUpgrade;
         [SerializeField, IsntNull] Button closeButton;
+
+        [Header("Debug")]
+        [SerializeField] bool showCost;
+
+        [Space]
         [IsntNull] public UpgradeTreeNode[] allNodes;
         [IsntNull] public UpgradeTreeNode[] debugNodes;
 
         internal event UnityAction Close;
 
-        public int UpgradePoints
-        {
-            get => GameFactory.Data.upgradePoints;
-            set => GameFactory.Data.upgradePoints = value;
-        }
+        public int UpgradePoints;
+        //{
+        //    get => GameFactory.Data.upgradePoints;
+        //    set => GameFactory.Data.upgradePoints = value;
+        //}
 
         void Start()
         {
@@ -47,7 +52,7 @@ namespace Game.Upgrades
             closeButton.onClick.AddListener(() => Close.Invoke());
         }
 
-        public void Draw(int upgradePoint)
+        public void Draw(int upgradePoint, bool debugShowCost = false)
         {
             DrawBank(upgradePoint);
 
@@ -62,6 +67,10 @@ namespace Game.Upgrades
             foreach (var node in allNodes)
             {
                 NodeState state = node.CalculateState(upgradePoint);
+
+                if (debugShowCost)
+                    state = NodeState.CanOpen;
+
                 node.State = state;
                 node.DrawState(state);
 
@@ -172,7 +181,7 @@ namespace Game.Upgrades
         void LoadNodes()
         {
             Undo.RegisterCompleteObjectUndo(this, nameof(LoadNodes));
-            allNodes = transform.GetComponentsInChildren<UpgradeTreeNode>();
+            allNodes = transform.GetComponentsInChildren<UpgradeTreeNode>(includeInactive: true);
         }
 
         [Button]
@@ -194,7 +203,7 @@ namespace Game.Upgrades
             LoadNodes();
             //GameFactory.Data.Save();
             startUpgrade.SetOne();
-            Draw(debugUpgradePoints);
+            Draw(debugUpgradePoints, showCost);
         }
 #endif
     }

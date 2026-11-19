@@ -10,13 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6ef9527e7c71604ba0bdbca1bccc8b2, type: 3}
-  m_Name: SpawnEnemyUpgrade_03
+  m_Name: DamageEnemy02Upgrade
   m_EditorClassIdentifier: Assembly-CSharp::IncreKindom.UpgradeData2
-  guiName: "\u041D\u0430\u0447\u0430\u043B\u044C\u043D\u044B\u0435 \u043A\u0440\u0430\u0441\u043D\u044B\u0435
-    \u0434\u0443\u0431\u044B"
-  sprite: {fileID: -3790822648140433767, guid: be9ff97a43353f4408de6571db3f4716, type: 3}
-  maxLevel: 10
-  startCost: 1
-  lastCost: 1
-  startValue: 0
-  lastValue: 100
+  UpgradeName: 5
+  UpgradeNumber: 2
+  guiName: "\u0423\u0440\u043E\u043D \u043F\u043E \u043A\u0440\u0430\u0441\u043D\u043E\u043C\u0443
+    \u0434\u0443\u0431\u0443"
+  sprite: {fileID: 8614387318205097232, guid: 9f1efd16281724741a2a4e39acae6a70, type: 3}
+  maxLevel: 4
+  startCost: 400
+  lastCost: 400
+  startValue: 1
+  lastValue: 5

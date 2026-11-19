@@ -10,12 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6ef9527e7c71604ba0bdbca1bccc8b2, type: 3}
-  m_Name: OpenEnemy2Upgrade
+  m_Name: Enemy03Upgrade
   m_EditorClassIdentifier: Assembly-CSharp::IncreKindom.UpgradeData2
-  guiName: "\u0414\u0443\u0431"
-  sprite: {fileID: -1738702937652524866, guid: e5b812b42cb5eb446b0766b3151191ac, type: 3}
-  maxLevel: 1
-  startCost: 500
-  lastCost: 500
+  UpgradeName: 4
+  UpgradeNumber: 3
+  guiName: "\u0417\u043E\u043B\u043E\u0442\u043E\u0439 \u044F\u043F\u043E\u043D\u0441\u043A\u0438\u0439
+    \u043A\u043B\u0451\u043D"
+  sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  maxLevel: 100
+  startCost: 10
+  lastCost: 8010
   startValue: 0
-  lastValue: 0
+  lastValue: 100

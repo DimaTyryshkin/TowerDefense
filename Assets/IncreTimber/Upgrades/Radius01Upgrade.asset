@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6ef9527e7c71604ba0bdbca1bccc8b2, type: 3}
-  m_Name: _DefaultUpgrade
+  m_Name: Radius01Upgrade
   m_EditorClassIdentifier: Assembly-CSharp::IncreKindom.UpgradeData2
-  guiName: "\u0421\u043E\u0441\u043D\u0430"
-  sprite: {fileID: -3766128427826593386, guid: 8472dd4c22f5c104b9e454a091dbca34, type: 3}
+  UpgradeName: 2
+  UpgradeNumber: 1
+  guiName: "\u0414\u0438\u0430\u043C\u0435\u0442\u0440"
+  sprite: {fileID: 77045301475712581, guid: 0d7c1321242667540ad2ec75c0f4c761, type: 3}
   maxLevel: 1
-  startCost: 0
-  lastCost: 0
+  startCost: 500
+  lastCost: 700
   startValue: 0
-  lastValue: 0
+  lastValue: 0.2

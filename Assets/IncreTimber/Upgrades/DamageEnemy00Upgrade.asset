@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6ef9527e7c71604ba0bdbca1bccc8b2, type: 3}
-  m_Name: DamageEnemy4Upgrade
+  m_Name: DamageEnemy00Upgrade
   m_EditorClassIdentifier: Assembly-CSharp::IncreKindom.UpgradeData2
-  guiName: "\u0423\u0440\u043E\u043D \u043F\u043E \u043A\u043B\u0435\u043D\u0443"
+  UpgradeName: 5
+  UpgradeNumber: 0
+  guiName: "\u0423\u0440\u043E\u043D \u043F\u043E \u0441\u043E\u0441\u043D\u0435"
   sprite: {fileID: 8614387318205097232, guid: 9f1efd16281724741a2a4e39acae6a70, type: 3}
-  maxLevel: 5
-  startCost: 1
-  lastCost: 1
+  maxLevel: 2
+  startCost: 200
+  lastCost: 200
   startValue: 1
-  lastValue: 6
+  lastValue: 3

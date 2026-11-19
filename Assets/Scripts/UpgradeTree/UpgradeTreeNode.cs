@@ -35,7 +35,6 @@ namespace Game.Upgrades
 
         [Space]
         [IsntNull] public UpgradeTreeNode[] nextNodes;
-        [SerializeField, IsntNull] Image[] towerImages;
 
         [NonSerialized] List<UpgradeTreeLine> nextLines;
         [NonSerialized] List<UpgradeTreeNode> previousNodes;
@@ -57,6 +56,17 @@ namespace Game.Upgrades
         public int Level => level;
         public NodeState State { get; set; }
 
+        int Cost
+        {
+            get
+            {
+                if (allLevels)
+                    return upgradeData.IntCost;
+                else
+                    return upgradeData.GetCost(level);
+            }
+        }
+
         public event UnityAction<UpgradeTreeNode> Click;
 
         void Start()
@@ -77,7 +87,7 @@ namespace Game.Upgrades
                 if (!item)
                     continue;
 
-                GizmosExtension.DrawArrowXY(transform.position, item.transform.position);
+                GizmosExtension.DrawArrowXY(transform.position, item.transform.position, size: 0.1f);
             }
 
             if (!EditorPrefs.GetBool(drawGizmosKey))
@@ -151,7 +161,7 @@ namespace Game.Upgrades
             if (!IsPreviusOpened)
                 return NodeState.PreviousNotOpened;
 
-            if (upgradeData.Cost > playerBank)
+            if (Cost > playerBank)
                 return NodeState.NotEnought;
 
             return NodeState.CanOpen;
@@ -160,7 +170,6 @@ namespace Game.Upgrades
         public void AddNextLine(UpgradeTreeLine line) => nextLines.Add(line);
 
         void AddPreviousNode(UpgradeTreeNode node) => previousNodes.Add(node);
-
 
         void OnClick()
         {
@@ -233,7 +242,7 @@ namespace Game.Upgrades
             costPanel.SetActive(style.cost);
             levelPanel.SetActive(style.level);
             particle.SetActive(style.particle);
-            costText.text = GameUtils.AddCoinIcon(upgradeData.IntCost.ToString(), style.coinColor);
+            costText.text = GameUtils.AddCoinIcon(Cost.ToString(), style.coinColor);
 
             levelPanel.SetActive(style.level && allLevels && upgradeData.IsOpen);
             if (allLevels)
