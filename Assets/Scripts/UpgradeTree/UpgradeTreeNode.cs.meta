@@ -1,2 +1,23 @@
 fileFormatVersion: 2
 guid: a9b9bc4234d22df4b9e6320df5fbaecb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - upgradeData: {instanceID: 0}
+  - upgrades: {fileID: 11400000, guid: 3b72ba6e26c47114e8b6dca767beba53, type: 2}
+  - button: {instanceID: 0}
+  - nameText: {instanceID: 0}
+  - costText: {instanceID: 0}
+  - levelText: {instanceID: 0}
+  - mainImage: {instanceID: 0}
+  - border: {instanceID: 0}
+  - bask: {instanceID: 0}
+  - costPanel: {instanceID: 0}
+  - particle: {instanceID: 0}
+  - levelPanel: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

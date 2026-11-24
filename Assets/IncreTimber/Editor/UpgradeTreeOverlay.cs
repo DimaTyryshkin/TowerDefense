@@ -47,16 +47,16 @@ namespace Game
             int sum = 0;
             foreach (var node in upgradeTree.allNodes)
             {
-                int maxLevel = node.upgradeData.MaxLevel.level;
+                int maxLevel = node.UpgradeData.MaxLevel.level;
                 if (maxLevel > 0)
                 {
                     if (node.AllLevels)
                     {
-                        sum += node.upgradeData.GetCostSum(maxLevel);
+                        sum += node.UpgradeData.GetCostSum(maxLevel);
                     }
                     else
                     {
-                        sum += node.upgradeData.GetCost(node.Level);
+                        sum += node.UpgradeData.GetCost(node.Level);
                     }
                 }
             }

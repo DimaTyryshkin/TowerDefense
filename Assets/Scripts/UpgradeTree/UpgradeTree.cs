@@ -7,9 +7,6 @@ using TMPro;
 using Game.Common;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using IncreGame;
-
-
 
 
 
@@ -25,8 +22,8 @@ namespace Game.Upgrades
         [SerializeField, IsntNull] TMP_Text playerBankText;
         [SerializeField, IsntNull] RectTransform linesRoot;
         [SerializeField, IsntNull] UpgradeTreeLine lineTemplate;
-        [SerializeField, IsntNull] UpgradeData2 startUpgrade;
         [SerializeField, IsntNull] Button closeButton;
+        [SerializeField, IsntNull] Button cheatButton;
 
         [Header("Debug")]
         [SerializeField] bool showCost;
@@ -38,31 +35,53 @@ namespace Game.Upgrades
         internal event UnityAction Close;
 
         public int UpgradePoints;
-        //{
-        //    get => GameFactory.Data.upgradePoints;
-        //    set => GameFactory.Data.upgradePoints = value;
-        //}
+
+        public bool IsBuilded { get; set; }
 
         void Start()
         {
-            startUpgrade.SetOne();
             lineTemplate.gameObject.SetActive(false);
 
-            Draw(UpgradePoints);
+            //Draw(UpgradePoints);
             closeButton.onClick.AddListener(() => Close.Invoke());
+
+            cheatButton.gameObject.SetActive(false);
+            cheatButton.gameObject.SetActive(Application.isEditor);
+            cheatButton.onClick.AddListener(DebugAddPoints);
+        }
+
+        private void DebugAddPoints()
+        {
+            UpgradePoints += 2000;
+            Draw(UpgradePoints);
+        }
+
+        void BuildTree()
+        {
+            foreach (var node in allNodes)
+            {
+                //Injector.Inject2(node, upgrades);
+                node.Init();
+            }
+
+            foreach (var node in allNodes)
+            {
+                node.BuildTree();
+                node.Click += Node_Click;
+            }
+
+            BuildLines();
         }
 
         public void Draw(int upgradePoint, bool debugShowCost = false)
         {
+            if (!IsBuilded)
+            {
+                IsBuilded = true;
+                BuildTree();
+            }
+
             DrawBank(upgradePoint);
-
-            foreach (var node in allNodes)
-                node.Init();
-
-            foreach (var node in allNodes)
-                node.BuildTree();
-
-            BuildLines();
 
             foreach (var node in allNodes)
             {
@@ -75,16 +94,14 @@ namespace Game.Upgrades
                 node.DrawState(state);
 
                 foreach (UpgradeTreeLine line in node.NextLines)
-                    line.Draw(state == NodeState.Opened);
-
-                node.Click += Node_Click;
+                    line.Draw(state == NodeState.Open);
             }
         }
 
         public void Show()
         {
-            DrawBank(UpgradePoints);
             gameObject.SetActive(true);
+            Draw(UpgradePoints);
         }
 
         internal void Hide() => gameObject.SetActive(false);
@@ -99,9 +116,10 @@ namespace Game.Upgrades
                 return;
             }
 
+            UpgradePoints -= node.UpgradeData.IntCost;
             node.OpenUpgrade();
             node.State = node.CalculateState(UpgradePoints);
-            UpgradePoints -= node.upgradeData.IntCost;
+            node.DrawStateWithAnimation(node.State);
             DrawBank(UpgradePoints);
 
             foreach (UpgradeTreeNode n in allNodes.Except(node.nextNodes))
@@ -114,7 +132,7 @@ namespace Game.Upgrades
                 {
                     //Assert.IsTrue(newState == NodeState.NotEnought, $"state={n.State} newState={newState} name={n.gameObject.name}");
                     n.State = newState;
-                    n.DrawNotEnoughtWithAnimation();
+                    n.DrawState(newState);
 
                     //if (newState == NodeState.NotEnought)
                     //    n.DrawNotEnoughtWithAnimation();
@@ -123,7 +141,6 @@ namespace Game.Upgrades
                 }
             }
 
-            node.DrawOpenWithAnimation();
             if (node.nextNodes.Length == 0)
                 return;
 
@@ -138,13 +155,9 @@ namespace Game.Upgrades
                 if (n.State != newState)
                 {
                     n.State = newState;
-                    if (newState == NodeState.CanOpen)
-                        n.DrawCanOpenWithAnimation();
-                    if (newState == NodeState.NotEnought)
-                        n.DrawNotEnoughtWithAnimation();
+                    n.DrawStateWithAnimation(newState);
                 }
             }
-
         }
 
         void BuildLines()
@@ -200,10 +213,13 @@ namespace Game.Upgrades
         [Button]
         public void DebugDraw()
         {
+            IsBuilded = false;
             LoadNodes();
-            //GameFactory.Data.Save();
-            startUpgrade.SetOne();
+            //GameFactory.Data.Save(); 
             Draw(debugUpgradePoints, showCost);
+
+            foreach (var item in allNodes)
+                item.Rename();
         }
 #endif
     }

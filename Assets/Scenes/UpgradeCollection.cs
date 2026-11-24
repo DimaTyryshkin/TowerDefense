@@ -8,7 +8,7 @@ namespace IncreGame
     [CreateAssetMenu(menuName = "Game/UpgradeColelction")]
     public class UpgradeCollection : ObjectCollection<UpgradeData2>
     {
-        public UpgradeData2 Get(UpgradeName upgradeName, int number)
+        public UpgradeData2 TryGet(UpgradeName upgradeName, int number)
         {
             for (int i = 0; i < collection.Length; i++)
             {
@@ -17,7 +17,17 @@ namespace IncreGame
                     return item;
             }
 
-            throw new System.Exception($"{nameof(UpgradeCollection)} item not found {upgradeName}_{number}");
+            return null;
+        }
+
+        public UpgradeData2 Get(UpgradeName upgradeName, int number)
+        {
+            UpgradeData2 item = TryGet(upgradeName, number);
+
+            if (item)
+                return item;
+
+            throw new System.Exception($"<b>{nameof(UpgradeCollection)} item not found {upgradeName}_{number}</b>");
         }
 
         public UpgradeData2[] GetAll(UpgradeName upgradeName)

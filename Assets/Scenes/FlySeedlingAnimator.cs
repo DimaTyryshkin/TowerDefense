@@ -8,6 +8,7 @@ namespace IncreGame
     class FlySeedlingAnimator : MonoBehaviour
     {
         [SerializeField, IsntNull] float flySpeed;
+        [SerializeField, IsntNull] float stayTime;
         [SerializeField, IsntNull] float height;
         [SerializeField, IsntNull] AnimationCurve yCurve;
         [SerializeField, IsntNull] AnimationCurve tCurve;
@@ -18,6 +19,7 @@ namespace IncreGame
 
         float t;
         float flyTime;
+        float timeStartFly;
         Enemy enemyPrefab;
         Vector2 endPos;
         Vector2 startPos;
@@ -25,17 +27,21 @@ namespace IncreGame
         public void Init(Enemy enemyPrefab, Vector2 startPos, Vector2 target)
         {
             t = 0;
+            timeStartFly = Time.time + stayTime;
             transform.position = startPos;
             this.startPos = startPos;
             this.endPos = target;
             this.enemyPrefab = enemyPrefab;
 
-            flyTime = (Vector2.Distance(startPos, target) + height) / flySpeed;
+            flyTime = 0.2f + (Vector2.Distance(startPos, target) + height) / flySpeed;
         }
 
         private void Update()
         {
             t += Time.deltaTime / flyTime;
+            if (Time.time <= timeStartFly)
+                t = 0;
+
             if (t > 1)
             {
                 transform.position = endPos;

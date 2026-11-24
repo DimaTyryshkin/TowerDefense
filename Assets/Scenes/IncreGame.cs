@@ -133,6 +133,8 @@ namespace IncreGame
         float drafeSpeed;
         bool step2 => true;
 
+
+        bool canShowUpgradeButton;
         bool isPause;
         static bool ReloadAfterUpgrade { get; set; }
 
@@ -140,6 +142,23 @@ namespace IncreGame
         {
             if (!ReloadAfterUpgrade)
                 GameFactory.Storage.Clear();
+
+            canShowUpgradeButton = upgradeTree.allNodes.Any(x => !x.UpgradeData.IsMaxLevel);
+
+            if (debugSettings.openAll)
+            {
+                canShowUpgradeButton = true;
+                foreach (var upg in upgrades.collection)
+                {
+                    if (upg.MaxLevel.level > 0)
+                        upg.SetLevel(upg.MaxLevel.level);
+                    else
+                        upg.SetOne();
+                }
+            }
+
+            foreach (var upg in upgrades.GetAll(UpgradeName.Enemy))
+                upg.ResetLevet();
 
             damageEnemyUpg = upgrades.GetAll(UpgradeName.DamageEnemy);
             Assert.AreEqual(damageEnemyUpg.Length, enemyPrefabs.Length);
@@ -218,7 +237,6 @@ namespace IncreGame
 
             GetWorldPositions();
 
-            addEnemyButtons[0].gameObject.SetActive(true);
             for (int i = 1; i < addEnemyButtons.Length; i++)
                 addEnemyButtons[i].gameObject.SetActive(GetUpgrade(UpgradeName.OpenEnemy, i).IsOpen);
 
@@ -438,68 +456,35 @@ namespace IncreGame
             UpgradeRule AddRule(UpgradeRule rule)
             {
                 rule.game = this;
-                rule.upgradeData.ResetLevet();
                 upgradeList.Add(rule);
                 rule.Init();
                 return rule;
             }
 
-            AddRule(new UpgradeRule()
+            Assert.AreEqual(addEnemyButtons.Length, upgrades.GetAll(UpgradeName.Enemy).Length);
+            Assert.AreEqual(addEnemyButtons.Length, enemyPrefabs.Length);
+
+            for (int i = 0; i < addEnemyButtons.Length; i++)
             {
-                button = addEnemyButtons[0],
-                upgradeData = GetUpgrade(UpgradeName.Enemy, 0),
-                ApplyUpgrade = upgrade =>
+                int n = i;
+                AddRule(new UpgradeRule()
                 {
-                    if (upgrade.IsOpen)
-                        SpawnSeeding(enemyPrefabs[0]);
+                    button = addEnemyButtons[n],
+                    upgradeData = GetUpgrade(UpgradeName.Enemy, n),
+                    ApplyUpgrade = upgrade =>
+                    {
+                        if (upgrade.IsOpen)
+                            SpawnSeeding(enemyPrefabs[n]);
 
-                    //upgradesMenuButton.SetActive(enemyes.Count > enemyesToOpenUpgrades);
-                    //bool isOpenUpgrades = addEnemy1Upgrade.Level.level > enemyesToOpenUpgrades;
-                    //addDamageButton.gameObject.SetActive(isOpenUpgrades);
-                    //addRangeButton.gameObject.SetActive(isOpenUpgrades);
-                    //addEnemy2Button.gameObject.SetActive(isOpenUpgrades);
-                }
-            });
+                        //upgradesMenuButton.SetActive(enemyes.Count > enemyesToOpenUpgrades);
+                        //bool isOpenUpgrades = addEnemy1Upgrade.Level.level > enemyesToOpenUpgrades;
+                        //addDamageButton.gameObject.SetActive(isOpenUpgrades);
+                        //addRangeButton.gameObject.SetActive(isOpenUpgrades);
+                        //addEnemy2Button.gameObject.SetActive(isOpenUpgrades);
+                    }
+                });
+            }
 
-            AddRule(new UpgradeRule()
-            {
-                button = addEnemyButtons[1],
-                upgradeData = GetUpgrade(UpgradeName.Enemy, 1),
-                ApplyUpgrade = upgrade =>
-                {
-                    if (upgrade.IsOpen)
-                        SpawnSeeding(enemyPrefabs[1]);
-
-                    //addEnemy3Button.gameObject.SetActive(upgrade.IsOpen);
-                }
-            }).CallApplyUpgrade();
-
-            AddRule(new UpgradeRule()
-            {
-                button = addEnemyButtons[2],
-                upgradeData = GetUpgrade(UpgradeName.Enemy, 2),
-                ApplyUpgrade = upgrade =>
-                {
-                    if (upgrade.IsOpen)
-                        SpawnSeeding(enemyPrefabs[2]);
-
-                    //addEnemy4Button.gameObject.SetActive(upgrade.IsOpen);
-                    //openTruskButton.gameObject.SetActive(upgrade.IsOpen);
-                }
-            }).CallApplyUpgrade();
-
-            AddRule(new UpgradeRule()
-            {
-                button = addEnemyButtons[3],
-                upgradeData = GetUpgrade(UpgradeName.Enemy, 3),
-                ApplyUpgrade = upgrade =>
-                {
-                    if (upgrade.IsOpen)
-                        SpawnSeeding(enemyPrefabs[3]);
-
-                    //openTruskButton.gameObject.SetActive(upgrade.IsOpen);
-                }
-            });
 
             //AddRule(new UpgradeRule()
             //{
@@ -960,7 +945,7 @@ namespace IncreGame
             truckAmountText.text = GameUtils.IntToSting(truckMoney);
 
             truskProgressBar.Draw(truckMoney, truckCapacity);
-            if (truckMoney >= truckCapacity)
+            if (truckMoney >= truckCapacity && canShowUpgradeButton)
                 openUpgradeButton.gameObject.SetActive(true);
 
             foreach (UpgradeRule item in upgradeList)
@@ -981,7 +966,8 @@ namespace IncreGame
             {
                 button.Click += () =>
                 {
-                    if (Keyboard.current.shiftKey.isPressed)
+                    //if (Keyboard.current.shiftKey.isPressed)
+                    if (true)
                     {
                         while (game.playerMoney >= upgradeData.IntCost && upgradeData.NotMaxLevel)
                             OnClick();

@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 626d8e091b62fbd479f1987541a9159a, type: 3}
   m_Name: DebugSettings
   m_EditorClassIdentifier: Assembly-CSharp::IncreKindom.DebugSettings
+  openAll: 0
   RewadrFactor: 1

@@ -16,12 +16,15 @@ namespace Game.Upgrades
 {
     public class UpgradeTreeNode : MonoBehaviour, IValidated
     {
-        [SerializeField] int level;
-        [SerializeField] bool allLevels;
+        [SerializeField] UpgradeName upgradeName;
+        [SerializeField] int ungradeNumber;
 
-        [IsntNull] public UpgradeData2 upgradeData;
+        [Space]
+        [SerializeField] bool allLevels;
+        [SerializeField] int level;
 
         [Header("Gui")]
+        [SerializeField, IsntNull] UpgradeCollection upgrades;
         [SerializeField, IsntNull] Button button;
         [SerializeField, IsntNull] TMP_Text nameText;
         [SerializeField, IsntNull] TMP_Text costText;
@@ -41,33 +44,36 @@ namespace Game.Upgrades
 
 
         internal IReadOnlyList<UpgradeTreeLine> NextLines => nextLines;
-        internal bool IsOpened
-        {
-            get
-            {
-                if (allLevels)
-                    return upgradeData.IsMaxLevel;
-                else
-                    return upgradeData.Level.level > level;
-            }
-        }
         public bool IsPreviusOpened => previousNodes.All(n => n.IsOpened);
         public bool AllLevels => allLevels;
         public int Level => level;
         public NodeState State { get; set; }
+        public UpgradeData2 UpgradeData => upgrades.Get(upgradeName, ungradeNumber);
+
+        public event UnityAction<UpgradeTreeNode> Click;
+
 
         int Cost
         {
             get
             {
                 if (allLevels)
-                    return upgradeData.IntCost;
+                    return UpgradeData.IntCost;
                 else
-                    return upgradeData.GetCost(level);
+                    return UpgradeData.GetCost(level);
             }
         }
 
-        public event UnityAction<UpgradeTreeNode> Click;
+        internal bool IsOpened
+        {
+            get
+            {
+                if (allLevels)
+                    return UpgradeData.IsMaxLevel;
+                else
+                    return UpgradeData.Level.level > level;
+            }
+        }
 
         void Start()
         {
@@ -78,6 +84,12 @@ namespace Game.Upgrades
         static string drawGizmosKey => nameof(UpgradeTreeNode) + "drawGizmos";
         private void OnDrawGizmos()
         {
+            if (Selection.activeObject == UpgradeData)
+            {
+                Gizmos.color = Color.white;
+                Gizmos.DrawWireCube(transform.position, new Vector3(1.3f, 1.3f, 0));
+            }
+
             if (nextNodes == null)
                 return;
 
@@ -90,13 +102,15 @@ namespace Game.Upgrades
                 GizmosExtension.DrawArrowXY(transform.position, item.transform.position, size: 0.1f);
             }
 
+
             if (!EditorPrefs.GetBool(drawGizmosKey))
                 return;
 
             Handles.color = Color.white;
-            string lebel = allLevels ? "ALL" : $"{level}";
-            Handles.Label(transform.position + new Vector3(-0.2f, 0.7f), lebel);
-            //Handles.Label(transform.position + Vector3.left * 2 + Vector3.up * 1.2f, $"+{upgradeData.IncrementPerLevel} cost={upgradeData.Cost}");
+            //string lebel = allLevels ? "ALL" : $"{level}";
+            string lebel = UpgradeData.GetValue(1).ToString();
+            Handles.Label(transform.position + new Vector3(-0.2f, 0.8f), lebel);
+            //Handles.Label(transform.position + Vector3.left * 2 + Vector3.up * 1.2f, $"+{UpgradeData.IncrementPerLevel} cost={UpgradeData.Cost}");
         }
 
         private void OnValidate()
@@ -131,13 +145,13 @@ namespace Game.Upgrades
             string text = nameText.text;
             if (text.Contains("{0}"))
             {
-                string parameter = upgradeData.IncrementPerLevel > 0 ? "+" : "";
+                string parameter = UpgradeData.IncrementPerLevel > 0 ? "+" : "";
 
-                bool isInt = Mathf.Abs(upgradeData.IncrementPerLevel % 1) < 0.01f;
+                bool isInt = Mathf.Abs(UpgradeData.IncrementPerLevel % 1) < 0.01f;
                 if (isInt)
-                    parameter += Mathf.RoundToInt(upgradeData.IncrementPerLevel).ToString();
+                    parameter += Mathf.RoundToInt(UpgradeData.IncrementPerLevel).ToString();
                 else
-                    parameter += upgradeData.IncrementPerLevel.ToString("0.0");
+                    parameter += UpgradeData.IncrementPerLevel.ToString("0.0");
 
                 text = string.Format(text, parameter);
                 text = string.Format(text, "99");
@@ -156,7 +170,7 @@ namespace Game.Upgrades
         public NodeState CalculateState(int playerBank)
         {
             if (IsOpened)
-                return NodeState.Opened;
+                return NodeState.Open;
 
             if (!IsPreviusOpened)
                 return NodeState.PreviousNotOpened;
@@ -179,36 +193,36 @@ namespace Game.Upgrades
         public void OpenUpgrade()
         {
             if (!allLevels)
-                Assert.IsTrue(level == upgradeData.Level.level);
+                Assert.IsTrue(level == UpgradeData.Level.level);
 
-            upgradeData.AddLevel();
+            UpgradeData.AddLevel();
         }
 
-        internal void DrawNotEnoughtWithAnimation()
+        internal void DrawStateWithAnimation(NodeState state)
         {
-            Debug.Log("DrawNotEnoughtWithAnimation " + gameObject.name);
-            DrawState(NodeState.NotEnought);
+            DrawState(state);
         }
 
-        internal void DrawOpenWithAnimation()
+        [Button]
+        public void Rename()
         {
-            Debug.Log("DrawOpenWithAnimation " + gameObject.name);
-            DrawState(NodeState.Opened);
-        }
-
-        internal void DrawCanOpenWithAnimation()
-        {
-            Debug.Log("DrawCanOpenWithAnimation " + gameObject.name);
-            DrawState(NodeState.CanOpen);
+#if UNITY_EDITOR
+            Undo.RecordObject(gameObject, "Rename");
+            gameObject.name = $"{UpgradeData.ObjectNameFroUpgrade()}{(allLevels ? string.Empty : "_" + level)}";
+#endif
         }
 
         public void Validate(ValidationContext context)
         {
 #if UNITY_EDITOR
+            if (!upgrades.TryGet(upgradeName, ungradeNumber))
+                context.AddProblem(nameof(UpgradeTreeNode), ValidationProblem.Type.Error, $"{upgradeName}_{ungradeNumber} не найден");
+
             //if (nextLines.Count != nextNodes.Length)
             //    context.AddProblem(nameof(UpgradeTreeNode), ValidationProblem.Type.Error, "Не совпадает количество узлов и линий к ним");
 #endif
         }
+
         [Header("Styles")]
         [SerializeField] Style previousNotOpenedStyle;
         [SerializeField] Style notEnoughtStyle;
@@ -217,8 +231,8 @@ namespace Game.Upgrades
 
         internal void DrawState(NodeState state)
         {
-            mainImage.sprite = upgradeData.Sprite;
-            nameText.text = upgradeData.GuiName;
+            mainImage.sprite = UpgradeData.Sprite;
+            nameText.text = UpgradeData.GuiName;
 
 
             Style style = new();
@@ -232,7 +246,7 @@ namespace Game.Upgrades
             if (state == NodeState.CanOpen)
                 style = canOpenStyle;
 
-            if (state == NodeState.Opened)
+            if (state == NodeState.Open)
                 style = openedStyle;
 
             mainImage.color = style.mainImage;
@@ -244,20 +258,20 @@ namespace Game.Upgrades
             particle.SetActive(style.particle);
             costText.text = GameUtils.AddCoinIcon(Cost.ToString(), style.coinColor);
 
-            levelPanel.SetActive(style.level && allLevels && upgradeData.IsOpen);
+            levelPanel.SetActive(style.level && allLevels && UpgradeData.IsOpen);
             if (allLevels)
             {
-                if (upgradeData.IsMaxLevel)
+                if (UpgradeData.IsMaxLevel)
                     levelText.text = "max";
                 else
-                    levelText.text = "× " + upgradeData.Level.level.ToString();
+                    levelText.text = "× " + UpgradeData.Level.level.ToString();
             }
         }
 
         [Button] void DrawPreviousNotOpened() => DrawState(NodeState.PreviousNotOpened);
         [Button] void DrawNotEnought() => DrawState(NodeState.NotEnought);
         [Button] void DrawCanOpen() => DrawState(NodeState.CanOpen);
-        [Button] void DrawOpened() => DrawState(NodeState.Opened);
+        [Button] void DrawOpened() => DrawState(NodeState.Open);
 
         [Serializable]
         public struct Style

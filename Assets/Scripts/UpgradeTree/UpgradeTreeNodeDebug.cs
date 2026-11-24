@@ -6,7 +6,9 @@ namespace Game.Upgrades
 {
     class UpgradeTreeNodeDebug : MonoBehaviour
     {
+#if UNITY_EDITOR
         UpgradeTreeNode Node => GetComponent<UpgradeTreeNode>();
+
 
         [Button(text: "==DarwTree==")]
         void DrawTree()
@@ -17,8 +19,9 @@ namespace Game.Upgrades
         [Button()]
         void Open()
         {
-            Node.upgradeData.SetOne();
+            Node.UpgradeData.SetOne();
             DrawTree();
         }
+#endif
     }
 }

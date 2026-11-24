@@ -3,8 +3,11 @@ using Game.Upgrades;
 using GamePackages.Core;
 using GamePackages.Core.Validation;
 using NaughtyAttributes;
-using UnityEditor;
 using UnityEngine;
+
+# if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace IncreGame
 {
@@ -45,19 +48,24 @@ namespace IncreGame
         public float Value => GetValue(level);
         public float Cost => GetCost(level);
         public int IntValue => Mathf.FloorToInt(GetValue(level));
-        public bool IsOpen => level > 0 || openFromStart;
+        public bool IsOpen => level > 0;
         public bool IsMaxLevel => level == maxLevel;
         public int IntCost => Mathf.FloorToInt(GetCost(level));
         public UpgradeLevel Level => new UpgradeLevel(level);
-        //public UpgradeLevel Level => new UpgradeLevel(GameFactory.Data.upgrades.GetOrDefault(name, 0));
         public UpgradeLevel MaxLevel => new UpgradeLevel(maxLevel);
         public bool NotMaxLevel => level < maxLevel || maxLevel == 0;
-
         public bool ManyLevels => maxLevel != 1;
 
         int level
         {
-            get => GameFactory.Data.upgrades.GetOrDefault(name, 0);
+            get
+            {
+                int lvl = GameFactory.Data.upgrades.GetOrDefault(name, 0);
+                if (lvl == 0 && openFromStart)
+                    return 1;
+
+                return lvl;
+            }
             set => GameFactory.Data.upgrades[name] = value;
         }
 
@@ -78,10 +86,13 @@ namespace IncreGame
         }
 
         [Button]
-        public void SetOne()
-        {
-            level = 1;
-        }
+        public void SetOne() => level = 1;
+
+        [Button]
+        public void AddOne() => level++;
+
+        [Button]
+        public void LogLevel() => Debug.Log(level);
 
         public float GetValue(int level)
         {
@@ -89,7 +100,7 @@ namespace IncreGame
                 return startValue;
 
             //return ((lastValue - startValue) / (maxLevel - 1)) * (level - 1) + startValue; // Линейный рост от Lvl1
-            return ((lastValue - startValue) / maxLevel) * level + startValue; // Линейный рост от Lvl0
+            return ((float)(lastValue - startValue) / maxLevel) * level + startValue; // Линейный рост от Lvl0
         }
 
         public int GetCostSum(int level)
@@ -101,28 +112,34 @@ namespace IncreGame
             return Mathf.FloorToInt(sum);
         }
 
-
         public int GetCost(int level)
         {
             if (maxLevel == 0)
                 return startCost;
 
             // return ((lastCost - startCost) / (maxLevel - 1)) * (level - 1) + startCost; // Линейный рост от Lvl1
-            float cost = ((lastCost - startCost) / maxLevel) * level + startCost; // Линейный рост от Lvl0
+            float cost = ((float)(lastCost - startCost) / maxLevel) * level + startCost; // Линейный рост от Lvl0
             return Mathf.FloorToInt(cost); ;
         }
+
+        [Button]
         public void Rename()
         {
-            string newName = $"{UpgradeName}{(UpgradeNumber >= 0 ? UpgradeNumber.ToString("00") : string.Empty)}Upgrade";
+# if UNITY_EDITOR
+            string newName = $"{ObjectNameFroUpgrade()}Upgrade";
             AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(this), newName);
+#endif
         }
+
+        public string ObjectNameFroUpgrade() => $"{UpgradeName}{(UpgradeNumber >= 0 ? UpgradeNumber.ToString("00") : string.Empty)}";
 
         [ShowNativeProperty] float Cost0 => GetCost(0);
         [ShowNativeProperty] float Cost1 => GetCost(1);
-        [ShowNativeProperty] float CostLast => GetCost(maxLevel);
+        [ShowNativeProperty] float CostLast => GetCost(maxLevel - 1);
+        [ShowNativeProperty] float CostSum => GetCostSum(maxLevel);
         [ShowNativeProperty] float Value0 => GetValue(0);
         [ShowNativeProperty] float Value1 => GetValue(1);
         [ShowNativeProperty] float ValueLast => GetValue(maxLevel);
-
+        [ShowNativeProperty] float ActualLevel => level;
     }
 }

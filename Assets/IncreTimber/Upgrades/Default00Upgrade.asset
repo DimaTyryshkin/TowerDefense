@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::IncreKindom.UpgradeData2
   UpgradeName: -1
   UpgradeNumber: 0
+  maxLevel: 1
+  openFromStart: 1
   guiName: "\u0421\u043E\u0441\u043D\u0430"
   sprite: {fileID: -3766128427826593386, guid: 8472dd4c22f5c104b9e454a091dbca34, type: 3}
-  maxLevel: 1
   startCost: 0
   lastCost: 0
   startValue: 0
