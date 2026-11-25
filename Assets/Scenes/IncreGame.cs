@@ -34,7 +34,6 @@ namespace IncreGame
         [SerializeField, IsntNull] UpgradeTree upgradeTree;
 
         [Space]
-        [SerializeField] int startSpawn = 1;
         [SerializeField] float respawnRange = 2;
         [SerializeField] float offsetTocenter = 0.5f;
         [SerializeField] float woodFlyRange = 1;
@@ -52,6 +51,7 @@ namespace IncreGame
         [SerializeField, IsntNull] Button restartButton;
 
         [Header("Enemy")]
+        [SerializeField] int startSpawn;
         [SerializeField] float spawnDelay;
         [SerializeField] float enemySpeed;
         [SerializeField] float newEnemySpawnDistace;
@@ -66,6 +66,7 @@ namespace IncreGame
         [Header("Push")]
         [SerializeField] float pushTime;
         [SerializeField] float pushSpeed;
+        [SerializeField] float respawnDelay;
         [SerializeField, IsntNull] SoundsSet pushHit;
         [SerializeField, IsntNull] SoundsSet bossHit;
 
@@ -241,6 +242,9 @@ namespace IncreGame
                 addEnemyButtons[i].gameObject.SetActive(GetUpgrade(UpgradeName.OpenEnemy, i).IsOpen);
 
             SpawnNewEnmey(enemyPrefabs[0]);
+            enemyes[0].transform.position = (Vector2)firstEnemyPos.position;
+            for (int i = 1; i < startSpawn; i++)
+                SpawnNewEnmey(enemyPrefabs[0]);
 
             //for (int i = 0; i < spawnEnemyUpgrade01.IntValue; i++)
             //    SpawnNewEnmey(enemy1Prefab);
@@ -254,7 +258,6 @@ namespace IncreGame
             //for (int i = 0; i < spawnEnemyUpgrade04.IntValue; i++)
             //    SpawnNewEnmey(enemy4Prefab);
 
-            enemyes[0].transform.position = (Vector2)firstEnemyPos.position;
 
             DrawGui();
 
@@ -282,7 +285,6 @@ namespace IncreGame
 
             // == Attack ===
             //int maxAttack = attackPeriodUpgrade.IntValue;
-
 
             float scale = moneyAnimation.Evaluate(Time.time - moneyAnimationStart);
             playerMoneyRoot.SetLocalScale(new Vector3(scale, scale, scale));
@@ -320,34 +322,42 @@ namespace IncreGame
 
                             enemy.pushEndTime = Time.time + pushTime;
                             AppSounds.Play(pushHit);
+                            enemy.State = EnemyState.Push;
 
+                            // == 1
+                            /*
                             if (enemy.health > 0)
-                            {
                                 enemy.State = EnemyState.Push;
-                            }
                             else
-                            {
-                                //enemy.State = EnemyState.PushDeath;
-
-                                // === Летят бревна только после смерти
-                                //for (int i = 0; i < enemy.Revard; i++)
-                                //{
-                                //    var newFlyWood = pool.Get(woodFlyPrefab);
-                                //    newFlyWood.transform.Rotate(0, 0, Random.Range(0, 360));
-                                //    newFlyWood.Init(null, enemy.transform.position, GetPosForWood(enemy.transform.position));
-                                //    newFlyWood.gameObject.SetActive(true);
-                                //    newFlyWood.FlyFinish += WoodInFly_Landing;
-                                //}
-
                                 HideEnemy(enemy);
+                            */
 
-                                //growOrder1++;
-                                //if (growOrder1 == 1)
-                                //{
-                                //    float growDelay = 1f / growSeedUpgrade.Value;
-                                //    timeNextGrow = Time.time + growDelay;
-                                //} 
-                            }
+                            //if (enemy.health > 0)
+                            //{
+                            //    enemy.State = EnemyState.Push;
+                            //}
+                            //else
+                            //{ 
+
+                            // === Летят бревна только после смерти
+                            //for (int i = 0; i < enemy.Revard; i++)
+                            //{
+                            //    var newFlyWood = pool.Get(woodFlyPrefab);
+                            //    newFlyWood.transform.Rotate(0, 0, Random.Range(0, 360));
+                            //    newFlyWood.Init(null, enemy.transform.position, GetPosForWood(enemy.transform.position));
+                            //    newFlyWood.gameObject.SetActive(true);
+                            //    newFlyWood.FlyFinish += WoodInFly_Landing;
+                            //}
+
+                            //HideEnemy(enemy);
+
+                            //growOrder1++;
+                            //if (growOrder1 == 1)
+                            //{
+                            //    float growDelay = 1f / growSeedUpgrade.Value;
+                            //    timeNextGrow = Time.time + growDelay;
+                            //} 
+                            //}
                         }
 
                         //Vector2 dir = cursodVelocity * cursorSpeedFacor + fromCursorToEnemy.normalized;
@@ -402,7 +412,12 @@ namespace IncreGame
                 if (enemy.State is EnemyState.Push)
                 {
                     if (Time.time > enemy.pushEndTime)
-                        enemy.State = EnemyState.Main;
+                    {
+                        if (enemy.health > 0)
+                            enemy.State = EnemyState.Main;
+                        else
+                            HideEnemy(enemy);
+                    }
                 }
             }
 
@@ -448,6 +463,7 @@ namespace IncreGame
             Gizmos.DrawWireSphere(woodPrefab.transform.position, woodRadius);
         }
 #endif
+
 
         UpgradeData2 GetUpgrade(UpgradeName upgradeName, int number = 0) => upgrades.Get(upgradeName, number);
 
@@ -497,6 +513,39 @@ namespace IncreGame
             //    }
             //}).CallApplyUpgrade();
         }
+
+        void SetupTruck()
+        {
+            UpgradeData2[] upgList = upgrades.GetAll(UpgradeName.OpenEnemy);
+            //Assert.AreEqual(trucks.Length, upgList.Length);
+
+            foreach (var item in trucks)
+                item.gameObject.SetActive(false);
+
+            truskProgressBar.gameObject.SetActive(true);
+
+            bool TrySetTruck(SpriteRenderer truckView, UpgradeData2 upg)
+            {
+                if (upg.IsOpen)
+                {
+                    truckView.gameObject.SetActive(true);
+                    truckView.sortingOrder = GameUtils.SortingOrderFromMinY(truckView);
+                    truckCapacity = upg.IntValue;
+                    return true;
+                }
+
+                return false;
+            }
+
+            for (int i = upgList.Length - 1; i >= 0; i--)
+            {
+                if (TrySetTruck(trucks[Mathf.Min(i, trucks.Length - 1)], upgList[i]))
+                    return;
+            }
+
+            throw new Exception($"нет открытых {UpgradeName.TruckCapacity}");
+        }
+
 
         void UpdateDrafeMove()
         {
@@ -667,8 +716,6 @@ namespace IncreGame
             }
         }
 
-        [SerializeField] float respawnDelay = 1;
-
         void RespawnEnemyWithDelay(Enemy enemey, float delay)
         {
             StartCoroutine(RespawnEnemyWithDelay_Coroutine(enemey, delay));
@@ -713,37 +760,7 @@ namespace IncreGame
             DrawGui();
         }
 
-        void SetupTruck()
-        {
-            UpgradeData2[] truckUpg = upgrades.GetAll(UpgradeName.TruckCapacity);
-            Assert.AreEqual(trucks.Length, truckUpg.Length);
 
-            foreach (var item in trucks)
-                item.gameObject.SetActive(false);
-
-            truskProgressBar.gameObject.SetActive(true);
-
-            bool TrySetTruck(SpriteRenderer truckView, UpgradeData2 truckCapacityUpg)
-            {
-                if (truckCapacityUpg.IsOpen)
-                {
-                    truckView.gameObject.SetActive(true);
-                    truckView.sortingOrder = GameUtils.SortingOrderFromMinY(truckView);
-                    truckCapacity = truckCapacityUpg.IntValue;
-                    return true;
-                }
-
-                return false;
-            }
-
-            for (int i = truckUpg.Length - 1; i >= 0; i--)
-            {
-                if (TrySetTruck(trucks[i], truckUpg[i]))
-                    return;
-            }
-
-            throw new Exception($"нет открытых {UpgradeName.TruckCapacity}");
-        }
 
         [Button]
         void AddMoney()
@@ -806,6 +823,7 @@ namespace IncreGame
                 var newFlyMoney = pool.Get(moneyInFlyPrefab);
                 newFlyMoney.Init(1, flyAnimator.EndPos, moneyWorldPoint);
                 newFlyMoney.gameObject.SetActive(true);
+                newFlyMoney.transform.rotation = flyAnimator.transform.rotation;
                 newFlyMoney.FlyFinish += MoneyInFly_FinishFly;
             }
             else
@@ -851,6 +869,7 @@ namespace IncreGame
         {
             var posAndDir = GetPosForEnemy();
             SetEnemyMainState(enemy, posAndDir.pos, posAndDir.dir);
+
         }
 
         void SetEnemyMainState(Enemy enemy, Vector2 pos, Vector2 dir)
@@ -860,6 +879,7 @@ namespace IncreGame
             enemy.health = enemy.StartHealth;
             enemy.State = EnemyState.Main;
             enemy.ApplySortingOrder();
+            enemy.PlayGrow();
         }
 
         (Vector2 pos, Vector2 dir) GetPosForEnemy()

@@ -16,7 +16,7 @@ MonoBehaviour:
   UpgradeNumber: 4
   maxLevel: 1
   openFromStart: 0
-  guiName: "\u0423\u0440\u043E\u043D \u043F\u043E \u043A\u043B\u0435\u043D\u0443"
+  guiName: "\u0423\u0441\u043A\u043E\u0440\u044F\u0435\u0442 \u0440\u0443\u0431\u043A\u0443"
   sprite: {fileID: 8614387318205097232, guid: 9f1efd16281724741a2a4e39acae6a70, type: 3}
   startCost: 500
   lastCost: 500

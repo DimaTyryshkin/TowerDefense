@@ -165,8 +165,14 @@ namespace Game.Upgrades
             linesRoot.DestroyChildren();
             foreach (UpgradeTreeNode node in allNodes)
             {
+                if (!node.gameObject.activeSelf)
+                    continue;
+
                 foreach (var nextNode in node.nextNodes)
                 {
+                    if (!nextNode.gameObject.activeSelf)
+                        continue;
+
                     Vector2 p1 = node.transform.position;
                     Vector2 p2 = nextNode.transform.position;
                     Vector2 toTarget = p2 - p1;

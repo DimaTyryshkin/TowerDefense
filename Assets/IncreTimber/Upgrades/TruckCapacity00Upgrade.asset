@@ -20,5 +20,5 @@ MonoBehaviour:
   sprite: {fileID: -1440469556021547315, guid: edb3d4ba5189bbd4f9ffbb2e7a438da5, type: 3}
   startCost: 0
   lastCost: 0
-  startValue: 1000
-  lastValue: 1000
+  startValue: 300
+  lastValue: 300

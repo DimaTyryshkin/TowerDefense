@@ -22,6 +22,7 @@ namespace IncreGame
         [SerializeField] Color mainColor;
         [SerializeField] Color pushColor;
         [SerializeField] Color deathColor;
+        [SerializeField, IsntNull] Animator viewAnimator;
         [SerializeField, IsntNull] FlashSprite flashSprite;
 
         public int Type => type;
@@ -32,6 +33,8 @@ namespace IncreGame
         public int health { get; set; }
         public float pushEndTime { get; set; }
         public Vector2 pushDir { get; set; }
+
+        static int gorowTrigger = Animator.StringToHash("grow");
 
         public EnemyState State
         {
@@ -63,7 +66,7 @@ namespace IncreGame
 
                 if (State == EnemyState.PushDeath)
                 {
-                    //spriteRenderer.color = deathColor;
+                    flashSprite.SetAmount(1);
                 }
             }
         }
@@ -79,6 +82,11 @@ namespace IncreGame
         public void ApplySortingOrder()
         {
             flashSprite.SpriteRenderer.sortingOrder = GameUtils.SortingOrderFromY(transform.position.y - radius);
+        }
+
+        public void PlayGrow()
+        {
+            viewAnimator.SetTrigger(gorowTrigger);
         }
 
 #if UNITY_EDITOR
