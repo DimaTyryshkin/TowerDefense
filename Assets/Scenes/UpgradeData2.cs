@@ -18,7 +18,7 @@ namespace IncreGame
         TruckCapacity = 1,
         Radius = 2,
         OpenEnemy = 3,
-        Enemy = 4,
+        AmountEnemy = 4,
         DamageEnemy = 5
     }
 

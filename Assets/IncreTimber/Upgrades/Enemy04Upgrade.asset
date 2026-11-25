@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::IncreKindom.UpgradeData2
   UpgradeName: 4
   UpgradeNumber: 4
-  maxLevel: 3
+  maxLevel: 100
   openFromStart: 0
   guiName: "\u0417\u043E\u043B\u043E\u0442\u043E\u0439 \u043A\u043B\u0451\u043D"
   sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}

@@ -18,7 +18,7 @@ MonoBehaviour:
   openFromStart: 0
   guiName: "\u042D\u0432\u043A\u0430\u043B\u0438\u043F\u0442"
   sprite: {fileID: 21300000, guid: da2184f7e5f1e0944bd075fc467ac020, type: 3}
-  startCost: 300
+  startCost: 10000
   lastCost: 1
   startValue: 700
   lastValue: 700

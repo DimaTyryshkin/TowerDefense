@@ -58,21 +58,16 @@ namespace IncreGame
         [SerializeField] float enemySpawnDistace;
         [SerializeField, IsntNull] Enemy[] enemyPrefabs;
 
-        [Header("Boss")]
-        [SerializeField] float bossRadius;
-        [SerializeField, IsntNull] Transform boss;
-
-
         [Header("Push")]
         [SerializeField] float pushTime;
         [SerializeField] float pushSpeed;
         [SerializeField] float respawnDelay;
         [SerializeField, IsntNull] SoundsSet pushHit;
-        [SerializeField, IsntNull] SoundsSet bossHit;
 
         [SerializeField, IsntNull] UpgradeCollection upgrades;
 
         [Foldout("GUI"), SerializeField, IsntNull] TMP_Text truckAmountText;
+        [Foldout("GUI"), SerializeField, IsntNull] TMP_Text upgradePointsAmountText;
         [Foldout("GUI"), SerializeField, IsntNull] Button openUpgradeButton;
         [Foldout("GUI"), SerializeField, IsntNull] TMP_Text playerMoneyText;
         [Foldout("GUI"), SerializeField, IsntNull] GameObject leftPanel;
@@ -83,6 +78,7 @@ namespace IncreGame
 
         [Foldout("GUI"), SerializeField, IsntNull] Transform playerMoneyRoot;
         [Foldout("GUI"), SerializeField, IsntNull] AnimationCurve moneyAnimation;
+        [Foldout("GUI"), SerializeField, IsntNull] GameTimer gameTimer;
 
 
 
@@ -142,7 +138,10 @@ namespace IncreGame
         IEnumerator Start()
         {
             if (!ReloadAfterUpgrade)
+            {
+                gameTimer.ResetStartTime();
                 GameFactory.Storage.Clear();
+            }
 
             canShowUpgradeButton = upgradeTree.allNodes.Any(x => !x.UpgradeData.IsMaxLevel);
 
@@ -158,8 +157,13 @@ namespace IncreGame
                 }
             }
 
-            foreach (var upg in upgrades.GetAll(UpgradeName.Enemy))
-                upg.ResetLevet();
+            openUpgradeButton.gameObject.SetActive(!clearEnemy);
+            openUpgradeButton.animator.enabled = clearEnemy;
+            if (clearEnemy)
+            {
+                foreach (var upg in upgrades.GetAll(UpgradeName.AmountEnemy))
+                    upg.ResetLevet();
+            }
 
             damageEnemyUpg = upgrades.GetAll(UpgradeName.DamageEnemy);
             Assert.AreEqual(damageEnemyUpg.Length, enemyPrefabs.Length);
@@ -171,7 +175,6 @@ namespace IncreGame
 
             upgradeTree.gameObject.SetActive(false);
             pausePanel.SetActive(false);
-            openUpgradeButton.gameObject.SetActive(false);
             addMoneyButton.onClick.AddListener(AddMoney);
             restartButton.onClick.AddListener(() =>
             {
@@ -182,7 +185,16 @@ namespace IncreGame
             openUpgradeButton.onClick.AddListener(() =>
             {
                 Debug.Log($"truckCapacity={truckCapacity}");
-                GameFactory.Data.playerUpgradePoints += truckCapacity;
+                if (clearEnemy)
+                {
+                    GameFactory.Data.playerUpgradePoints += truckCapacity;
+                }
+                else
+                {
+                    GameFactory.Data.playerUpgradePoints += truckMoney;
+                    truckMoney = 0;
+                }
+
                 GameFactory.Data.Save();
 
                 isPause = true;
@@ -203,8 +215,6 @@ namespace IncreGame
             woods = new();
             upgradeList = new();
             pool = DynamicObjectPool.GetInst();
-
-            boss.localScale = Vector3.one * (bossRadius * 2);
 
             fieldRect = new Rect((Vector2)p1.position, (Vector2)(p2.position - p1.position));
             playerMoney = 0;
@@ -242,7 +252,9 @@ namespace IncreGame
                 addEnemyButtons[i].gameObject.SetActive(GetUpgrade(UpgradeName.OpenEnemy, i).IsOpen);
 
             SpawnNewEnmey(enemyPrefabs[0]);
-            enemyes[0].transform.position = (Vector2)firstEnemyPos.position;
+            if (clearEnemy || GetUpgrade(UpgradeName.AmountEnemy, 0).IntValue <= startSpawn)
+                enemyes[0].transform.position = (Vector2)firstEnemyPos.position;
+
             for (int i = 1; i < startSpawn; i++)
                 SpawnNewEnmey(enemyPrefabs[0]);
 
@@ -465,6 +477,8 @@ namespace IncreGame
 #endif
 
 
+        bool clearEnemy => false;
+
         UpgradeData2 GetUpgrade(UpgradeName upgradeName, int number = 0) => upgrades.Get(upgradeName, number);
 
         void SetupRules()
@@ -477,7 +491,7 @@ namespace IncreGame
                 return rule;
             }
 
-            Assert.AreEqual(addEnemyButtons.Length, upgrades.GetAll(UpgradeName.Enemy).Length);
+            Assert.AreEqual(addEnemyButtons.Length, upgrades.GetAll(UpgradeName.AmountEnemy).Length);
             Assert.AreEqual(addEnemyButtons.Length, enemyPrefabs.Length);
 
             for (int i = 0; i < addEnemyButtons.Length; i++)
@@ -486,7 +500,7 @@ namespace IncreGame
                 AddRule(new UpgradeRule()
                 {
                     button = addEnemyButtons[n],
-                    upgradeData = GetUpgrade(UpgradeName.Enemy, n),
+                    upgradeData = GetUpgrade(UpgradeName.AmountEnemy, n),
                     ApplyUpgrade = upgrade =>
                     {
                         if (upgrade.IsOpen)
@@ -501,17 +515,15 @@ namespace IncreGame
                 });
             }
 
-
-            //AddRule(new UpgradeRule()
-            //{
-            //    button = openTruskButton,
-            //    upgradeData = openTruskUpgrade,
-            //    ApplyUpgrade = upgrade =>
-            //    {
-            //        trusk1.gameObject.SetActive(upgrade.IsOpen);
-            //        truskProgressBar.gameObject.SetActive(upgrade.IsOpen);
-            //    }
-            //}).CallApplyUpgrade();
+            if (!clearEnemy)
+            {
+                for (int enemyIndex = 0; enemyIndex < addEnemyButtons.Length; enemyIndex++)
+                {
+                    int enemyAmount = upgrades.Get(UpgradeName.AmountEnemy, enemyIndex).IntValue;
+                    for (int n = 0; n < enemyAmount; n++)
+                        SpawnNewEnmey(enemyPrefabs[enemyIndex]);
+                }
+            }
         }
 
         void SetupTruck()
@@ -522,7 +534,8 @@ namespace IncreGame
             foreach (var item in trucks)
                 item.gameObject.SetActive(false);
 
-            truskProgressBar.gameObject.SetActive(true);
+
+            truskProgressBar.gameObject.SetActive(clearEnemy);
 
             bool TrySetTruck(SpriteRenderer truckView, UpgradeData2 upg)
             {
@@ -962,11 +975,18 @@ namespace IncreGame
         void DrawGui()
         {
             playerMoneyText.text = playerMoney.ToString();
-            truckAmountText.text = GameUtils.IntToSting(truckMoney);
 
-            truskProgressBar.Draw(truckMoney, truckCapacity);
-            if (truckMoney >= truckCapacity && canShowUpgradeButton)
-                openUpgradeButton.gameObject.SetActive(true);
+            if (clearEnemy)
+            {
+                truckAmountText.text = GameUtils.IntToSting(truckMoney);
+                truskProgressBar.Draw(truckMoney, truckCapacity);
+                if (truckMoney >= truckCapacity && canShowUpgradeButton)
+                    openUpgradeButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                upgradePointsAmountText.text = GameUtils.IntToSting(truckMoney + GameFactory.Data.playerUpgradePoints);
+            }
 
             foreach (UpgradeRule item in upgradeList)
             {
